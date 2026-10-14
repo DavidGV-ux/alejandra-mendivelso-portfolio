@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Alejandra Mendivelso — Portafolio">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6f2ec"/>
+      <stop offset="1" stop-color="#e2d8ca"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.78" cy="0.22" r="0.7">
+      <stop offset="0" stop-color="#b4553f" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#b4553f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <g fill="none" stroke="#b4553f" stroke-width="2" opacity="0.3">
+    <rect x="720" y="150" width="230" height="330" rx="8" transform="rotate(-6 835 315)"/>
+    <rect x="790" y="185" width="230" height="330" rx="8" transform="rotate(4 905 350)"/>
+  </g>
+  <text x="90" y="300" font-family="Georgia, 'Times New Roman', serif" font-size="76" fill="#1a1714" font-weight="500">Alejandra</text>
+  <text x="90" y="382" font-family="Georgia, 'Times New Roman', serif" font-size="76" fill="#1a1714" font-weight="500">Mendivelso</text>
+  <text x="92" y="440" font-family="Helvetica, Arial, sans-serif" font-size="24" letter-spacing="5" fill="#6b635b">DISEÑO VISUAL · DIRECCIÓN DE ARTE</text>
+</svg>

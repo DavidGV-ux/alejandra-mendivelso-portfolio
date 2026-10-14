@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-label="Vitrina">
+  <defs>
+    <linearGradient id="g43" gradientTransform="rotate(312 0.5 0.5)">
+      <stop offset="0" stop-color="#f6f2ec"/>
+      <stop offset="0.55" stop-color="#ece5db"/>
+      <stop offset="1" stop-color="#e0d6c8"/>
+    </linearGradient>
+    <radialGradient id="g43b" cx="0.2" cy="0.15" r="0.9">
+      <stop offset="0" stop-color="#8a6a3f" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#8a6a3f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1100" fill="url(#g43)"/>
+  <rect width="1600" height="1100" fill="url(#g43b)"/>
+  <circle cx="547.0" cy="337.0" r="51" fill="#8a6a3f" opacity="0.030"/>
+  <circle cx="684.5" cy="426.3" r="58" fill="#8a6a3f" opacity="0.042"/>
+  <circle cx="822.0" cy="515.6" r="65" fill="#8a6a3f" opacity="0.054"/>
+  <circle cx="959.5" cy="604.9" r="72" fill="#8a6a3f" opacity="0.066"/>
+  <circle cx="1097.0" cy="694.2" r="79" fill="#8a6a3f" opacity="0.078"/>
+  <circle cx="1234.5" cy="783.5" r="86" fill="#8a6a3f" opacity="0.030"/>
+  <circle cx="1372.0" cy="872.8" r="93" fill="#8a6a3f" opacity="0.042"/>
+  <circle cx="1509.5" cy="962.1" r="100" fill="#8a6a3f" opacity="0.054"/>
+  <circle cx="47.0" cy="1051.4" r="107" fill="#8a6a3f" opacity="0.066"/>
+  <circle cx="184.5" cy="40.7" r="24" fill="#8a6a3f" opacity="0.078"/>
+  <circle cx="322.0" cy="130.0" r="31" fill="#8a6a3f" opacity="0.030"/>
+  <circle cx="459.5" cy="219.3" r="38" fill="#8a6a3f" opacity="0.042"/>
+  <circle cx="597.0" cy="308.6" r="45" fill="#8a6a3f" opacity="0.054"/>
+  <circle cx="734.5" cy="397.9" r="52" fill="#8a6a3f" opacity="0.066"/>
+  <circle cx="872.0" cy="487.2" r="59" fill="#8a6a3f" opacity="0.078"/>
+  <circle cx="1009.5" cy="576.5" r="66" fill="#8a6a3f" opacity="0.030"/>
+  <circle cx="1147.0" cy="665.8" r="73" fill="#8a6a3f" opacity="0.042"/>
+  <circle cx="1284.5" cy="755.1" r="80" fill="#8a6a3f" opacity="0.054"/>
+  <circle cx="1422.0" cy="844.4" r="87" fill="#8a6a3f" opacity="0.066"/>
+  <circle cx="1559.5" cy="933.7" r="94" fill="#8a6a3f" opacity="0.078"/>
+  <circle cx="97.0" cy="1023.0" r="101" fill="#8a6a3f" opacity="0.030"/>
+  <circle cx="234.5" cy="12.3" r="18" fill="#8a6a3f" opacity="0.042"/>
+  <circle cx="372.0" cy="101.6" r="25" fill="#8a6a3f" opacity="0.054"/>
+  <circle cx="509.5" cy="190.9" r="32" fill="#8a6a3f" opacity="0.066"/>
+  <circle cx="647.0" cy="280.2" r="39" fill="#8a6a3f" opacity="0.078"/>
+  <circle cx="784.5" cy="369.5" r="46" fill="#8a6a3f" opacity="0.030"/>
+  <circle cx="922.0" cy="458.8" r="53" fill="#8a6a3f" opacity="0.042"/>
+  <circle cx="1059.5" cy="548.1" r="60" fill="#8a6a3f" opacity="0.054"/>
+  <circle cx="1197.0" cy="637.4" r="67" fill="#8a6a3f" opacity="0.066"/>
+  <circle cx="1334.5" cy="726.7" r="74" fill="#8a6a3f" opacity="0.078"/>
+  <circle cx="1472.0" cy="816.0" r="81" fill="#8a6a3f" opacity="0.030"/>
+  <circle cx="9.5" cy="905.3" r="88" fill="#8a6a3f" opacity="0.042"/>
+  <circle cx="147.0" cy="994.6" r="95" fill="#8a6a3f" opacity="0.054"/>
+  <circle cx="284.5" cy="1083.9" r="102" fill="#8a6a3f" opacity="0.066"/>
+  <circle cx="422.0" cy="73.2" r="19" fill="#8a6a3f" opacity="0.078"/>
+  <circle cx="559.5" cy="162.5" r="26" fill="#8a6a3f" opacity="0.030"/>
+  <circle cx="697.0" cy="251.8" r="33" fill="#8a6a3f" opacity="0.042"/>
+  <circle cx="834.5" cy="341.1" r="40" fill="#8a6a3f" opacity="0.054"/>
+  <circle cx="972.0" cy="430.4" r="47" fill="#8a6a3f" opacity="0.066"/>
+  <circle cx="1109.5" cy="519.7" r="54" fill="#8a6a3f" opacity="0.078"/>
+  <circle cx="1247.0" cy="609.0" r="61" fill="#8a6a3f" opacity="0.030"/>
+  <circle cx="1384.5" cy="698.3" r="68" fill="#8a6a3f" opacity="0.042"/>
+  <g fill="none" stroke="#8a6a3f" stroke-width="1.5" opacity="0.35">
+    <rect x="70" y="70" width="1460" height="960" rx="18"/>
+  </g>
+  <text x="120" y="950" font-family="Georgia, 'Times New Roman', serif" font-size="86" fill="#1a1714" font-weight="500">Vitrina</text>
+  <text x="122" y="1000" font-family="Helvetica, Arial, sans-serif" font-size="30" letter-spacing="4" fill="#6b635b">BRANDING · 3</text>
+  <text x="1480" y="150" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="28" letter-spacing="3" fill="#6b635b">04</text>
+</svg>

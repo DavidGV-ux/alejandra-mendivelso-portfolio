@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f6f2ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)" />
+
+    <title>Alejandra Mendivelso — Portafolio</title>
+    <meta
+      name="description"
+      content="Portafolio interactivo de Alejandra Mendivelso: diseño visual y dirección de arte en una galería 3D explorable."
+    />
+    <meta name="author" content="Alejandra Mendivelso" />
+    <link rel="canonical" href="https://alejandramendivelso.com/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Alejandra Mendivelso — Portafolio" />
+    <meta
+      property="og:description"
+      content="Diseño visual y dirección de arte en una galería 3D explorable."
+    />
+    <meta property="og:image" content="/og-image.svg" />
+    <meta property="og:url" content="https://alejandramendivelso.com/" />
+    <meta property="og:locale" content="es_CO" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Alejandra Mendivelso — Portafolio" />
+    <meta
+      name="twitter:description"
+      content="Diseño visual y dirección de arte en una galería 3D explorable."
+    />
+    <meta name="twitter:image" content="/og-image.svg" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <link rel="preload" href="/fonts/fraunces-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="scene" aria-label="Galería 3D de proyectos"></canvas>
+      <div id="overlay-root"></div>
+      <div id="ui-root"></div>
+    </div>
+    <noscript>
+      <p style="padding: 2rem; font-family: sans-serif">
+        Este portafolio necesita JavaScript para la experiencia 3D. Mientras tanto, puedes
+        escribir a hola@alejandramendivelso.com.
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

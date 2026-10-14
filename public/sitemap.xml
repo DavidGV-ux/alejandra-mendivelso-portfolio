@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://alejandramendivelso.com/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://alejandramendivelso.com/about</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://alejandramendivelso.com/contact</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://alejandramendivelso.com/works/aurora</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://alejandramendivelso.com/works/trama</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://alejandramendivelso.com/works/umbra</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://alejandramendivelso.com/works/cauce</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://alejandramendivelso.com/works/vitrina</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://alejandramendivelso.com/works/niebla</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+</urlset>

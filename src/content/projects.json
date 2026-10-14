@@ -1,0 +1,116 @@
+[
+  {
+    "id": "aurora",
+    "title": "Aurora",
+    "category": "Identidad visual",
+    "year": 2026,
+    "client": "Aurora Studio",
+    "role": "Dirección de arte & diseño",
+    "description": "Sistema de identidad visual para un estudio de cerámica contemporánea. La marca parte de un logotipo tipográfico flexible y un sistema cromático cálido inspirado en esmaltes y arcillas. Se definió una retícula editorial para catálogos y una familia de patrones generativos que dan textura a la papelería.",
+    "tools": ["Illustrator", "InDesign", "Figma", "Blender"],
+    "cover": "/media/aurora/cover.svg",
+    "media": [
+      { "kind": "image", "src": "/media/aurora/01.svg", "alt": "Logotipo y retícula", "width": 1600, "height": 1100 },
+      { "kind": "image", "src": "/media/aurora/02.svg", "alt": "Sistema cromático", "width": 1600, "height": 1100 },
+      { "kind": "image", "src": "/media/aurora/03.svg", "alt": "Aplicaciones de papelería", "width": 1600, "height": 1100 }
+    ],
+    "links": [{ "label": "Ver caso completo", "url": "https://example.com/aurora" }],
+    "order": 1,
+    "accent": "#b4553f"
+  },
+  {
+    "id": "trama",
+    "title": "Trama",
+    "category": "Dirección de arte",
+    "year": 2025,
+    "client": "Festival Trama",
+    "role": "Dirección de arte",
+    "description": "Dirección de arte para un festival de música experimental. Construimos un lenguaje gráfico basado en la interferencia y el ruido, con capas de tramas superpuestas que cambian de escala. El sistema se adaptó a cartelería, señalética y contenido digital animado.",
+    "tools": ["Photoshop", "After Effects", "Cinema 4D"],
+    "cover": "/media/trama/cover.svg",
+    "media": [
+      { "kind": "image", "src": "/media/trama/01.svg", "alt": "Cartel principal", "width": 1600, "height": 1100 },
+      { "kind": "image", "src": "/media/trama/02.svg", "alt": "Sistema de tramas", "width": 1600, "height": 1100 },
+      { "kind": "image", "src": "/media/trama/03.svg", "alt": "Señalética", "width": 1600, "height": 1100 }
+    ],
+    "links": [{ "label": "Behance", "url": "https://example.com/trama" }],
+    "order": 2,
+    "accent": "#5b6f6a"
+  },
+  {
+    "id": "umbra",
+    "title": "Umbra",
+    "category": "Editorial",
+    "year": 2025,
+    "client": "Ediciones Umbra",
+    "role": "Diseño editorial",
+    "description": "Diseño de una colección de libros de ensayo. El proyecto explora el contraste entre tipografías serif de alto contraste y grandes espacios en blanco. Se cuidó la mancha tipográfica, la jerarquía de notas y la legibilidad en distintos formatos y acabados.",
+    "tools": ["InDesign", "Illustrator"],
+    "cover": "/media/umbra/cover.svg",
+    "media": [
+      { "kind": "image", "src": "/media/umbra/01.svg", "alt": "Cubiertas", "width": 1600, "height": 1100 },
+      { "kind": "image", "src": "/media/umbra/02.svg", "alt": "Doble página", "width": 1600, "height": 1100 },
+      { "kind": "image", "src": "/media/umbra/03.svg", "alt": "Detalle tipográfico", "width": 1600, "height": 1100 }
+    ],
+    "links": [{ "label": "Editorial", "url": "https://example.com/umbra" }],
+    "order": 3,
+    "accent": "#3f4a5a"
+  },
+  {
+    "id": "cauce",
+    "title": "Cauce",
+    "category": "Motion & 3D",
+    "year": 2024,
+    "client": "Cauce Labs",
+    "role": "Dirección de arte & motion",
+    "description": "Piezas de motion y modelado 3D para el lanzamiento de una plataforma de datos. Se diseñó un sistema de formas fluidas que representan el flujo de información, con materiales translúcidos y una iluminación suave. Animaciones reutilizables para web y redes.",
+    "tools": ["Blender", "After Effects", "TouchDesigner"],
+    "cover": "/media/cauce/cover.svg",
+    "media": [
+      { "kind": "image", "src": "/media/cauce/01.svg", "alt": "Formas 3D", "width": 1600, "height": 1100 },
+      { "kind": "image", "src": "/media/cauce/02.svg", "alt": "Materiales translúcidos", "width": 1600, "height": 1100 },
+      { "kind": "image", "src": "/media/cauce/03.svg", "alt": "Fotograma de animación", "width": 1600, "height": 1100 }
+    ],
+    "links": [{ "label": "Ver motion", "url": "https://example.com/cauce" }],
+    "order": 4,
+    "accent": "#3f6f86"
+  },
+  {
+    "id": "vitrina",
+    "title": "Vitrina",
+    "category": "Branding",
+    "year": 2024,
+    "client": "Vitrina Café",
+    "role": "Branding & packaging",
+    "description": "Creación de marca y empaque para una tostadora de café de especialidad. El naming, el logotipo y el sistema de etiquetas por origen construyen una experiencia coherente desde el grano hasta la barra. Papelería, vasos y bolsas con acabados mate.",
+    "tools": ["Illustrator", "Photoshop", "Figma"],
+    "cover": "/media/vitrina/cover.svg",
+    "media": [
+      { "kind": "image", "src": "/media/vitrina/01.svg", "alt": "Logotipo", "width": 1600, "height": 1100 },
+      { "kind": "image", "src": "/media/vitrina/02.svg", "alt": "Etiquetas por origen", "width": 1600, "height": 1100 },
+      { "kind": "image", "src": "/media/vitrina/03.svg", "alt": "Empaque", "width": 1600, "height": 1100 }
+    ],
+    "links": [{ "label": "Caso de estudio", "url": "https://example.com/vitrina" }],
+    "order": 5,
+    "accent": "#8a6a3f"
+  },
+  {
+    "id": "niebla",
+    "title": "Niebla",
+    "category": "Fotografía",
+    "year": 2023,
+    "client": "Proyecto personal",
+    "role": "Fotografía & edición",
+    "description": "Serie fotográfica sobre paisajes en la niebla. Un ejercicio de reducción: menos color, menos detalle, más atmósfera. Las imágenes se editaron buscando una escala de grises cálida y una composición que respire, pensada para exposición impresa en gran formato.",
+    "tools": ["Capture One", "Lightroom", "Photoshop"],
+    "cover": "/media/niebla/cover.svg",
+    "media": [
+      { "kind": "image", "src": "/media/niebla/01.svg", "alt": "Paisaje en la niebla I", "width": 1600, "height": 1100 },
+      { "kind": "image", "src": "/media/niebla/02.svg", "alt": "Paisaje en la niebla II", "width": 1600, "height": 1100 },
+      { "kind": "image", "src": "/media/niebla/03.svg", "alt": "Paisaje en la niebla III", "width": 1600, "height": 1100 }
+    ],
+    "links": [{ "label": "Serie completa", "url": "https://example.com/niebla" }],
+    "order": 6,
+    "accent": "#6b6f78"
+  }
+]

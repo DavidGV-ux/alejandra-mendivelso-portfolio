@@ -1,0 +1,18 @@
+{
+  "name": "Alejandra Mendivelso — Portafolio",
+  "short_name": "A. Mendivelso",
+  "description": "Portafolio interactivo: diseño visual y dirección de arte en una galería 3D explorable.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f2ec",
+  "theme_color": "#f6f2ec",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

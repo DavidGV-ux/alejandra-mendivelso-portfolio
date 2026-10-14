@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-label="Aurora">
+  <defs>
+    <linearGradient id="g03" gradientTransform="rotate(72 0.5 0.5)">
+      <stop offset="0" stop-color="#f6f2ec"/>
+      <stop offset="0.55" stop-color="#ece5db"/>
+      <stop offset="1" stop-color="#e0d6c8"/>
+    </linearGradient>
+    <radialGradient id="g03b" cx="0.2" cy="0.15" r="0.9">
+      <stop offset="0" stop-color="#b4553f" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#b4553f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1100" fill="url(#g03)"/>
+  <rect width="1600" height="1100" fill="url(#g03b)"/>
+  <circle cx="159.0" cy="93.0" r="51" fill="#b4553f" opacity="0.030"/>
+  <circle cx="296.5" cy="182.3" r="58" fill="#b4553f" opacity="0.042"/>
+  <circle cx="434.0" cy="271.6" r="65" fill="#b4553f" opacity="0.054"/>
+  <circle cx="571.5" cy="360.9" r="72" fill="#b4553f" opacity="0.066"/>
+  <circle cx="709.0" cy="450.2" r="79" fill="#b4553f" opacity="0.078"/>
+  <circle cx="846.5" cy="539.5" r="86" fill="#b4553f" opacity="0.030"/>
+  <circle cx="984.0" cy="628.8" r="93" fill="#b4553f" opacity="0.042"/>
+  <circle cx="1121.5" cy="718.1" r="100" fill="#b4553f" opacity="0.054"/>
+  <circle cx="1259.0" cy="807.4" r="107" fill="#b4553f" opacity="0.066"/>
+  <circle cx="1396.5" cy="896.7" r="24" fill="#b4553f" opacity="0.078"/>
+  <circle cx="1534.0" cy="986.0" r="31" fill="#b4553f" opacity="0.030"/>
+  <circle cx="71.5" cy="1075.3" r="38" fill="#b4553f" opacity="0.042"/>
+  <circle cx="209.0" cy="64.6" r="45" fill="#b4553f" opacity="0.054"/>
+  <circle cx="346.5" cy="153.9" r="52" fill="#b4553f" opacity="0.066"/>
+  <circle cx="484.0" cy="243.2" r="59" fill="#b4553f" opacity="0.078"/>
+  <circle cx="621.5" cy="332.5" r="66" fill="#b4553f" opacity="0.030"/>
+  <circle cx="759.0" cy="421.8" r="73" fill="#b4553f" opacity="0.042"/>
+  <circle cx="896.5" cy="511.1" r="80" fill="#b4553f" opacity="0.054"/>
+  <circle cx="1034.0" cy="600.4" r="87" fill="#b4553f" opacity="0.066"/>
+  <circle cx="1171.5" cy="689.7" r="94" fill="#b4553f" opacity="0.078"/>
+  <circle cx="1309.0" cy="779.0" r="101" fill="#b4553f" opacity="0.030"/>
+  <circle cx="1446.5" cy="868.3" r="18" fill="#b4553f" opacity="0.042"/>
+  <circle cx="1584.0" cy="957.6" r="25" fill="#b4553f" opacity="0.054"/>
+  <circle cx="121.5" cy="1046.9" r="32" fill="#b4553f" opacity="0.066"/>
+  <circle cx="259.0" cy="36.2" r="39" fill="#b4553f" opacity="0.078"/>
+  <circle cx="396.5" cy="125.5" r="46" fill="#b4553f" opacity="0.030"/>
+  <circle cx="534.0" cy="214.8" r="53" fill="#b4553f" opacity="0.042"/>
+  <circle cx="671.5" cy="304.1" r="60" fill="#b4553f" opacity="0.054"/>
+  <circle cx="809.0" cy="393.4" r="67" fill="#b4553f" opacity="0.066"/>
+  <circle cx="946.5" cy="482.7" r="74" fill="#b4553f" opacity="0.078"/>
+  <circle cx="1084.0" cy="572.0" r="81" fill="#b4553f" opacity="0.030"/>
+  <circle cx="1221.5" cy="661.3" r="88" fill="#b4553f" opacity="0.042"/>
+  <circle cx="1359.0" cy="750.6" r="95" fill="#b4553f" opacity="0.054"/>
+  <circle cx="1496.5" cy="839.9" r="102" fill="#b4553f" opacity="0.066"/>
+  <circle cx="34.0" cy="929.2" r="19" fill="#b4553f" opacity="0.078"/>
+  <circle cx="171.5" cy="1018.5" r="26" fill="#b4553f" opacity="0.030"/>
+  <circle cx="309.0" cy="7.8" r="33" fill="#b4553f" opacity="0.042"/>
+  <circle cx="446.5" cy="97.1" r="40" fill="#b4553f" opacity="0.054"/>
+  <circle cx="584.0" cy="186.4" r="47" fill="#b4553f" opacity="0.066"/>
+  <circle cx="721.5" cy="275.7" r="54" fill="#b4553f" opacity="0.078"/>
+  <circle cx="859.0" cy="365.0" r="61" fill="#b4553f" opacity="0.030"/>
+  <circle cx="996.5" cy="454.3" r="68" fill="#b4553f" opacity="0.042"/>
+  <g fill="none" stroke="#b4553f" stroke-width="1.5" opacity="0.35">
+    <rect x="70" y="70" width="1460" height="960" rx="18"/>
+  </g>
+  <text x="120" y="950" font-family="Georgia, 'Times New Roman', serif" font-size="86" fill="#1a1714" font-weight="500">Aurora</text>
+  <text x="122" y="1000" font-family="Helvetica, Arial, sans-serif" font-size="30" letter-spacing="4" fill="#6b635b">IDENTIDAD VISUAL · 3</text>
+  <text x="1480" y="150" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="28" letter-spacing="3" fill="#6b635b">04</text>
+</svg>

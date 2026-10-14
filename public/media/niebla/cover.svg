@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-label="Niebla">
+  <defs>
+    <linearGradient id="g50" gradientTransform="rotate(300 0.5 0.5)">
+      <stop offset="0" stop-color="#f6f2ec"/>
+      <stop offset="0.55" stop-color="#ece5db"/>
+      <stop offset="1" stop-color="#e0d6c8"/>
+    </linearGradient>
+    <radialGradient id="g50b" cx="0.2" cy="0.15" r="0.9">
+      <stop offset="0" stop-color="#6b6f78" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#6b6f78" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1100" fill="url(#g50)"/>
+  <rect width="1600" height="1100" fill="url(#g50b)"/>
+  <circle cx="485.0" cy="305.0" r="18" fill="#6b6f78" opacity="0.030"/>
+  <circle cx="622.5" cy="394.3" r="25" fill="#6b6f78" opacity="0.042"/>
+  <circle cx="760.0" cy="483.6" r="32" fill="#6b6f78" opacity="0.054"/>
+  <circle cx="897.5" cy="572.9" r="39" fill="#6b6f78" opacity="0.066"/>
+  <circle cx="1035.0" cy="662.2" r="46" fill="#6b6f78" opacity="0.078"/>
+  <circle cx="1172.5" cy="751.5" r="53" fill="#6b6f78" opacity="0.030"/>
+  <circle cx="1310.0" cy="840.8" r="60" fill="#6b6f78" opacity="0.042"/>
+  <circle cx="1447.5" cy="930.1" r="67" fill="#6b6f78" opacity="0.054"/>
+  <circle cx="1585.0" cy="1019.4" r="74" fill="#6b6f78" opacity="0.066"/>
+  <circle cx="122.5" cy="8.7" r="81" fill="#6b6f78" opacity="0.078"/>
+  <circle cx="260.0" cy="98.0" r="88" fill="#6b6f78" opacity="0.030"/>
+  <circle cx="397.5" cy="187.3" r="95" fill="#6b6f78" opacity="0.042"/>
+  <circle cx="535.0" cy="276.6" r="102" fill="#6b6f78" opacity="0.054"/>
+  <circle cx="672.5" cy="365.9" r="19" fill="#6b6f78" opacity="0.066"/>
+  <circle cx="810.0" cy="455.2" r="26" fill="#6b6f78" opacity="0.078"/>
+  <circle cx="947.5" cy="544.5" r="33" fill="#6b6f78" opacity="0.030"/>
+  <circle cx="1085.0" cy="633.8" r="40" fill="#6b6f78" opacity="0.042"/>
+  <circle cx="1222.5" cy="723.1" r="47" fill="#6b6f78" opacity="0.054"/>
+  <circle cx="1360.0" cy="812.4" r="54" fill="#6b6f78" opacity="0.066"/>
+  <circle cx="1497.5" cy="901.7" r="61" fill="#6b6f78" opacity="0.078"/>
+  <circle cx="35.0" cy="991.0" r="68" fill="#6b6f78" opacity="0.030"/>
+  <circle cx="172.5" cy="1080.3" r="75" fill="#6b6f78" opacity="0.042"/>
+  <circle cx="310.0" cy="69.6" r="82" fill="#6b6f78" opacity="0.054"/>
+  <circle cx="447.5" cy="158.9" r="89" fill="#6b6f78" opacity="0.066"/>
+  <circle cx="585.0" cy="248.2" r="96" fill="#6b6f78" opacity="0.078"/>
+  <circle cx="722.5" cy="337.5" r="103" fill="#6b6f78" opacity="0.030"/>
+  <circle cx="860.0" cy="426.8" r="20" fill="#6b6f78" opacity="0.042"/>
+  <circle cx="997.5" cy="516.1" r="27" fill="#6b6f78" opacity="0.054"/>
+  <circle cx="1135.0" cy="605.4" r="34" fill="#6b6f78" opacity="0.066"/>
+  <circle cx="1272.5" cy="694.7" r="41" fill="#6b6f78" opacity="0.078"/>
+  <circle cx="1410.0" cy="784.0" r="48" fill="#6b6f78" opacity="0.030"/>
+  <circle cx="1547.5" cy="873.3" r="55" fill="#6b6f78" opacity="0.042"/>
+  <circle cx="85.0" cy="962.6" r="62" fill="#6b6f78" opacity="0.054"/>
+  <circle cx="222.5" cy="1051.9" r="69" fill="#6b6f78" opacity="0.066"/>
+  <circle cx="360.0" cy="41.2" r="76" fill="#6b6f78" opacity="0.078"/>
+  <circle cx="497.5" cy="130.5" r="83" fill="#6b6f78" opacity="0.030"/>
+  <circle cx="635.0" cy="219.8" r="90" fill="#6b6f78" opacity="0.042"/>
+  <circle cx="772.5" cy="309.1" r="97" fill="#6b6f78" opacity="0.054"/>
+  <circle cx="910.0" cy="398.4" r="104" fill="#6b6f78" opacity="0.066"/>
+  <circle cx="1047.5" cy="487.7" r="21" fill="#6b6f78" opacity="0.078"/>
+  <circle cx="1185.0" cy="577.0" r="28" fill="#6b6f78" opacity="0.030"/>
+  <circle cx="1322.5" cy="666.3" r="35" fill="#6b6f78" opacity="0.042"/>
+  <g fill="none" stroke="#6b6f78" stroke-width="1.5" opacity="0.35">
+    <rect x="70" y="70" width="1460" height="960" rx="18"/>
+  </g>
+  <text x="120" y="950" font-family="Georgia, 'Times New Roman', serif" font-size="86" fill="#1a1714" font-weight="500">Niebla</text>
+  <text x="122" y="1000" font-family="Helvetica, Arial, sans-serif" font-size="30" letter-spacing="4" fill="#6b635b">FOTOGRAFÍA</text>
+  <text x="1480" y="150" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="28" letter-spacing="3" fill="#6b635b">01</text>
+</svg>
