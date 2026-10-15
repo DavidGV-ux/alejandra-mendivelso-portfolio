@@ -270,6 +270,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     attach,
     activeIndex,
     dispose: () => {
+      picker?.dispose();
       cameraRig.dispose();
       corridor.dispose();
     },

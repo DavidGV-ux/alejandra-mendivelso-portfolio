@@ -9,6 +9,8 @@ export type CursorVariant = 'client' | 'owner';
 export interface CursorVisual {
   el: HTMLElement;
   label: HTMLElement;
+  /** Caché de tamaño de la etiqueta; se invalida al redimensionar. */
+  labelSize: { width: number; height: number } | null;
 }
 
 /** Flecha + etiqueta compartida por los cursores y la pantalla de carga. */
@@ -36,19 +38,24 @@ export function createCursorVisual(variant: CursorVariant, labelText: string): C
   });
   root.append(arrow, label);
 
-  return { el: root, label };
+  const visual: CursorVisual = { el: root, label, labelSize: null };
+  window.addEventListener('resize', () => (visual.labelSize = null), { passive: true });
+  return visual;
 }
 
 /** Coloca el cursor y voltea la etiqueta si se sale por la derecha o abajo. */
 export function placeCursor(visual: CursorVisual, x: number, y: number): void {
   visual.el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  if (!visual.labelSize) {
+    visual.labelSize = { width: visual.label.offsetWidth, height: visual.label.offsetHeight };
+  }
   visual.el.classList.toggle(
     'label-left',
-    x + visual.label.offsetWidth + 24 > window.innerWidth,
+    x + visual.labelSize.width + 24 > window.innerWidth,
   );
   visual.el.classList.toggle(
     'label-above',
-    y + visual.label.offsetHeight + 30 > window.innerHeight,
+    y + visual.labelSize.height + 30 > window.innerHeight,
   );
 }
 

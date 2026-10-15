@@ -1617,12 +1617,14 @@ body.has-modal {
   pointer-events: none !important;
   user-select: none;
   opacity: 0;
-  transition: opacity 0.25s ease;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
   will-change: transform;
 }
 
 .cursor.is-visible {
   opacity: 1;
+  visibility: visible;
 }
 
 .cursor--client {

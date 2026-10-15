@@ -169,12 +169,22 @@ Notas:
 - ~44 kB de fuentes eliminadas (18 kB + 24,5 kB) que ya no se descargan en ningún caso.
 - Loader, intro y deep links sin cambios (probe CDP completo en verde).
 
+### Fase 6 — DOM y puntero
 
-_(se completa al final)_
+**Hecho**
+- `src/ui/cursor.ts`: `placeCursor` cachea el tamaño de la etiqueta (antes leía `offsetWidth`/`offsetHeight` en cada frame de los dos cursores; el de Alejandra anima a 60 fps de forma permanente). La caché se invalida en `resize`.
+- `main.css`: `.cursor` pasa a `visibility: hidden` cuando no está visible (antes solo `opacity: 0`, y con `will-change: transform` seguía manteniendo su capa de composición).
+- `src/interactions/raycaster.ts`: el rect del canvas se cachea y solo se relee tras `resize`/`scroll`/`orientationchange` (antes `getBoundingClientRect` en cada `pick`, y el hover hace uno por rAF); `candidates`/`map` se reutilizan entre picks (cero asignaciones); `dispose()` real, que el controlador del corredor ahora sí llama (antes era no-op y nunca se invocaba).
+- `backdrop-filter` del modal: evaluado; se mantiene (ver «Descartado / no aplicado»).
+
+**Verificación**
+- 60 movimientos de puntero sintéticos (CDP, mismos eventos en ambos builds): lecturas de layout **219 → 5** (baseline: 60 `getBoundingClientRect` + 159 `offsetWidth/Height`; nuevo: 1 `getBoundingClientRect` inicial + una medición por cada uno de los 2 cursores).
+- Cursor cliente en probe: `is-visible`, transform y volteo `label-left`/`label-above` correctos al llegar a la esquina; cursor de Alejandra visible; loader intacto (su etiqueta es fija y solo cambia el `%` de otro nodo).
+- `typecheck`, `lint`, 9 tests y build en verde; `perf-probe` (0 draw calls en reposo) y `phase2-probe` (`?2d`, deep link, Esc) en verde.
 
 ## Descartado / no aplicado
 
-_(se completa al final)_
+- `backdrop-filter` del modal de detalle (blur 6px) y de los paneles: se mantiene. Con el render bajo demanda (Fase 3), mientras el detalle o un panel están abiertos el canvas queda quieto (0 draw calls verificados), así que el blur se pinta una vez y el navegador lo cachea; solo se recalcularía durante la animación de cámara (~1 s) y en el área pequeña de la barra inferior. Restringirlo a móvil no mostró una mejora medible bajo swiftshader y alteraría la composición visual, fuera de alcance.
 
 ## Pendientes
 
