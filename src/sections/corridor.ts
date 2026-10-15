@@ -11,6 +11,7 @@ import { attachHover } from '@/interactions/hover';
 import { attachDrag } from '@/interactions/drag';
 import { attachWheel } from '@/interactions/wheel';
 import { attachGestures } from '@/interactions/gestures';
+import { attachKeyboard } from '@/interactions/keyboard';
 import type { FrameHandle } from '@/scene/frame';
 import type { Project } from '@/types/project';
 import type { Capabilities } from '@/types/theme';
@@ -232,6 +233,14 @@ export function createCorridorController(deps: Deps): CorridorController {
         cameraRig.zoom(deltaFov);
       },
       onPinchEnd: () => {},
+    });
+
+    attachKeyboard({
+      onPrev: () => step(-1),
+      onNext: () => step(1),
+      onOpen: () => openActive(),
+      onClose: () => closeDetail(),
+      onHelp: () => deps.store.set({ helpOpen: true }),
     });
   }
 
