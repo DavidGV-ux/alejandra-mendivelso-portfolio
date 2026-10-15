@@ -1,5 +1,8 @@
 import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'node:url';
+import { visualizer } from 'rollup-plugin-visualizer';
+
+const analyze = process.env.ANALYZE === '1';
 
 export default defineConfig({
   resolve: {
@@ -7,6 +10,26 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  plugins: [
+    ...(analyze
+      ? [
+          visualizer({
+            filename: 'stats.html',
+            template: 'treemap',
+            gzipSize: true,
+            brotliSize: false,
+            emitFile: false,
+          }),
+          visualizer({
+            filename: 'stats.json',
+            template: 'raw-data',
+            gzipSize: true,
+            brotliSize: false,
+            emitFile: false,
+          }),
+        ]
+      : []),
+  ],
   build: {
     target: 'es2022',
     sourcemap: false,
