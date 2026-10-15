@@ -26,6 +26,8 @@ export interface FrameHandle {
   setActive: (active: boolean) => void;
   setHover: (hover: boolean) => void;
   setFocused: (focused: boolean) => void;
+  /** True si escala, elevación y opacidades ya alcanzaron sus objetivos. */
+  isSettled: () => boolean;
   update: (dt: number) => void;
   /** Posición de la etiqueta en mundo (para proyectar a pantalla si hiciera falta) */
   getWorldPosition: (out: Vector3) => Vector3;
@@ -113,18 +115,26 @@ export function createFrame(project: Project, index: number): FrameHandle {
 
   titleLabel.setOpacity(0);
 
+  function targets(): { scale: number; lift: number; opacity: number; title: number } {
+    return {
+      scale: state.hover
+        ? sceneConfig.frame.hoverScale
+        : state.active
+          ? sceneConfig.frame.activeScale
+          : 1,
+      lift: state.hover ? sceneConfig.frame.hoverLift : 0,
+      opacity: state.focused
+        ? 0
+        : state.hover || state.active
+          ? 1
+          : sceneConfig.frame.inactiveOpacity,
+      title: state.hover || state.active ? 1 : 0,
+    };
+  }
+
   function update(dt: number): void {
-    const targetScale = state.hover
-      ? sceneConfig.frame.hoverScale
-      : state.active
-        ? sceneConfig.frame.activeScale
-        : 1;
-    const targetLift = state.hover ? sceneConfig.frame.hoverLift : 0;
-    const targetOpacity = state.focused
-      ? 0
-      : state.hover || state.active
-        ? 1
-        : sceneConfig.frame.inactiveOpacity;
+    const { scale: targetScale, lift: targetLift, opacity: targetOpacity, title: titleTarget } =
+      targets();
 
     state.scale = damp(state.scale, targetScale, 8, dt);
     state.lift = damp(state.lift, targetLift, 8, dt);
@@ -138,7 +148,6 @@ export function createFrame(project: Project, index: number): FrameHandle {
     imageMat.opacity = next;
     lineMat.opacity = next;
 
-    const titleTarget = state.hover || state.active ? 1 : 0;
     const metaTarget = state.focused ? 0 : next;
     const titleOpacity = damp(titleLabel.sprite.material.opacity, titleTarget, 10, dt);
     titleLabel.setOpacity(titleOpacity * (state.focused ? 0 : 1));
@@ -146,6 +155,16 @@ export function createFrame(project: Project, index: number): FrameHandle {
     lineMat.opacity = next * 0.9;
 
     group.visible = next > 0.01;
+  }
+
+  function isSettled(): boolean {
+    const target = targets();
+    return (
+      Math.abs(state.scale - target.scale) < 0.002 &&
+      Math.abs(state.lift - target.lift) < 0.002 &&
+      Math.abs(imageMat.opacity - target.opacity) < 0.004 &&
+      Math.abs(titleLabel.sprite.material.opacity - target.title) < 0.004
+    );
   }
 
   return {
@@ -178,6 +197,7 @@ export function createFrame(project: Project, index: number): FrameHandle {
     setFocused: (focused) => {
       state.focused = focused;
     },
+    isSettled,
     update,
     getWorldPosition: (out) => group.getWorldPosition(out),
     dispose(): void {

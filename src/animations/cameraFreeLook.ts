@@ -20,6 +20,8 @@ export interface CameraFreeLook {
   /** Vuelve a la vista de pasillo. */
   release: () => void;
   isFocused: () => boolean;
+  /** True si cámara, mirada y FOV ya alcanzaron sus valores deseados. */
+  isSettled: () => boolean;
   update: (dt: number) => void;
   dispose: () => void;
 }
@@ -124,6 +126,14 @@ export function createCameraFreeLook(camera: PerspectiveCamera): CameraFreeLook 
       desiredFov = baseFov;
     },
     isFocused: () => focused,
+    isSettled: () => {
+      computeDesired();
+      return (
+        position.distanceToSquared(desiredPos) < 1e-6 &&
+        look.distanceToSquared(desiredLook) < 1e-6 &&
+        Math.abs(fov - desiredFov) < 0.01
+      );
+    },
     update: (dt) => apply(false, dt),
     dispose: () => {},
   };

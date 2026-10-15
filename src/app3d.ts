@@ -8,7 +8,7 @@ import { Scene } from 'three';
 import { createIntro } from '@/animations/assembleIntro';
 import { createCamera } from '@/core/camera';
 import { createLoader } from '@/core/loader';
-import { createLoop } from '@/core/loop';
+import { createLoop, type Loop } from '@/core/loop';
 import { getQuality } from '@/core/quality';
 import { createRenderer } from '@/core/renderer';
 import { bindResize } from '@/core/resize';
@@ -52,6 +52,7 @@ export function createScene3D(deps: Scene3DDeps): Scene3D {
   const { canvas, caps, projects, store } = deps;
   const quality = getQuality(caps);
   const layout = buildCorridorLayout(caps);
+  const hires = new URLSearchParams(location.search).has('hires');
 
   const rendererHandle = createRenderer(canvas, quality, deps.theme);
   const camera = createCamera(layout);
@@ -64,6 +65,8 @@ export function createScene3D(deps: Scene3DDeps): Scene3D {
   scene.add(lights.group);
 
   const loader = createLoader();
+
+  let loop: Loop | null = null;
   const works = createCorridorController({
     camera,
     caps,
@@ -74,33 +77,72 @@ export function createScene3D(deps: Scene3DDeps): Scene3D {
     onOpenDetail: deps.onOpenDetail,
     onCloseDetail: deps.onCloseDetail,
     onHoverChange: deps.onHoverChange,
+    invalidate: () => loop?.invalidate(),
   });
 
   const guide = createGuideLine(projects.length, works.corridor.layout);
   scene.add(works.corridor.group, guide.line);
 
   works.attach(canvas);
-  bindResize(canvas.parentElement ?? document.body, camera, rendererHandle.renderer);
+  const resizeHandle = bindResize(
+    canvas.parentElement ?? document.body,
+    camera,
+    rendererHandle.renderer,
+    () => loop?.invalidate(),
+  );
 
-  const loop = createLoop((dt) => {
+  /* ------------------------------------------------------------------ */
+  /* Render bajo demanda + resolución adaptativa                        */
+  /* ------------------------------------------------------------------ */
+  let ratio = quality.pixelRatio;
+  const renderSamples: number[] = [];
+  let lastAdjust = 0;
+
+  function renderFrame(dt: number): void {
     works.update(dt);
+    const start = performance.now();
     rendererHandle.renderer.render(scene, camera);
-  });
+    if (hires || !intro.done()) return;
+
+    renderSamples.push(performance.now() - start);
+    if (renderSamples.length < 30) return;
+
+    const avg = renderSamples.reduce((sum, v) => sum + v, 0) / renderSamples.length;
+    renderSamples.length = 0;
+
+    const now = performance.now();
+    if (now - lastAdjust < 2000) return;
+    if (avg > 18 && ratio > 1) {
+      ratio = Math.max(1, ratio - 0.25);
+      rendererHandle.setPixelRatio(ratio);
+      lastAdjust = now;
+      loop?.invalidate();
+    } else if (avg < 8 && ratio < quality.pixelRatio) {
+      ratio = Math.min(quality.pixelRatio, ratio + 0.25);
+      rendererHandle.setPixelRatio(ratio);
+      lastAdjust = now;
+      loop?.invalidate();
+    }
+  }
 
   const intro = createIntro(works.corridor, caps.prefersReducedMotion);
+
+  loop = createLoop(renderFrame, () => intro.done() && works.isSettled());
+
+  void rendererHandle.renderer.compileAsync(scene, camera).catch(() => {});
 
   loader.manager.onProgress = (_url, loaded, total) => deps.onProgress(loaded, total);
   loader.manager.onLoad = deps.onPreloaded;
   works.preload();
 
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) loop.stop();
-    else if (store.get().section === 'works') loop.start();
+    if (document.hidden) loop?.stop();
+    else if (store.get().section === 'works') loop?.start();
   });
 
   store.subscribeKey('section', (section) => {
-    if (section === 'works') loop.start();
-    else if (!store.get().detailProjectId) loop.stop();
+    if (section === 'works') loop?.start();
+    else if (!store.get().detailProjectId) loop?.stop();
   });
 
   function finishIntro(): void {
@@ -110,13 +152,15 @@ export function createScene3D(deps: Scene3DDeps): Scene3D {
   }
 
   function start(): void {
-    loop.start();
+    rendererHandle.renderer.render(scene, camera);
+    loop?.start();
 
     const skipOnce = (): void => intro.skip();
     window.addEventListener('keydown', skipOnce, { once: true });
     canvas.addEventListener('pointerdown', skipOnce, { once: true });
 
     if (caps.prefersReducedMotion) {
+      intro.skip();
       finishIntro();
       return;
     }
@@ -131,6 +175,7 @@ export function createScene3D(deps: Scene3DDeps): Scene3D {
       rendererHandle.applyTheme(mode);
       environment.setMode(mode);
       lights.setMode(mode);
+      loop?.invalidate();
     },
     setInteractive: (enabled) => works.setInteractive(enabled),
     step: (delta) => (delta < 0 ? works.prev() : works.next()),
@@ -140,8 +185,10 @@ export function createScene3D(deps: Scene3DDeps): Scene3D {
     closeDetail: (immediate) => works.closeDetail(immediate),
     start,
     dispose: () => {
+      resizeHandle.dispose();
       works.dispose();
       loader.dispose();
+      rendererHandle.dispose();
     },
   };
 }

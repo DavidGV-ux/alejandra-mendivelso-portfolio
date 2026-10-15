@@ -32,6 +32,8 @@ export interface CorridorController {
   closeDetail: (immediate?: boolean) => void;
   setInteractive: (enabled: boolean) => void;
   setCursor: (interactive: boolean) => void;
+  /** True si cámara y marcos ya están en reposo (sin animaciones pendientes). */
+  isSettled: () => boolean;
   /** Carga los covers alrededor del índice activo (para la pantalla de carga). */
   preload: () => void;
   attach: (dom: HTMLElement) => void;
@@ -49,6 +51,8 @@ interface Deps {
   onOpenDetail: (id: string) => void;
   onCloseDetail: () => void;
   onHoverChange: (hovering: boolean) => void;
+  /** Despierta el loop de render bajo demanda. */
+  invalidate: () => void;
 }
 
 export function createCorridorController(deps: Deps): CorridorController {
@@ -99,6 +103,7 @@ export function createCorridorController(deps: Deps): CorridorController {
         .then((t) => {
           f.setImage(t);
           loaded.add(p.id);
+          deps.invalidate();
         })
         .catch(() => {})
         .finally(() => loading.delete(p.id));
@@ -113,11 +118,13 @@ export function createCorridorController(deps: Deps): CorridorController {
     if (!interactive) return;
     target = clampTarget(target + delta);
     if (reducedMotion) progress = target;
+    deps.invalidate();
   }
 
   function goToIndex(i: number): void {
     target = clampTarget(i);
     if (reducedMotion) progress = target;
+    deps.invalidate();
   }
 
   function doOpen(i: number): void {
@@ -126,6 +133,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     cameraRig.focusOn(i, total, corridor.layout);
     applyFocusOpacity(i);
     interactive = false;
+    deps.invalidate();
     deps.onOpenDetail(p.id);
   }
 
@@ -146,6 +154,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     cameraRig.release();
     void immediate;
     interactive = true;
+    deps.invalidate();
     deps.onCloseDetail();
   }
 
@@ -171,11 +180,13 @@ export function createCorridorController(deps: Deps): CorridorController {
       onEnter: (f) => {
         hovered = f;
         f.setHover(true);
+        deps.invalidate();
         deps.onHoverChange(true);
       },
       onLeave: (f) => {
         f.setHover(false);
         if (hovered === f) hovered = null;
+        deps.invalidate();
         deps.onHoverChange(false);
       },
       isEnabled: () => interactive && !draggingLook && !store.get().detailProjectId,
@@ -188,17 +199,19 @@ export function createCorridorController(deps: Deps): CorridorController {
         dragStartLook = cameraRig.getLook();
         dragStartFov = cameraRig.getFov();
         if (hovered) hovered.setHover(false);
+        deps.invalidate();
         deps.onHoverChange(false);
       },
       onDrag: (dx, dy) => {
         if (!interactive || store.get().detailProjectId) {
           cameraRig.setFov(dragStartFov + dy * 0.06);
-          return;
+        } else {
+          cameraRig.setLook(
+            dragStartLook.yaw - dx * YAW_SENSITIVITY,
+            dragStartLook.pitch - dy * PITCH_SENSITIVITY,
+          );
         }
-        cameraRig.setLook(
-          dragStartLook.yaw - dx * YAW_SENSITIVITY,
-          dragStartLook.pitch - dy * PITCH_SENSITIVITY,
-        );
+        deps.invalidate();
       },
       onDragEnd: () => {
         draggingLook = false;
@@ -214,17 +227,16 @@ export function createCorridorController(deps: Deps): CorridorController {
 
     attachWheel(dom, {
       onWheel: (sign) => {
-        if (!interactive) {
-          cameraRig.zoom(sign > 0 ? 2 : -2);
-          return;
-        }
-        step(sign > 0 ? 1 : -1);
+        if (!interactive) cameraRig.zoom(sign > 0 ? 2 : -2);
+        else step(sign > 0 ? 1 : -1);
+        deps.invalidate();
       },
     });
 
     attachGestures(dom, {
       onPinch: (deltaFov) => {
         cameraRig.zoom(deltaFov);
+        deps.invalidate();
       },
       onPinchEnd: () => {},
     });
@@ -250,6 +262,10 @@ export function createCorridorController(deps: Deps): CorridorController {
     closeDetail,
     setInteractive: (e) => (interactive = e),
     setCursor: (v) => deps.onHoverChange(v),
+    isSettled: () =>
+      Math.abs(target - progress) < 0.001 &&
+      cameraRig.isSettled() &&
+      corridor.frames.every((frame) => frame.isSettled()),
     preload: () => loadAround(activeIndex()),
     attach,
     activeIndex,

@@ -110,6 +110,37 @@ Notas:
 
 - Nota: verificación visual fina de la intro con gsap-core pendiente en navegador real (headless software no permite juicio visual); sin excepciones en consola y el resto de la secuencia (intro → cursor) se comporta igual.
 
+### Fase 3 — Render bajo demanda
+
+**Hecho**
+- `src/core/loop.ts`: el loop acepta `isSettled()`; cuando todo está en reposo **no se programa más rAF** y `invalidate()` lo despierta. Cualquier cambio llama a `invalidate()`: pasos, zoom, giros, hover, apertura/cierre de detalle, tema, resize y texturas que llegan de forma asíncrona.
+- `isSettled()` compuesto: cámara (`cameraFreeLook`, posición/mirada/FOV vs deseados), marcos (`frame`, escala/elevación/opacidades vs objetivos), progreso del corredor (`|target − progress|`) e intro (`intro.done()`).
+- Resolución adaptativa (`app3d`): media móvil de 30 frames del tiempo de `renderer.render`; >18 ms sostenido baja el pixelRatio (pasos de 0.25, mínimo 1); <8 ms lo sube (máximo el del preset de calidad); histéresis de 2 s; desactivable con `?hires`. Solo ajusta después de la intro.
+- `renderer.compileAsync(scene, camera)` al construir la escena (compila shaders sin bloquear) y un render de calentamiento antes de arrancar el loop.
+- `powerPreference: 'high-performance'` ya estaba en `renderer.ts`; se conserva (sin regresión medida).
+
+**Antes → después (CDP, WebGL software)**
+
+| Métrica | Base | Fase 3 |
+| --- | ---: | ---: |
+| Draw calls/s en reposo | 1 020 | **0** |
+| Draw calls al pulsar `→` (pico) | — | ~1 050 y vuelve a 0 al asentarse |
+| FCP observado real (sin throttling, `performance.getEntriesByType('paint')`) | 1 872 ms | **104–356 ms** |
+| pixelRatio bajo swiftshader | fijo 2 | adapta 2 → 1 (`?hires` lo fija) |
+
+**Lighthouse móvil (mediana de 3, misma sesión que la base en :4183)**
+
+| Métrica | Base | Fase 3 |
+| --- | ---: | ---: |
+| Performance | 0.36 | 0.35 |
+| LCP | 6965 ms | **6105 ms** (−12 %) |
+| TBT | 4849 ms | **3853 ms** (−21 %) |
+| Speed Index | 8614 ms | 9096 ms (dentro del ruido entre sesiones) |
+| FCP simulado | 2258 ms | 3268 ms |
+
+- Nota sobre FCP: el FCP *simulado* de Lighthouse empeora ~1 s (artefacto del modelo de simulación con la cadena de chunks diferidos), pero el FCP **observado** mejora de 1.87 s a 0.10–0.36 s. Se prioriza el dato observado.
+- Con la escena en reposo el GPU queda a ~0 % de trabajo de dibujo (0 draw calls/s); durante interacción el loop despierta y vuelve a dormir al asentarse (verificado con teclado: `→`, `Enter`, `Escape`).
+
 ## Descartado / no aplicado
 
 _(se completa al final)_
