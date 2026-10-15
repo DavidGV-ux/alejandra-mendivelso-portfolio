@@ -5,7 +5,7 @@ interface DragOptions {
   /** Desplazamiento acumulado en px desde el origen del gesto. */
   onDrag: (deltaX: number, deltaY: number) => void;
   onDragEnd: (deltaX: number, velocityX: number) => void;
-  onTap: () => void;
+  onTap: (event: PointerEvent) => void;
   /** Umbral en px para considerar un gesto como arrastre. */
   threshold?: number;
 }
@@ -21,7 +21,7 @@ export function attachDrag(target: HTMLElement, options: DragOptions): () => voi
   let velocityX = 0;
 
   const down = (event: PointerEvent): void => {
-    if (event.button !== 0 && event.pointerType === 'mouse') return;
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
     active = true;
     dragging = false;
     startX = event.clientX;
@@ -60,7 +60,7 @@ export function attachDrag(target: HTMLElement, options: DragOptions): () => voi
       dragging = false;
       options.onDragEnd(event.clientX - startX, velocityX);
     } else {
-      options.onTap();
+      options.onTap(event);
     }
   };
 

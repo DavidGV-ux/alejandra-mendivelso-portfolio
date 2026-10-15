@@ -12,6 +12,7 @@ import { attachDrag } from '@/interactions/drag';
 import { attachWheel } from '@/interactions/wheel';
 import { attachGestures } from '@/interactions/gestures';
 import { attachKeyboard } from '@/interactions/keyboard';
+import { sceneConfig } from '@/config/scene.config';
 import type { FrameHandle } from '@/scene/frame';
 import type { Project } from '@/types/project';
 import type { Capabilities } from '@/types/theme';
@@ -62,8 +63,6 @@ export function createCorridorController(deps: Deps): CorridorController {
   let interactive = true;
   let draggingLook = false;
   let hovered: FrameHandle | null = null;
-  let pointerX = 0;
-  let pointerY = 0;
   let dragStartLook = { yaw: 0, pitch: 0 };
   let dragStartFov = 0;
 
@@ -165,12 +164,6 @@ export function createCorridorController(deps: Deps): CorridorController {
   function attach(dom: HTMLElement): void {
     if (!picker) picker = createPicker(camera, dom);
 
-    const track = (e: PointerEvent) => {
-      pointerX = e.clientX;
-      pointerY = e.clientY;
-    };
-    window.addEventListener('pointermove', track);
-
     attachHover(dom, {
       pick: (x, y) => picker?.pick(x, y, corridor.frames) ?? null,
       onEnter: (f) => {
@@ -187,7 +180,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     });
 
     attachDrag(dom, {
-      threshold: 8,
+      threshold: sceneConfig.controls.dragThreshold,
       onDragStart: () => {
         draggingLook = true;
         dragStartLook = cameraRig.getLook();
@@ -208,9 +201,9 @@ export function createCorridorController(deps: Deps): CorridorController {
       onDragEnd: () => {
         draggingLook = false;
       },
-      onTap: () => {
+      onTap: (event: PointerEvent) => {
         if (!interactive || !picker) return;
-        const hit = picker.pick(pointerX, pointerY, corridor.frames);
+        const hit = picker.pick(event.clientX, event.clientY, corridor.frames);
         if (hit) {
           doOpen(hit.index);
         }
