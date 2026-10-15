@@ -54,7 +54,7 @@ export function createCorridorController(deps: Deps): CorridorController {
 
   const corridor = createCorridor(projects, caps);
   const cameraRig = createCameraFreeLook(camera);
-  const picker = createPicker(camera, document.body);
+  let picker: ReturnType<typeof createPicker> | null = null;
 
   let progress = 0;
   let target = 0;
@@ -162,6 +162,8 @@ export function createCorridorController(deps: Deps): CorridorController {
   }
 
   function attach(dom: HTMLElement): void {
+    if (!picker) picker = createPicker(camera, dom);
+
     const track = (e: PointerEvent) => {
       pointerX = e.clientX;
       pointerY = e.clientY;
@@ -169,7 +171,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     window.addEventListener('pointermove', track);
 
     attachHover(dom, {
-      pick: (x, y) => picker.pick(x, y, corridor.frames),
+      pick: (x, y) => picker?.pick(x, y, corridor.frames) ?? null,
       onEnter: (f) => {
         hovered = f;
         f.setHover(true);
@@ -206,7 +208,7 @@ export function createCorridorController(deps: Deps): CorridorController {
         draggingLook = false;
       },
       onTap: () => {
-        if (!interactive) return;
+        if (!interactive || !picker) return;
         const hit = picker.pick(pointerX, pointerY, corridor.frames);
         if (hit) {
           if (hit.index === activeIndex()) doOpen(hit.index);
