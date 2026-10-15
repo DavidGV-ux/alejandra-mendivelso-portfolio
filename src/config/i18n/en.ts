@@ -23,14 +23,15 @@ export const en: Dictionary = {
   },
   help: {
     title: 'How to move',
-    intro: 'Explore the projects in a spiral gallery. Here is how to navigate:',
+    intro:
+      'Walk the 3D hallway. Move between projects, look around and get closer to each piece.',
     controls: {
-      wheel: 'Wheel or trackpad to move between projects',
-      drag: 'Drag to rotate and travel the spiral',
-      keys: 'Arrow keys ← → to move, Enter to open',
-      click: 'Click a frame to zoom in and see the detail',
+      wheel: 'Wheel or trackpad to move forward or back along the hallway',
+      drag: 'Left-drag to look around (free-look, game style)',
+      keys: 'Arrow keys ← → or A/D to move, Space/Enter to open',
+      click: 'Click a frame to get closer; click again to open its detail',
       esc: 'Esc or the close button to go back',
-      touch: 'On mobile: swipe, tap to open and pinch to zoom',
+      touch: 'On mobile: swipe to look, tap a frame to approach or open it',
     },
     gotIt: 'Got it',
     footer: 'You can see this help again from the bottom bar.',
@@ -40,7 +41,7 @@ export const en: Dictionary = {
     counter: 'Project',
     of: 'of',
     openDetail: 'Open {title}',
-    hint: 'Click a frame to see the detail',
+    hint: 'Click a frame to get closer and see the detail',
   },
   detail: {
     role: 'Role',

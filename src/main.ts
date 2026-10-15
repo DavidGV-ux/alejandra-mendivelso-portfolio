@@ -16,8 +16,8 @@ import { siteConfig } from '@/config/site.config';
 import { createEnvironment } from '@/scene/environment';
 import { createLights } from '@/scene/lights';
 import { createGuideLine } from '@/scene/guideRing';
-import { buildLayoutConfig } from '@/scene/layout';
-import { createWorksController, type WorksController } from '@/sections/works';
+import { buildCorridorLayout } from '@/scene/corridor';
+import { createCorridorController, type CorridorController } from '@/sections/corridor';
 import { createAboutPanel } from '@/sections/about';
 import { createContactPanel } from '@/sections/contact';
 import { createFallbackList } from '@/fallback/listView2D';
@@ -89,7 +89,7 @@ const store = createStore({
 /* Referencias 3D                                                    */
 /* ------------------------------------------------------------------ */
 const use3D = caps.webgl && !searchParams.has('2d');
-let works: WorksController | null = null;
+let works: CorridorController | null = null;
 let rendererHandle: ReturnType<typeof createRenderer> | null = null;
 let environment: ReturnType<typeof createEnvironment> | null = null;
 let lights: ReturnType<typeof createLights> | null = null;
@@ -291,7 +291,7 @@ router.start();
 /* ------------------------------------------------------------------ */
 function start3D(): void {
   const quality = getQuality(caps);
-  const layout = buildLayoutConfig(caps);
+  const layout = buildCorridorLayout(caps);
 
   rendererHandle = createRenderer(canvas, quality, resolvedTheme());
   const camera = createCamera(layout);
@@ -305,7 +305,7 @@ function start3D(): void {
 
   const loader = createLoader();
 
-  works = createWorksController({
+  works = createCorridorController({
     camera,
     caps,
     quality,
@@ -320,8 +320,8 @@ function start3D(): void {
     onHoverChange: (hovering) => cursor.setInteractive(hovering),
   });
 
-  const guide = createGuideLine(content.projects.length, works.spiral.layout);
-  threeScene.add(works.spiral.group, guide.line);
+  const guide = createGuideLine(content.projects.length, works.corridor.layout);
+  threeScene.add(works.corridor.group, guide.line);
 
   works.attach(canvas);
   bindResize(canvas.parentElement ?? document.body, camera, rendererHandle.renderer);
@@ -334,7 +334,7 @@ function start3D(): void {
     if (rendererHandle && threeScene) rendererHandle.renderer.render(threeScene, camera);
   });
 
-  intro = createIntro(works.spiral, caps.prefersReducedMotion);
+  intro = createIntro(works.corridor, caps.prefersReducedMotion);
 
   wireLoader(loader, () => {
     loop?.start();

@@ -1,6 +1,6 @@
 import { gsap } from 'gsap';
 import type { Group } from 'three';
-import type { Spiral } from '@/scene/spiral';
+import type { Corridor } from '@/scene/corridor';
 
 export interface IntroAnim {
   play: () => void;
@@ -9,7 +9,7 @@ export interface IntroAnim {
   dispose: () => void;
 }
 
-export function createIntro(spiral: Spiral, reducedMotion: boolean): IntroAnim {
+export function createIntro(spiral: Corridor, reducedMotion: boolean): IntroAnim {
   const wrappers: Group[] = spiral.frames.map(
     (frame) => frame.group.userData.wrapper as Group,
   );

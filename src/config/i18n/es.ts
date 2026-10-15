@@ -21,14 +21,15 @@ export const es = {
   },
   help: {
     title: 'Cómo navegar',
-    intro: 'Explora la galería libremente. Puedes mirar alrededor y moverte entre proyectos.',
+    intro:
+      'Recorre el pasillo en 3D. Avanza entre los proyectos, mira a los lados y acércate a cada obra.',
     controls: {
-      wheel: 'Rueda o trackpad: navega entre proyectos',
+      wheel: 'Rueda o trackpad: avanza o retrocede por el pasillo',
       drag: 'Arrastra con el botón izquierdo para mirar alrededor (vista libre tipo videojuego)',
-      keys: 'Flechas ← → o A/D para cambiar de proyecto, Espacio/Enter para abrir',
-      click: 'Haz clic en un marco para abrir su detalle',
+      keys: 'Flechas ← → o A/D para moverte, Espacio/Enter para abrir',
+      click: 'Haz clic en un marco para acercarte; vuelve a hacer clic para abrir su detalle',
       esc: 'Esc para cerrar detalle o ayuda',
-      touch: 'En móvil: desliza para mirar, toca un marco para abrir',
+      touch: 'En móvil: desliza para mirar, toca un marco para acercarte o abrirlo',
     },
     gotIt: 'Entendido',
     footer: 'Pulsa ? o el botón de ayuda para volver a ver estas instrucciones.',
@@ -38,7 +39,7 @@ export const es = {
     counter: 'Proyecto',
     of: 'de',
     openDetail: 'Abrir {title}',
-    hint: 'Haz clic en cualquier marco para ver el detalle',
+    hint: 'Haz clic en un marco para acercarte y ver el detalle',
   },
   detail: {
     role: 'Rol',

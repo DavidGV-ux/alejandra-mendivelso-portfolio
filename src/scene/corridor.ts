@@ -1,36 +1,67 @@
 import { Group, Vector3 } from 'three';
 import type { Project } from '@/types/project';
 import { createFrame, type FrameHandle } from './frame';
-import { buildLayoutConfig, framePosition, type LayoutConfig } from './layout';
 import type { Capabilities } from '@/types/theme';
 
-export interface Spiral {
+export interface CorridorLayout {
+  spacing: number;
+  width: number;
+  height: number;
+  depth: number;
+  wallOffset: number;
+  compact: boolean;
+}
+
+export function buildCorridorLayout(caps: Capabilities): CorridorLayout {
+  const compact = Math.min(window.innerWidth, window.innerHeight) < 560 || caps.tier === 'low';
+  const scale = compact ? 0.82 : 1;
+  return {
+    spacing: 7 * scale,
+    width: 24 * scale,
+    height: 4.5 * scale,
+    depth: 60 * scale,
+    wallOffset: 5.2 * scale,
+    compact,
+  };
+}
+
+export function framePositionCorridor(
+  index: number,
+  total: number,
+  config: CorridorLayout,
+  out: Vector3 = new Vector3(),
+): Vector3 {
+  const center = ((total - 1) / 2) * config.spacing;
+  const x = (index % 2 === 0 ? -config.wallOffset : config.wallOffset) * (config.compact ? 0.85 : 1);
+  const y = 0;
+  const z = index * config.spacing - center;
+  return out.set(x, y, z);
+}
+
+export interface Corridor {
   group: Group;
   frames: FrameHandle[];
-  layout: LayoutConfig;
+  layout: CorridorLayout;
   setActiveIndex: (index: number) => void;
   update: (dt: number) => void;
   dispose: () => void;
 }
 
-export function createSpiral(projects: Project[], caps: Capabilities): Spiral {
-  const layout = buildLayoutConfig(caps);
+export function createCorridor(projects: Project[], caps: Capabilities): Corridor {
+  const layout = buildCorridorLayout(caps);
   const group = new Group();
   const frames: FrameHandle[] = [];
-
   const tmp = new Vector3();
 
   projects.forEach((project, index) => {
     const frame = createFrame(project, index);
-
     const wrapper = new Group();
-    framePosition(index, projects.length, layout, tmp);
+    framePositionCorridor(index, projects.length, layout, tmp);
     wrapper.position.copy(tmp);
-    wrapper.lookAt(0, wrapper.position.y, 0);
+    wrapper.lookAt(0, tmp.y, tmp.z);
     wrapper.add(frame.group);
     frame.group.userData.wrapper = wrapper;
     group.add(wrapper);
-
     frames.push(frame);
   });
 
