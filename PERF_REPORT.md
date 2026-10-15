@@ -182,6 +182,19 @@ Notas:
 - Cursor cliente en probe: `is-visible`, transform y volteo `label-left`/`label-above` correctos al llegar a la esquina; cursor de Alejandra visible; loader intacto (su etiqueta es fija y solo cambia el `%` de otro nodo).
 - `typecheck`, `lint`, 9 tests y build en verde; `perf-probe` (0 draw calls en reposo) y `phase2-probe` (`?2d`, deep link, Esc) en verde.
 
+### Fase 7 — Interacciones
+
+**Hecho**
+- Teclado unificado: eliminado `attachKeyboard` (y `src/interactions/keyboard.ts`) del corredor; queda como única fuente el handler global de `main.ts`, que ya tenía el orden por capas (ayuda → detalle → sección), el guard de campos editables y el de intro. Antes ambos escuchaban en `window`, así que **cada flecha/Enter/Escape/? se ejecutaba dos veces** (una flecha saltaba 2 proyectos).
+- `dragThreshold` 60 → 8 px (`scene.config.ts`): había una zona muerta de 60 px en la que el swipe no giraba la cámara y terminaba contando como tap (abría proyecto sin querer).
+- `drag.ts`: un segundo puntero durante un arrastre cancela el gesto (cede al pellizco) y `pointercancel` cierra el arrastre llamando a `onDragEnd` (antes podía quedar `draggingLook` colgado y bloquear hover/taps hasta el siguiente arrastre completo).
+- `#scene` pasa a `touch-action: none`: el pellizco y el arrastre sobre el canvas ya no compiten con el pan/zoom del navegador. Los overlays conservan su `touch-action` normal y el viewport mantiene su configuración accesible (sin `user-scalable=no`).
+
+**Verificación**
+- Antes/después con probe CDP: 1×ArrowRight + Enter abría **Umbra** (índice 2, doble paso); ahora abre **Trama** (índice 1). Escape cierra el detalle.
+- Táctil emulado (390×844, eventos touch reales vía CDP): drag de 1 dedo despierta el render (582 draws/s durante el gesto) y vuelve a 0 en reposo; pellizco igual (336/s → 0); tap suelto sin errores.
+- `typecheck`, `lint`, 9 tests y build en verde; `perf-probe` (0 draw calls en reposo) y `phase2-probe` (`?2d`, deep link, Esc) en verde.
+
 ## Descartado / no aplicado
 
 - `backdrop-filter` del modal de detalle (blur 6px) y de los paneles: se mantiene. Con el render bajo demanda (Fase 3), mientras el detalle o un panel están abiertos el canvas queda quieto (0 draw calls verificados), así que el blur se pinta una vez y el navegador lo cachea; solo se recalcularía durante la animación de cámara (~1 s) y en el área pequeña de la barra inferior. Restringirlo a móvil no mostró una mejora medible bajo swiftshader y alteraría la composición visual, fuera de alcance.

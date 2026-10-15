@@ -22,6 +22,11 @@ export function attachDrag(target: HTMLElement, options: DragOptions): () => voi
 
   const down = (event: PointerEvent): void => {
     if (event.pointerType === 'mouse' && event.button !== 0) return;
+    if (active) {
+      // Un segundo puntero cede el gesto al pellizco: se cancela el arrastre.
+      cancel();
+      return;
+    }
     active = true;
     dragging = false;
     startX = event.clientX;
@@ -65,8 +70,12 @@ export function attachDrag(target: HTMLElement, options: DragOptions): () => voi
   };
 
   const cancel = (): void => {
+    if (!active) return;
     active = false;
-    dragging = false;
+    if (dragging) {
+      dragging = false;
+      options.onDragEnd(0, 0);
+    }
   };
 
   const disposers = [

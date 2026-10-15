@@ -34,8 +34,8 @@ export const sceneConfig = {
     damping: 0.085,
     /** Duración mínima (ms) entre cambios de índice por rueda */
     wheelCooldown: 420,
-    /** Umbral de arrastre (px) para contar como gesto */
-    dragThreshold: 60,
+    /** Umbral de arrastre (px) para distinguir un tap de un gesto de cámara */
+    dragThreshold: 8,
     /** Sensibilidad del drag/scroll */
     sensitivity: 1,
   },

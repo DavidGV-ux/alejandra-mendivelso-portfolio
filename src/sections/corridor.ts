@@ -11,7 +11,6 @@ import { attachHover } from '@/interactions/hover';
 import { attachDrag } from '@/interactions/drag';
 import { attachWheel } from '@/interactions/wheel';
 import { attachGestures } from '@/interactions/gestures';
-import { attachKeyboard } from '@/interactions/keyboard';
 import { sceneConfig } from '@/config/scene.config';
 import type { FrameHandle } from '@/scene/frame';
 import type { Project } from '@/types/project';
@@ -239,14 +238,6 @@ export function createCorridorController(deps: Deps): CorridorController {
         deps.invalidate();
       },
       onPinchEnd: () => {},
-    });
-
-    attachKeyboard({
-      onPrev: () => step(-1),
-      onNext: () => step(1),
-      onOpen: () => openActive(),
-      onClose: () => closeDetail(),
-      onHelp: () => deps.store.set({ helpOpen: true }),
     });
   }
 
