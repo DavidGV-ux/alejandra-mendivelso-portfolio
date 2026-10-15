@@ -187,7 +187,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     });
 
     attachDrag(dom, {
-      threshold: 3,
+      threshold: 8,
       onDragStart: () => {
         draggingLook = true;
         dragStartLook = cameraRig.getLook();
