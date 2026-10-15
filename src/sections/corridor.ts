@@ -212,8 +212,7 @@ export function createCorridorController(deps: Deps): CorridorController {
         if (!interactive || !picker) return;
         const hit = picker.pick(pointerX, pointerY, corridor.frames);
         if (hit) {
-          if (hit.index === activeIndex()) doOpen(hit.index);
-          else goToIndex(hit.index);
+          doOpen(hit.index);
         }
       },
     });
