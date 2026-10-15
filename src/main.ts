@@ -471,6 +471,7 @@ function renderMeta(): void {
     },
     email: content.profile.email,
     url: siteConfig.url,
+    image: `${siteConfig.url}/og-image.png`,
     sameAs: content.profile.socials
       .map((s) => s.url)
       .filter((url) => url.startsWith('http')),

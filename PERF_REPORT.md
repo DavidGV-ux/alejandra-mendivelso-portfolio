@@ -195,6 +195,18 @@ Notas:
 - Táctil emulado (390×844, eventos touch reales vía CDP): drag de 1 dedo despierta el render (582 draws/s durante el gesto) y vuelve a 0 en reposo; pellizco igual (336/s → 0); tap suelto sin errores.
 - `typecheck`, `lint`, 9 tests y build en verde; `perf-probe` (0 draw calls en reposo) y `phase2-probe` (`?2d`, deep link, Esc) en verde.
 
+### Fase 8 — HTML y metadatos
+
+**Hecho**
+- Typo corregido: «en una pasillo 3D» → «en un pasillo 3D» en `description`, `og:description` y `twitter:description`.
+- og-image: los crawlers sociales no soportan SVG, así que se generó `public/og-image.png` (1200×630) rasterizando el `og-image.svg` existente con Chrome headless (mismo diseño; el SVG usa Georgia/Helvetica del sistema). `og:image`/`twitter:image` pasan a la URL absoluta del PNG con `og:image:type/width/height/alt` y `twitter:image:alt`.
+- JSON-LD (`Person`): añadida la propiedad `image` (og-image.png); sigue inyectándose en runtime desde `content` para no duplicar datos en el HTML.
+- `siteConfig.ogImage` actualizado a la ruta del PNG (estaba desactualizado y sin uso).
+
+**Verificación**
+- Probe CDP: `og:image` absoluto y dimensiones 1200×630; JSON-LD con `name`, `image` y 4 `sameAs`; `/og-image.png` responde 200 `image/png` (343 kB) y decodifica a 1200×630.
+- `typecheck`, `lint`, 9 tests y build en verde; `phase2-probe` en verde. `robots.txt`, `sitemap.xml` (home, about, contact y las 6 fichas) y `manifest.webmanifest` ya eran correctos.
+
 ## Descartado / no aplicado
 
 - `backdrop-filter` del modal de detalle (blur 6px) y de los paneles: se mantiene. Con el render bajo demanda (Fase 3), mientras el detalle o un panel están abiertos el canvas queda quieto (0 draw calls verificados), así que el blur se pinta una vez y el navegador lo cachea; solo se recalcularía durante la animación de cámara (~1 s) y en el área pequeña de la barra inferior. Restringirlo a móvil no mostró una mejora medible bajo swiftshader y alteraría la composición visual, fuera de alcance.

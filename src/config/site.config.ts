@@ -6,7 +6,7 @@ export const siteConfig = {
   title: 'Alejandra Mendivelso — Portafolio',
   description:
     'Portafolio interactivo de Alejandra Mendivelso: diseño visual y dirección de arte en una galería 3D explorable.',
-  ogImage: '/og-image.svg',
+  ogImage: '/og-image.png',
   twitterHandle: '@alejandram',
   locale: 'es_CO',
   /** Persistencia */
