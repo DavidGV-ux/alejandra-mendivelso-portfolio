@@ -1,5 +1,6 @@
 import { el } from '@/utils/dom';
 import { joinTools } from '@/utils/format';
+import { createResponsiveImage } from '@/utils/media';
 import type { UIContext, UIComponent } from '@/types/ui';
 
 export function createFallbackList(ctx: UIContext): UIComponent {
@@ -10,18 +11,17 @@ export function createFallbackList(ctx: UIContext): UIComponent {
   projects.forEach((project) => {
     const card = el('article', { class: 'fallback__card', attrs: { id: `project-${project.id}` } });
 
+    const { el: cover } = createResponsiveImage({
+      src: project.cover,
+      alt: project.title,
+      sizes: '(max-width: 720px) 92vw, 380px',
+      className: 'fallback__cover',
+      width: 1600,
+      height: 1100,
+    });
+
     card.append(
-      el('img', {
-        class: 'fallback__cover',
-        attrs: {
-          src: project.cover,
-          alt: project.title,
-          loading: 'lazy',
-          decoding: 'async',
-          width: '1600',
-          height: '1100',
-        },
-      }),
+      cover,
       el('div', {
         class: 'fallback__body',
         children: [

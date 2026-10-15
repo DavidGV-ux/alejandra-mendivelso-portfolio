@@ -141,6 +141,20 @@ Notas:
 - Nota sobre FCP: el FCP *simulado* de Lighthouse empeora ~1 s (artefacto del modelo de simulación con la cadena de chunks diferidos), pero el FCP **observado** mejora de 1.87 s a 0.10–0.36 s. Se prioriza el dato observado.
 - Con la escena en reposo el GPU queda a ~0 % de trabajo de dibujo (0 draw calls/s); durante interacción el loop despierta y vuelve a dormir al asentarse (verificado con teclado: `→`, `Enter`, `Escape`).
 
+### Fase 4 — Imágenes
+
+**Hecho**
+- `src/utils/media.ts` (nuevo): detección de medios locales raster, `mediaSrcSet` (AVIF/WebP), `mediaVariant` (variante 3D más cercana sin quedarse corta) y `createResponsiveImage` (`<picture>` con AVIF + WebP y fallback al original; SVG y URLs remotas quedan como `<img>` simple).
+- `detailView` y `listView2D` usan `createResponsiveImage` con `sizes` acordes al layout real (`(max-width: 920px) 92vw, 880px` y `(max-width: 720px) 92vw, 380px`); se conservan `loading="lazy"`, `decoding="async"` y dimensiones. El CLS ya estaba cubierto por `aspect-ratio` en CSS.
+- `loader.ts`: anisotropía por preset de calidad (8/4/1) en lugar del 4 fijo; los covers raster locales usan la variante WebP más cercana a `textureMax`; los SVG se decodifican vía `createObjectURL`/`revokeObjectURL` en vez de depender de la caché del DOM.
+- `optimize-media.mjs`: idempotente (omite variantes más nuevas que el origen), flag `--force` y resumen “generadas / al día”.
+
+**Verificación**
+- Prueba end-to-end con un raster temporal (2400×1650): en `?2d` el navegador elige `sample@640.avif` (para un slot de 380 px); en 3D el loader pide `sample@1280.webp` con `textureMax` 1024 (tier medium bajo swiftshader). Restaurado tras la prueba.
+- `optimize:media`: 1.ª corrida 6 variantes generadas; 2.ª corrida 0 generadas / 6 al día.
+- 5 tests unitarios nuevos de media (9 en total).
+- Nota: hoy `public/media` son 25 SVG placeholder (196 kB en total); el camino `<picture>`/variantes se activa solo al añadir fotos reales y correr `npm run optimize:media`.
+
 ## Descartado / no aplicado
 
 _(se completa al final)_

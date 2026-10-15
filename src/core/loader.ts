@@ -1,8 +1,9 @@
 import { LinearMipmapLinearFilter, LoadingManager, SRGBColorSpace, Texture } from 'three';
+import { mediaVariant } from '@/utils/media';
 
 export interface LoaderHandle {
   manager: LoadingManager;
-  loadTexture: (url: string, maxSize: number) => Promise<Texture>;
+  loadTexture: (url: string, maxSize: number, anisotropy?: number) => Promise<Texture>;
   loadGLTF: (url: string) => Promise<unknown>;
   getCached: (url: string) => Texture | undefined;
   release: (url: string) => void;
@@ -27,13 +28,19 @@ async function decodeImage(url: string, maxSize: number): Promise<TexImageSource
     return resized;
   }
 
-  return await new Promise<TexImageSource>((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error(`Imagen inválida: ${url}`));
-    img.src = url;
-  });
+  // SVG y entornos sin createImageBitmap: se decodifica vía blob URL para
+  // no depender de la caché del DOM y liberar memoria al terminar.
+  const objectUrl = URL.createObjectURL(blob);
+  try {
+    return await new Promise<TexImageSource>((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error(`Imagen inválida: ${url}`));
+      img.src = objectUrl;
+    });
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
 }
 
 export function createLoader(): LoaderHandle {
@@ -41,34 +48,36 @@ export function createLoader(): LoaderHandle {
   const cache = new Map<string, Texture>();
   const pending = new Map<string, Promise<Texture>>();
 
-  async function loadTexture(url: string, maxSize: number): Promise<Texture> {
-    const cached = cache.get(url);
+  async function loadTexture(url: string, maxSize: number, anisotropy = 4): Promise<Texture> {
+    // Los covers raster locales usan la variante WebP más cercana al límite.
+    const resolved = mediaVariant(url, maxSize, 'webp');
+    const cached = cache.get(resolved);
     if (cached) return cached;
-    const inflight = pending.get(url);
+    const inflight = pending.get(resolved);
     if (inflight) return inflight;
 
-    manager.itemStart(url);
+    manager.itemStart(resolved);
     const task = (async () => {
       try {
-        const image = await decodeImage(url, maxSize);
+        const image = await decodeImage(resolved, maxSize);
         const texture = new Texture(image);
         texture.colorSpace = SRGBColorSpace;
-        texture.anisotropy = 4;
+        texture.anisotropy = anisotropy;
         texture.needsUpdate = true;
         texture.generateMipmaps = true;
         texture.minFilter = LinearMipmapLinearFilter;
-        cache.set(url, texture);
+        cache.set(resolved, texture);
         return texture;
       } finally {
-        manager.itemEnd(url);
+        manager.itemEnd(resolved);
       }
     })();
 
-    pending.set(url, task);
+    pending.set(resolved, task);
     try {
       return await task;
     } finally {
-      pending.delete(url);
+      pending.delete(resolved);
     }
   }
 

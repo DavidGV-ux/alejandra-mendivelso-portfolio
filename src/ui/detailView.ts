@@ -1,5 +1,6 @@
 import { clearElement, el, on } from '@/utils/dom';
 import { joinTools } from '@/utils/format';
+import { createResponsiveImage } from '@/utils/media';
 import { arrowSvg, closeSvg } from './icons';
 import type { MediaItem, Project } from '@/types/project';
 import type { UIContext, UIComponent } from '@/types/ui';
@@ -49,22 +50,19 @@ function buildSlide(item: MediaItem, dict: UIContext['dict']): HTMLElement {
       }),
     );
   } else {
-    const img = el('img', {
-      class: 'detail__image',
-      attrs: {
-        src: item.src,
-        alt: item.alt ?? '',
-        loading: 'lazy',
-        decoding: 'async',
-        width: String(item.width ?? 1600),
-        height: String(item.height ?? 1100),
-      },
+    const { el: imageEl, img } = createResponsiveImage({
+      src: item.src,
+      alt: item.alt ?? '',
+      sizes: '(max-width: 920px) 92vw, 880px',
+      className: 'detail__image',
+      width: item.width ?? 1600,
+      height: item.height ?? 1100,
     });
     img.addEventListener('error', () => {
       img.classList.add('is-error');
       img.alt = dict.detail.mediaError;
     });
-    slide.append(img);
+    slide.append(imageEl);
   }
 
   return slide;

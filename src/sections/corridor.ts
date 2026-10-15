@@ -99,7 +99,7 @@ export function createCorridorController(deps: Deps): CorridorController {
       if (loaded.has(p.id) || loading.has(p.id)) continue;
       loading.add(p.id);
       loader
-        .loadTexture(p.cover, quality.textureMax)
+        .loadTexture(p.cover, quality.textureMax, quality.anisotropy)
         .then((t) => {
           f.setImage(t);
           loaded.add(p.id);
