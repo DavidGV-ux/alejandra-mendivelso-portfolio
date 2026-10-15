@@ -14,6 +14,11 @@ export const es = {
     loading: 'Cargando portafolio',
     ready: 'Listo',
     slow: 'Esto está tardando un poco…',
+    skip: 'Omitir',
+  },
+  cursor: {
+    client: 'Cliente',
+    owner: 'Alejandra',
   },
   intro: {
     skip: 'Omitir intro',

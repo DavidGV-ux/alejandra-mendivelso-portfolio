@@ -26,7 +26,7 @@ import { createHud } from '@/ui/hud';
 import { createDetailView } from '@/ui/detailView';
 import { createHelpCard } from '@/ui/helpCard';
 import { createLoadingScreen } from '@/ui/loadingScreen';
-import { createCursor } from '@/ui/cursor';
+import { createCursor, createOwnerCursor } from '@/ui/cursor';
 import { createIntro } from '@/animations/assembleIntro';
 import { createStore, type Section } from '@/state/store';
 import { createRouter, type Route } from '@/state/router';
@@ -155,12 +155,23 @@ const contactPanel = createContactPanel(uiContext);
 const fallbackList = createFallbackList(uiContext);
 const bottomBar = createBottomBar(uiContext);
 const hud = createHud(uiContext);
-const loadingScreen = createLoadingScreen(dict);
-const cursor = createCursor(window.matchMedia('(pointer: fine)').matches);
+const loadingScreen = createLoadingScreen(dict, content.profile);
+const cursor = createCursor(window.matchMedia('(pointer: fine)').matches, dict.cursor.client);
+let loaderOpen = true;
+const ownerCursor = createOwnerCursor(dict.cursor.owner, () => {
+  const state = store.get();
+  return (
+    !loaderOpen &&
+    state.introDone &&
+    state.section === 'works' &&
+    !state.helpOpen &&
+    !state.detailProjectId
+  );
+});
 
 uiRoot.append(bottomBar.el, hud.el);
 overlayRoot.append(detailView.el, aboutPanel.el, contactPanel.el, fallbackList.el);
-document.body.append(cursor.el, helpCard.el, loadingScreen.el);
+document.body.append(ownerCursor.el, cursor.el, helpCard.el, loadingScreen.el);
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                            */
@@ -247,6 +258,7 @@ store.subscribe((state, prev) => {
   ) {
     updateInteractive();
   }
+  ownerCursor.sync();
 });
 
 /* ------------------------------------------------------------------ */
@@ -326,15 +338,14 @@ function start3D(): void {
   works.attach(canvas);
   bindResize(canvas.parentElement ?? document.body, camera, rendererHandle.renderer);
 
-  canvas.addEventListener('pointerenter', () => cursor.setVisible(true));
-  canvas.addEventListener('pointerleave', () => cursor.setVisible(false));
-
   loop = createLoop((dt) => {
     works?.update(dt);
     if (rendererHandle && threeScene) rendererHandle.renderer.render(threeScene, camera);
   });
 
   intro = createIntro(works.corridor, caps.prefersReducedMotion);
+
+  works.preload();
 
   wireLoader(loader, () => {
     loop?.start();
@@ -360,8 +371,10 @@ function wireLoader(loader: LoaderHandle, onReady: () => void): void {
     window.clearTimeout(slowTimer);
     loadingScreen.setProgress(100);
     window.setTimeout(() => {
-      loadingScreen.hide();
-      onReady();
+      loadingScreen.hide(() => {
+        loaderOpen = false;
+        onReady();
+      });
     }, 250);
   };
 
@@ -401,7 +414,11 @@ function startIntro(): void {
 /* ------------------------------------------------------------------ */
 function startFallback(): void {
   store.set({ ready: true, introDone: true });
-  loadingScreen.hide();
+  loadingScreen.setProgress(100);
+  loadingScreen.hide(() => {
+    loaderOpen = false;
+    ownerCursor.sync();
+  });
   fallbackList.el.hidden = false;
   fallbackList.el.classList.add('is-visible');
   canvas.hidden = true;

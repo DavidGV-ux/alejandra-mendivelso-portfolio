@@ -32,6 +32,8 @@ export interface CorridorController {
   closeDetail: (immediate?: boolean) => void;
   setInteractive: (enabled: boolean) => void;
   setCursor: (interactive: boolean) => void;
+  /** Carga los covers alrededor del índice activo (para la pantalla de carga). */
+  preload: () => void;
   attach: (dom: HTMLElement) => void;
   activeIndex: () => number;
   dispose: () => void;
@@ -248,6 +250,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     closeDetail,
     setInteractive: (e) => (interactive = e),
     setCursor: (v) => deps.onHoverChange(v),
+    preload: () => loadAround(activeIndex()),
     attach,
     activeIndex,
     dispose: () => {

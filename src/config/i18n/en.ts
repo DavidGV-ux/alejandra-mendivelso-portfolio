@@ -16,6 +16,11 @@ export const en: Dictionary = {
     loading: 'Preparing the gallery',
     ready: 'Ready',
     slow: 'This is taking longer than usual…',
+    skip: 'Skip',
+  },
+  cursor: {
+    client: 'Visitor',
+    owner: 'Alejandra',
   },
   intro: {
     skip: 'Skip intro',

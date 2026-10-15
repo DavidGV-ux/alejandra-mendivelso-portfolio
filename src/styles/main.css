@@ -69,6 +69,8 @@
   --color-fog: #ece5db;
   --color-frame: #fcfaf7;
   --color-frame-border: #1a1714;
+  --color-cursor-client: #ff7a18;
+  --color-cursor-owner: #a855f7;
 
   --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -243,14 +245,15 @@ p {
 }
 
 /* ------------------------------------------------------------------
-   Loader
+   Pantalla de carga
    ------------------------------------------------------------------ */
 .loader {
   position: fixed;
   inset: 0;
   z-index: 80;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--color-bg);
   transition: opacity 0.6s ease, visibility 0.6s ease;
 }
@@ -258,21 +261,79 @@ p {
 .loader.is-done {
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
 }
 
 .loader__panel {
-  width: min(360px, 78vw);
   display: grid;
-  gap: 1rem;
+  justify-items: center;
+  gap: clamp(1.25rem, 3vh, 2rem);
+  width: min(88vw, 760px);
 }
 
-.loader__top {
+.loader__box {
+  position: relative;
+  width: 100%;
+  height: min(58vw, 46vh, 360px);
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  animation: loader-box-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.loader__stroke {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.loader__stroke rect {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 2240;
+  stroke-dashoffset: 2240;
+  stroke-linejoin: round;
+}
+
+.loader__inner {
+  text-align: center;
+  padding: 1.5rem;
+  opacity: 0;
+}
+
+.loader__inner.is-visible {
+  animation: loader-text-in 0.7s ease both;
+}
+
+.loader__name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(28px, 6vw, 64px);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.loader__role {
+  margin: 16px 0 0;
   font-family: var(--font-meta);
-  font-size: 0.8rem;
-  letter-spacing: 0.02em;
+  font-size: clamp(12px, 1.6vw, 17px);
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+}
+
+.loader__progress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: min(340px, 72%);
+  font-family: var(--font-meta);
+  font-size: 0.78rem;
   color: var(--color-text-muted);
 }
 
@@ -282,8 +343,8 @@ p {
 }
 
 .loader__bar {
+  flex: 1;
   height: 2px;
-  width: 100%;
   background: var(--color-border-strong);
   border-radius: var(--radius-pill);
   overflow: hidden;
@@ -302,6 +363,66 @@ p {
   font-family: var(--font-meta);
   font-size: 0.78rem;
   color: var(--color-text-faint);
+}
+
+.loader__skip {
+  position: absolute;
+  right: calc(var(--safe-right) + clamp(1rem, 3vw, 1.5rem));
+  bottom: calc(var(--safe-bottom) + clamp(1rem, 3vw, 1.5rem));
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.15rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-meta);
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.loader__skip:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.loader__skip span {
+  transition: transform 0.25s ease;
+}
+
+.loader__skip:hover span {
+  transform: translate(2px, -2px);
+}
+
+@keyframes loader-box-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes loader-text-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader__box {
+    animation: none;
+  }
+  .loader__inner {
+    opacity: 1;
+  }
 }
 
 /* ------------------------------------------------------------------
@@ -1480,14 +1601,17 @@ body.has-modal {
 }
 
 /* ------------------------------------------------------------------
-   Cursor propio
+   Cursores (visitante + propietaria)
    ------------------------------------------------------------------ */
 .cursor {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 100;
+  width: 0;
+  height: 0;
   pointer-events: none !important;
+  user-select: none;
   opacity: 0;
   transition: opacity 0.25s ease;
   will-change: transform;
@@ -1497,39 +1621,61 @@ body.has-modal {
   opacity: 1;
 }
 
-.cursor__dot,
-.cursor__ring {
+.cursor--client {
+  color: var(--color-cursor-client);
+}
+
+.cursor--owner {
+  color: var(--color-cursor-owner);
+}
+
+.cursor__arrow {
   position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
+  top: -2px;
+  left: -2px;
+  width: 22px;
+  height: 26px;
+  overflow: visible;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+  transform-origin: 2px 2px;
+  transition: transform 0.25s ease;
 }
 
-.cursor__dot {
-  width: 5px;
-  height: 5px;
-  background: var(--color-text);
+.cursor.is-interactive .cursor__arrow {
+  transform: scale(1.4);
 }
 
-.cursor__ring {
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--color-text);
-  opacity: 0.5;
-  transition: width 0.25s ease, height 0.25s ease, opacity 0.25s ease,
-    border-color 0.25s ease;
+.cursor__label {
+  position: absolute;
+  top: 22px;
+  left: 16px;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  background: currentColor;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+  white-space: nowrap;
+  font-family: var(--font-meta);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #ffffff;
 }
 
-.cursor.is-interactive .cursor__ring {
-  width: 52px;
-  height: 52px;
-  opacity: 0.9;
-  border-color: var(--color-accent);
+.cursor.label-left .cursor__label {
+  left: auto;
+  right: 12px;
 }
 
-.cursor.is-interactive .cursor__dot {
-  background: var(--color-accent);
+.cursor.label-above .cursor__label {
+  top: auto;
+  bottom: 8px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html.has-custom-cursor,
+  html.has-custom-cursor * {
+    cursor: none !important;
+  }
 }
 
 @media (hover: none), (pointer: coarse) {
