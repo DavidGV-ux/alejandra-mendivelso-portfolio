@@ -1,41 +1,41 @@
 import type { ThemeColors, ThemeConfig, ThemeMode } from '@/types/theme';
 
 const lightColors: ThemeColors = {
-  bg: '#f6f2ec',
-  bgElevated: '#fcfaf7',
+  bg: '#ffffff',
+  bgElevated: '#fafafa',
   surface: '#ffffff',
-  text: '#1a1714',
-  textMuted: '#6b635b',
-  textFaint: '#a39a90',
-  accent: '#b4553f',
+  text: '#0f0f0f',
+  textMuted: '#4f4f4f',
+  textFaint: '#6b6b6b',
+  accent: '#111111',
   accentContrast: '#ffffff',
-  border: 'rgba(26, 23, 20, 0.10)',
-  borderStrong: 'rgba(26, 23, 20, 0.22)',
-  overlay: 'rgba(20, 17, 14, 0.55)',
-  danger: '#a33b2c',
-  success: '#3f7a4f',
-  fog: '#ece5db',
-  frame: '#fcfaf7',
-  frameBorder: '#1a1714',
+  border: 'rgba(0, 0, 0, 0.08)',
+  borderStrong: 'rgba(0, 0, 0, 0.16)',
+  overlay: 'rgba(0, 0, 0, 0.4)',
+  danger: '#b91c1c',
+  success: '#15803d',
+  fog: '#ffffff',
+  frame: '#ffffff',
+  frameBorder: '#0f0f0f',
 };
 
 const darkColors: ThemeColors = {
-  bg: '#141210',
-  bgElevated: '#1c1916',
-  surface: '#221e1a',
-  text: '#f2ede6',
-  textMuted: '#a69d93',
-  textFaint: '#6e665d',
-  accent: '#e08a6e',
-  accentContrast: '#1a1714',
-  border: 'rgba(242, 237, 230, 0.12)',
-  borderStrong: 'rgba(242, 237, 230, 0.26)',
-  overlay: 'rgba(10, 9, 8, 0.62)',
-  danger: '#e2836f',
-  success: '#6fae7f',
-  fog: '#141210',
-  frame: '#26221e',
-  frameBorder: '#f2ede6',
+  bg: '#0a0a0a',
+  bgElevated: '#151515',
+  surface: '#1f1f1f',
+  text: '#f5f5f5',
+  textMuted: '#d4d4d4',
+  textFaint: '#a3a3a3',
+  accent: '#e5e5e5',
+  accentContrast: '#0a0a0a',
+  border: 'rgba(255, 255, 255, 0.08)',
+  borderStrong: 'rgba(255, 255, 255, 0.18)',
+  overlay: 'rgba(0, 0, 0, 0.6)',
+  danger: '#ef4444',
+  success: '#22c55e',
+  fog: '#0a0a0a',
+  frame: '#1f1f1f',
+  frameBorder: '#f5f5f5',
 };
 
 /**
@@ -44,31 +44,31 @@ const darkColors: ThemeColors = {
 export const theme: ThemeConfig = {
   colors: lightColors,
   fonts: {
-    display: "'Fraunces', 'Iowan Old Style', Georgia, serif",
+    display: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
     body: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
     meta: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
   },
   radii: {
-    sm: '6px',
+    sm: '8px',
     md: '12px',
-    lg: '18px',
+    lg: '16px',
     pill: '999px',
   },
   shadows: {
-    soft: '0 2px 8px rgba(20, 17, 14, 0.06)',
-    medium: '0 8px 24px rgba(20, 17, 14, 0.10)',
-    strong: '0 20px 60px rgba(20, 17, 14, 0.18)',
+    soft: '0 1px 2px rgba(0, 0, 0, 0.02), 0 4px 12px rgba(0, 0, 0, 0.04)',
+    medium: '0 6px 20px rgba(0, 0, 0, 0.06)',
+    strong: '0 20px 60px rgba(0, 0, 0, 0.08)',
   },
   motion: {
-    duration: 0.6,
-    ease: 'power3.out',
+    duration: 0.5,
+    ease: 'power2.out',
     easeInOut: 'power2.inOut',
   },
-  cameraTransition: 1.0,
-  fogDensity: 0.028,
-  spiralTurns: 1.35,
-  frameSpacing: 2.45,
-  spiralRadius: 9.5,
+  cameraTransition: 0.8,
+  fogDensity: 0.012,
+  spiralTurns: 1.4,
+  frameSpacing: 2.6,
+  spiralRadius: 10,
 };
 
 export function getPalette(mode: Exclude<ThemeMode, 'auto'>): ThemeColors {
@@ -102,7 +102,6 @@ const COLOR_VARS: Record<keyof ThemeColors, string> = {
   frameBorder: '--color-frame-border',
 };
 
-/** Escribe todas las variables CSS en :root a partir del tema resuelto. */
 export function applyThemeVariables(mode: Exclude<ThemeMode, 'auto'>): void {
   const root = document.documentElement;
   const palette = getPalette(mode);

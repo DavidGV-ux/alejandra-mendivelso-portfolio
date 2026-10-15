@@ -1,27 +1,27 @@
 {
-  "name": "Alejandra Mendivelso",
-  "role": "Diseñadora visual & Directora de arte",
-  "location": "Bogotá, Colombia",
-  "tagline": "Diseño sistemas visuales cálidos, minimalistas y sofisticados.",
-  "bio": "Soy diseñadora visual y directora de arte con más de ocho años construyendo identidades, editorial y dirección de arte para marcas culturales y proyectos de producto. Me interesa el diseño como un sistema: la tipografía, el color y el ritmo al servicio de una idea. Trabajo cerca de las personas, con procesos claros y mucha atención al detalle.",
+  "name": "Liseth Alejandra Rairan Mendivelso",
+  "role": "Ingeniera Multimedia | UI/UX | Diseño",
+  "location": "Sogamoso, Boyacá, Colombia",
+  "tagline": "Diseño experiencias digitales funcionales, accesibles y con identidad propia.",
+  "bio": "Ingeniera Multimedia con sólidos conocimientos en UI/UX, diseño gráfico y desarrollo front-end. Me apasiona crear interfaces claras, atractivas y centradas en el usuario, combinando estética, usabilidad y rendimiento para dar vida a productos digitales coherentes y memorables.",
   "photo": "/media/profile/alejandra.svg",
-  "email": "hola@alejandramendivelso.com",
-  "phone": "+57 300 000 0000",
+  "email": "larairan@uniboyaca.edu.co",
+  "phone": "+57 302 744 9084",
   "calcom": "",
   "socials": [
+    { "label": "LinkedIn", "url": "https://www.linkedin.com/in/", "icon": "linkedin" },
+    { "label": "Behance", "url": "https://www.behance.net/", "icon": "behance" },
     { "label": "Instagram", "url": "https://instagram.com/", "icon": "instagram" },
-    { "label": "LinkedIn", "url": "https://linkedin.com/", "icon": "linkedin" },
-    { "label": "Behance", "url": "https://behance.net/", "icon": "behance" },
-    { "label": "WhatsApp", "url": "https://wa.me/573000000000", "icon": "whatsapp" },
-    { "label": "Correo", "url": "mailto:hola@alejandramendivelso.com", "icon": "mail" }
+    { "label": "WhatsApp", "url": "https://wa.me/573027449084", "icon": "whatsapp" },
+    { "label": "Correo", "url": "mailto:larairan@uniboyaca.edu.co", "icon": "mail" }
   ],
   "skills": [
-    { "name": "Dirección de arte", "level": 95 },
-    { "name": "Identidad visual", "level": 92 },
-    { "name": "Diseño editorial", "level": 88 },
-    { "name": "Tipografía", "level": 90 },
-    { "name": "Motion & 3D", "level": 74 },
-    { "name": "Fotografía", "level": 80 }
+    { "name": "UI/UX Design", "level": 95 },
+    { "name": "Diseño Gráfico", "level": 95 },
+    { "name": "Ingeniería Multimedia", "level": 90 },
+    { "name": "Prototipado (Figma)", "level": 95 },
+    { "name": "Desarrollo Front-end", "level": 85 },
+    { "name": "Motion & 3D", "level": 80 }
   ],
   "aboutCards": [
     { "type": "profile", "span": 1 },
@@ -29,6 +29,6 @@
     { "type": "stats", "span": 3 },
     { "type": "experience", "title": "Experiencia y formación", "span": 2 },
     { "type": "skills", "title": "Habilidades", "span": 1 },
-    { "type": "text", "title": "Cómo trabajo", "span": 3, "body": "Empiezo escuchando y traduciendo el contexto en una estrategia visual. Defino un sistema antes que una pieza suelta, documento el proceso y entrego archivos ordenados y listos para producir. Me gusta colaborar con equipos pequeños y proyectos con una historia que contar." }
+    { "type": "text", "title": "Cómo trabajo", "span": 3, "body": "Parto desde la investigación y las necesidades del usuario para definir flujos claros. Creo sistemas de diseño reutilizables, priorizo legibilidad, contraste y accesibilidad (WCAG), y cuido cada detalle visual para lograr experiencias limpias, funcionales y profesionales." }
   ]
 }
