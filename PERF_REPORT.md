@@ -155,6 +155,23 @@ Notas:
 - 5 tests unitarios nuevos de media (9 en total).
 - Nota: hoy `public/media` son 25 SVG placeholder (196 kB en total); el camino `<picture>`/variantes se activa solo al añadir fotos reales y correr `npm run optimize:media`.
 
+### Fase 5 — Fuentes
+
+**Hecho**
+- Auditoría de uso real: Fraunces 500 (loader, HUD, títulos de detalle/modal) y 400 (tagline de bio); Inter 400/500/700 (resto de UI). Sin uso: `fraunces-700.woff2` e `inter-600.woff2` (este último ni siquiera tenía `@font-face`; se precargaba desde un `<link>` huérfano **después de `</html>`**).
+- Eliminados: los 2 woff2 sin uso, `public/fonts/fonts.css` (sin referencias en el proyecto) y la cara Fraunces 700 del CSS. Se corrigió el HTML quitando los `<link>` huérfanos.
+- Preloads: se mantienen solo los 2 críticos (Fraunces 500 + Inter 400, que cubren todo el primer pantallazo del loader); `font-display: swap` ya estaba en todas las caras.
+- Variable font: descartado (no hay archivo local con licencia verificable); se conservan los estáticos realmente usados, que pesan menos que un variable completo.
+- Etiquetas 3D: `createScene3D` ahora es asíncrona y espera `document.fonts.load('500 36px Fraunces')` + `('500 20px Inter')` (tope de 1.5 s) antes de hornear las texturas de texto → sin FOUT en las etiquetas de los marcos.
+
+**Verificación**
+- La ruta 3D descarga solo `inter-400`, `fraunces-500`, `inter-500` e `inter-700`; cero requests a los archivos eliminados. `document.fonts.check()` = true para las caras usadas en las etiquetas.
+- ~44 kB de fuentes eliminadas (18 kB + 24,5 kB) que ya no se descargan en ningún caso.
+- Loader, intro y deep links sin cambios (probe CDP completo en verde).
+
+
+_(se completa al final)_
+
 ## Descartado / no aplicado
 
 _(se completa al final)_

@@ -48,7 +48,24 @@ export interface Scene3DDeps {
   onIntroEnd: () => void;
 }
 
-export function createScene3D(deps: Scene3DDeps): Scene3D {
+/**
+ * Las etiquetas 3D se dibujan una sola vez en un canvas; si la fuente aún no
+ * está lista, quedan con la fuente de sistema. Se esperan las caras usadas
+ * (con tope de seguridad) antes de construir la escena.
+ */
+async function ensureLabelFonts(): Promise<void> {
+  if (!('fonts' in document)) return;
+  const load = Promise.all([
+    document.fonts.load('500 36px Fraunces'),
+    document.fonts.load('500 20px Inter'),
+  ]).then(() => undefined);
+  const timeout = new Promise<void>((resolve) => window.setTimeout(resolve, 1500));
+  await Promise.race([load, timeout]);
+}
+
+export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
+  await ensureLabelFonts();
+
   const { canvas, caps, projects, store } = deps;
   const quality = getQuality(caps);
   const layout = buildCorridorLayout(caps);

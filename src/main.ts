@@ -328,8 +328,8 @@ function boot3D(): void {
   }
 
   import('@/app3d')
-    .then(({ createScene3D }) => {
-      scene3d = createScene3D({
+    .then(async ({ createScene3D }) => {
+      scene3d = await createScene3D({
         canvas,
         caps,
         projects: content.projects,
