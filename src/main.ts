@@ -1,23 +1,11 @@
 import './styles/main.css';
 
-import { Scene } from 'three';
-
+import type { Scene3D } from '@/app3d';
 import { loadContent, type Content } from '@/content';
 import { detectCapabilities } from '@/core/capabilities';
-import { getQuality } from '@/core/quality';
-import { createRenderer } from '@/core/renderer';
-import { createCamera } from '@/core/camera';
-import { createLoop } from '@/core/loop';
-import { bindResize } from '@/core/resize';
-import { createLoader, type LoaderHandle } from '@/core/loader';
 import { applyThemeVariables, resolveMode } from '@/config/theme';
 import { detectLocale, getDictionary, persistLocale } from '@/config/i18n';
 import { siteConfig } from '@/config/site.config';
-import { createEnvironment } from '@/scene/environment';
-import { createLights } from '@/scene/lights';
-import { createGuideLine } from '@/scene/guideRing';
-import { buildCorridorLayout } from '@/scene/corridor';
-import { createCorridorController, type CorridorController } from '@/sections/corridor';
 import { createAboutPanel } from '@/sections/about';
 import { createContactPanel } from '@/sections/contact';
 import { createFallbackList } from '@/fallback/listView2D';
@@ -27,7 +15,6 @@ import { createDetailView } from '@/ui/detailView';
 import { createHelpCard } from '@/ui/helpCard';
 import { createLoadingScreen } from '@/ui/loadingScreen';
 import { createCursor, createOwnerCursor } from '@/ui/cursor';
-import { createIntro } from '@/animations/assembleIntro';
 import { createStore, type Section } from '@/state/store';
 import { createRouter, type Route } from '@/state/router';
 import { el, qs } from '@/utils/dom';
@@ -86,16 +73,25 @@ const store = createStore({
 });
 
 /* ------------------------------------------------------------------ */
-/* Referencias 3D                                                    */
+/* Referencias 3D (módulo diferido)                                   */
 /* ------------------------------------------------------------------ */
 const use3D = caps.webgl && !searchParams.has('2d');
-let works: CorridorController | null = null;
-let rendererHandle: ReturnType<typeof createRenderer> | null = null;
-let environment: ReturnType<typeof createEnvironment> | null = null;
-let lights: ReturnType<typeof createLights> | null = null;
-let loop: ReturnType<typeof createLoop> | null = null;
-let intro: ReturnType<typeof createIntro> | null = null;
-let threeScene: Scene | null = null;
+let scene3d: Scene3D | null = null;
+let scene3dLoading = false;
+const pending3d: Array<(scene: Scene3D) => void> = [];
+
+/** Ejecuta una acción 3D al instante o la encola si el módulo va en camino. */
+function run3D(action: (scene: Scene3D) => void): boolean {
+  if (scene3d) {
+    action(scene3d);
+    return true;
+  }
+  if (scene3dLoading) {
+    pending3d.push(action);
+    return true;
+  }
+  return false;
+}
 
 /* ------------------------------------------------------------------ */
 /* Acciones (referencian componentes declarados más abajo)            */
@@ -104,17 +100,14 @@ const actions: UIActions = {
   goToSection: (section) => setSection(section),
   step(delta) {
     if (!store.get().introDone) return;
-    if (delta < 0) works?.prev();
-    else works?.next();
+    scene3d?.step(delta);
   },
-  goToIndex: (index) => works?.goToIndex(index),
+  goToIndex: (index) => scene3d?.goToIndex(index),
   openDetail(projectId) {
-    if (works) works.openProject(projectId);
-    else openDetailUI(projectId);
+    if (!run3D((scene) => scene.openProject(projectId))) openDetailUI(projectId);
   },
   closeDetail() {
-    if (works) works.closeDetail();
-    else closeDetailUI();
+    if (!run3D((scene) => scene.closeDetail())) closeDetailUI();
   },
   toggleTheme: () => cycleTheme(),
   cycleTheme: () => cycleTheme(),
@@ -209,14 +202,12 @@ function updateInteractive(): void {
   const state = store.get();
   const worksActive =
     state.section === 'works' && !state.detailProjectId && !state.helpOpen && state.introDone;
-  works?.setInteractive(worksActive);
+  scene3d?.setInteractive(worksActive);
 }
 
 function applyTheme(mode: 'light' | 'dark'): void {
   applyThemeVariables(mode);
-  rendererHandle?.applyTheme(mode);
-  environment?.setMode(mode);
-  lights?.setMode(mode);
+  scene3d?.setTheme(mode);
 }
 
 function persistTheme(): void {
@@ -276,11 +267,10 @@ const router = createRouter({
 
     setSection('works', true);
     if (route.projectId) {
-      if (works) works.openProject(route.projectId);
-      else openDetailUI(route.projectId);
+      const id = route.projectId;
+      if (!run3D((scene) => scene.openProject(id))) openDetailUI(id);
     } else if (store.get().detailProjectId) {
-      if (works) works.closeDetail(true);
-      else closeDetailUI();
+      if (!run3D((scene) => scene.closeDetail(true))) closeDetailUI();
     }
   },
 });
@@ -291,7 +281,7 @@ const router = createRouter({
 renderMeta();
 
 if (use3D) {
-  start3D();
+  boot3D();
 } else {
   startFallback();
 }
@@ -299,114 +289,84 @@ if (use3D) {
 router.start();
 
 /* ------------------------------------------------------------------ */
-/* 3D                                                                 */
+/* 3D (carga diferida)                                                */
 /* ------------------------------------------------------------------ */
-function start3D(): void {
-  const quality = getQuality(caps);
-  const layout = buildCorridorLayout(caps);
+function boot3D(): void {
+  scene3dLoading = true;
 
-  rendererHandle = createRenderer(canvas, quality, resolvedTheme());
-  const camera = createCamera(layout);
+  let chunkReady = false;
+  let preloaded = false;
+  let finished = false;
+  let fakeProgress = 0;
 
-  threeScene = new Scene();
-  environment = createEnvironment(threeScene, resolvedTheme());
-  threeScene.add(camera);
+  const ramp = window.setInterval(() => {
+    if (chunkReady) return;
+    fakeProgress = Math.min(45, fakeProgress + 2);
+    loadingScreen.setProgress(fakeProgress);
+  }, 120);
 
-  lights = createLights(resolvedTheme());
-  threeScene.add(lights.group);
+  const slowTimer = window.setTimeout(() => loadingScreen.showSlow(), 6000);
+  const hardTimer = window.setTimeout(() => {
+    preloaded = true;
+    maybeFinish();
+  }, 9000);
 
-  const loader = createLoader();
-
-  works = createCorridorController({
-    camera,
-    caps,
-    quality,
-    loader,
-    projects: content.projects,
-    store,
-    onOpenDetail: (id) => {
-      openDetailUI(id);
-      router.push('works', id);
-    },
-    onCloseDetail: () => closeDetailUI(),
-    onHoverChange: (hovering) => cursor.setInteractive(hovering),
-  });
-
-  const guide = createGuideLine(content.projects.length, works.corridor.layout);
-  threeScene.add(works.corridor.group, guide.line);
-
-  works.attach(canvas);
-  bindResize(canvas.parentElement ?? document.body, camera, rendererHandle.renderer);
-
-  loop = createLoop((dt) => {
-    works?.update(dt);
-    if (rendererHandle && threeScene) rendererHandle.renderer.render(threeScene, camera);
-  });
-
-  intro = createIntro(works.corridor, caps.prefersReducedMotion);
-
-  works.preload();
-
-  wireLoader(loader, () => {
-    loop?.start();
-    startIntro();
-  });
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) loop?.stop();
-    else if (store.get().section === 'works') loop?.start();
-  });
-
-  store.subscribeKey('section', (section) => {
-    if (section === 'works') loop?.start();
-    else if (!store.get().detailProjectId) loop?.stop();
-  });
-}
-
-function wireLoader(loader: LoaderHandle, onReady: () => void): void {
-  let done = false;
-  const finish = (): void => {
-    if (done) return;
-    done = true;
+  function maybeFinish(): void {
+    if (finished || !chunkReady || !preloaded) return;
+    finished = true;
+    window.clearInterval(ramp);
     window.clearTimeout(slowTimer);
+    window.clearTimeout(hardTimer);
     loadingScreen.setProgress(100);
     window.setTimeout(() => {
       loadingScreen.hide(() => {
         loaderOpen = false;
-        onReady();
+        scene3d?.start();
+        ownerCursor.sync();
       });
     }, 250);
-  };
-
-  loader.manager.onProgress = (_url, loaded, total) => {
-    if (done) return;
-    loadingScreen.setProgress(total > 0 ? (loaded / total) * 88 : 25);
-  };
-  loader.manager.onLoad = finish;
-
-  const slowTimer = window.setTimeout(() => loadingScreen.showSlow(), 6000);
-  window.setTimeout(finish, 9000);
-}
-
-function startIntro(): void {
-  const skipOnce = (): void => intro?.skip();
-  window.addEventListener('keydown', skipOnce, { once: true });
-  canvas.addEventListener('pointerdown', skipOnce, { once: true });
-
-  const finish = (): void => {
-    if (store.get().introDone) return;
-    store.set({ introDone: true, ready: true });
-    updateInteractive();
-  };
-
-  if (caps.prefersReducedMotion || !intro) {
-    finish();
-    return;
   }
 
-  intro.play();
-  const total = 1.25 + (content.projects.length - 1) * 0.06 + 0.25;
-  window.setTimeout(finish, total * 1000);
+  import('@/app3d')
+    .then(({ createScene3D }) => {
+      scene3d = createScene3D({
+        canvas,
+        caps,
+        projects: content.projects,
+        store,
+        theme: resolvedTheme(),
+        onProgress: (loaded, total) => {
+          if (finished) return;
+          loadingScreen.setProgress(total > 0 ? 45 + (loaded / total) * 43 : 60);
+        },
+        onPreloaded: () => {
+          preloaded = true;
+          maybeFinish();
+        },
+        onOpenDetail: (id) => {
+          openDetailUI(id);
+          router.push('works', id);
+        },
+        onCloseDetail: () => closeDetailUI(),
+        onHoverChange: (hovering) => cursor.setInteractive(hovering),
+        onIntroEnd: () => updateInteractive(),
+      });
+
+      for (const action of pending3d.splice(0)) action(scene3d);
+      scene3dLoading = false;
+      chunkReady = true;
+      window.clearInterval(ramp);
+      maybeFinish();
+    })
+    .catch((error: unknown) => {
+      console.warn(error);
+      scene3dLoading = false;
+      pending3d.length = 0;
+      window.clearInterval(ramp);
+      window.clearTimeout(slowTimer);
+      window.clearTimeout(hardTimer);
+      startFallback();
+    });
 }
 
 /* ------------------------------------------------------------------ */
@@ -489,7 +449,7 @@ window.addEventListener('keydown', (event) => {
     case 'Enter':
     case ' ':
       event.preventDefault();
-      works?.openActive();
+      scene3d?.openActive();
       break;
   }
 });

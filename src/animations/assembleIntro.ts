@@ -1,4 +1,4 @@
-import { gsap } from 'gsap';
+import { gsap } from 'gsap/gsap-core';
 import type { Group } from 'three';
 import type { Corridor } from '@/scene/corridor';
 
@@ -15,7 +15,7 @@ export function createIntro(spiral: Corridor, reducedMotion: boolean): IntroAnim
   );
   const finals = wrappers.map((w) => w.position.clone());
   let finished = false;
-  const timelines: gsap.core.Timeline[] = [];
+  const timelines: Array<ReturnType<typeof gsap.timeline>> = [];
 
   function setFinal(): void {
     wrappers.forEach((w, i) => {

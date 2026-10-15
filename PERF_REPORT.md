@@ -70,6 +70,46 @@ Notas:
 - Verificación: `grep 'vendor:"zod"' dist/assets/*.js` → sin coincidencias (zod fuera del cliente; sigue usándose en `api/contact.ts` del lado servidor).
 - Trazabilidad de tipos: el contenido generado se importa con cast `as Content` (la garantía pasa a ser la validación de build + tests). Documentado como trade-off.
 
+### Fase 2 — Code splitting del 3D
+
+**Hecho**
+- `src/app3d.ts` (nuevo): todo lo que toca three/gsap (renderer, escena, cámara, luces, entorno, corredor, guía, loop, intro, resize, loader) queda detrás de la interfaz `Scene3D`; `main.ts` solo importa el tipo (se borra al compilar).
+- `boot3D()` en `main.ts`: `import('@/app3d')` se pide en cuanto se conoce `use3D`, en paralelo a la animación del loader. Las acciones que llegan antes de tener el módulo (deep links, `openDetail`/`closeDetail`) se encolan en `pending3d` y se reproducen al estar listo. Si el chunk falla → fallback 2D.
+- Progreso del loader: 0–45 % rampa mientras llega el chunk, 45–88 % con texturas (tope visual 88 % intacto), 100 % al terminar. Timings visuales del loader sin cambios.
+- GSAP: `assembleIntro` usa `gsap/gsap-core` (sin CSSPlugin; solo se animan objetos `Vector3`/`Group`, no CSS).
+- `manualChunks` intacto; el HTML ya no precarga three ni gsap (solo el chunk compartido `math`, 4.2 kB).
+
+**Antes → después (chunks)**
+
+| Chunk | Antes bruto | Después bruto | Antes gzip | Después gzip |
+| --- | ---: | ---: | ---: | ---: |
+| `index` (entrada) | 123.71 kB | **46.91 kB** | 37.44 kB | **16.16 kB** |
+| `app3d` (diferido) | — | **18.73 kB** | — | **7.96 kB** |
+| `gsap` (diferido) | 70.44 kB | **51.36 kB** | 27.72 kB | **20.10 kB** |
+| `three` (diferido) | 521.98 kB | 521.98 kB | 131.28 kB | 131.28 kB |
+| `math` (compartido) | — | 4.18 kB | — | 1.73 kB |
+
+- JS inicial de la ruta 3D antes de three: ~716 kB brutos → **~121 kB** (~196 kB gz → ~46 kB gz). three solo se descarga si `use3D` (nunca en `?2d`).
+
+**Verificación (preview + CDP)**
+- `?2d`: cero requests a three/gsap/app3d; fallback visible.
+- Ruta 3D: loader oculto 4754 ms (base 4955), cursor de la dueña visible 6573 ms (base 6775), 1020 draw calls/s en reposo (igual que base; se ataca en Fase 3).
+- Deep link `/works/trama`: abre el detalle correcto sobre la escena 3D; Escape cierra y vuelve a `/`.
+- Modo dev: `?2d` no pide three; deep links OK.
+- Lighthouse móvil, mediana de 3 corridas **en la misma sesión** (base reconstruida en worktree de `b0d60da`, servida en :4183):
+
+| Métrica | Base | Fase 2 |
+| --- | ---: | ---: |
+| Performance | 0.34 | 0.36 |
+| LCP | 7764 ms | **5961 ms** (−23 %) |
+| TBT | 5928 ms | **4603 ms** (−22 %) |
+| Speed Index | 10091 ms | **8806 ms** (−13 %) |
+| Unused JS | 300 ms | **150 ms** (−50 %) |
+| Bootup | 13433 ms | 12867 ms |
+| FCP | 2258 ms | 3241 ms (ruido alto bajo swiftshader: rango por corrida 2.2–9.5 s en la base) |
+
+- Nota: verificación visual fina de la intro con gsap-core pendiente en navegador real (headless software no permite juicio visual); sin excepciones en consola y el resto de la secuencia (intro → cursor) se comporta igual.
+
 ## Descartado / no aplicado
 
 _(se completa al final)_
