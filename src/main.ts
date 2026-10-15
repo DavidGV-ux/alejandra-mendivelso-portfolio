@@ -65,7 +65,7 @@ document.documentElement.lang = locale;
 
 let content: Content;
 try {
-  content = loadContent();
+  content = await loadContent();
 } catch (error) {
   renderFatalError(error);
   throw error;

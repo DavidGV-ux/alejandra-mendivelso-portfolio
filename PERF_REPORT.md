@@ -52,7 +52,23 @@ Notas:
 
 ## Resultados por fase
 
-_(se completan a medida que avanza la rama)_
+### Fase 1 — zod fuera del cliente
+
+**Hecho**
+- `scripts/content-pipeline.mjs` valida los 4 JSON con el schema compartido (`src/content/schema.ts`, import nativo de TS en Node 22) y genera `src/content/generated/content.json` ya normalizado (defaults `tools`, `media`, `links`, `socials`, `skills`, `aboutCards`, proyectos ordenados, ids únicos verificados). Se ejecuta en `prebuild`, `pretypecheck`, `predev`, `pretest`, `validate:content` y en el plugin `content-pipeline` de Vite (con watcher + full-reload en dev).
+- `scripts/validate-content.mjs` eliminado (schema duplicado). El flag `--sitemap` se conserva en el pipeline.
+- `src/content/index.ts` consume el JSON generado; en DEV revalida con zod vía `import()` dinámico (`src/content/devValidate.ts`) que **no entra al bundle** (import.meta.env.DEV → DCE).
+- Se añadió `tests/content.test.ts` (4 tests) y config de vitest en `vite.config.ts`. Nota: `npm test` fallaba antes de esta fase por no existir tests (`No test files found`).
+
+**Antes → después (chunks)**
+
+| Chunk | Antes bruto | Después bruto | Antes gzip | Después gzip |
+| --- | ---: | ---: | ---: | ---: |
+| `index` (entrada) | 123.71 kB | **68.44 kB** | 37.44 kB | **24.61 kB** |
+| resto | sin cambios | sin cambios | — | — |
+
+- Verificación: `grep 'vendor:"zod"' dist/assets/*.js` → sin coincidencias (zod fuera del cliente; sigue usándose en `api/contact.ts` del lado servidor).
+- Trazabilidad de tipos: el contenido generado se importa con cast `as Content` (la garantía pasa a ser la validación de build + tests). Documentado como trade-off.
 
 ## Descartado / no aplicado
 

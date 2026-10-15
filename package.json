@@ -8,16 +8,20 @@
     "node": ">=20"
   },
   "scripts": {
+    "predev": "node scripts/content-pipeline.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/content-pipeline.mjs",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
+    "pretypecheck": "node scripts/content-pipeline.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write \"src/**/*.{ts,css,json}\"",
+    "pretest": "node scripts/content-pipeline.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
-    "validate:content": "node scripts/validate-content.mjs",
+    "validate:content": "node scripts/content-pipeline.mjs --check",
     "optimize:media": "node scripts/optimize-media.mjs",
     "placeholders": "node scripts/gen-placeholders.mjs"
   },

@@ -8,3 +8,4 @@ dist
 .vercel
 stats.html
 stats.json
+src/content/generated
