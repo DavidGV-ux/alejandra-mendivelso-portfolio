@@ -158,9 +158,9 @@ const hud = createHud(uiContext);
 const loadingScreen = createLoadingScreen(dict);
 const cursor = createCursor(window.matchMedia('(pointer: fine)').matches);
 
-uiRoot.append(bottomBar.el, hud.el, cursor.el);
+uiRoot.append(bottomBar.el, hud.el);
 overlayRoot.append(detailView.el, aboutPanel.el, contactPanel.el, fallbackList.el);
-document.body.append(helpCard.el, loadingScreen.el);
+document.body.append(cursor.el, helpCard.el, loadingScreen.el);
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                            */
