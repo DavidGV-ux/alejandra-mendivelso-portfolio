@@ -1,4 +1,5 @@
 import type { PerspectiveCamera } from 'three';
+import { Vector3 } from 'three';
 import { createCorridor, type Corridor } from '@/scene/corridor';
 import { createCoverVideo, type CoverVideoHandle } from '@/scene/coverVideo';
 import { createCoverWebp, type CoverWebpHandle } from '@/scene/coverWebp';
@@ -183,11 +184,12 @@ export function createCorridorController(deps: Deps): CorridorController {
     }
     candidates.sort((a, b) => a.dist - b.dist);
     const chosen = candidates.slice(0, maxActive).map((c) => c.i);
-    if (
+if (
       selectedIndex !== null &&
       selectedIndex >= 0 &&
       selectedIndex < total &&
-      coverVideoUrl(projects[selectedIndex], currentTheme)
+      projects[selectedIndex] !== undefined &&
+      coverVideoUrl(projects[selectedIndex] as any, currentTheme)
     ) {
       if (!chosen.includes(selectedIndex)) chosen.push(selectedIndex);
     }

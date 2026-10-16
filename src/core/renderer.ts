@@ -11,6 +11,7 @@ import type { ThemeMode } from '@/types/theme';
 export interface RendererHandle {
   renderer: WebGLRenderer;
   setPixelRatio: (ratio: number) => void;
+  setSize: (width: number, height: number, updateStyle?: boolean) => void;
   applyTheme: (mode: Exclude<ThemeMode, 'auto'>) => void;
   dispose: () => void;
 }
@@ -47,6 +48,7 @@ export function createRenderer(
   return {
     renderer,
     setPixelRatio: (ratio: number) => renderer.setPixelRatio(Math.min(ratio, 2)),
+    setSize: (width: number, height: number, updateStyle?: boolean) => renderer.setSize(width, height, updateStyle),
     applyTheme,
     dispose: () => renderer.dispose(),
   };

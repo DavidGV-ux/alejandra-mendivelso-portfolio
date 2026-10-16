@@ -17,14 +17,14 @@ export interface Loop {
   getDebug: () => LoopDebug;
 }
 
-export function createLoop(update: UpdateFn, isSettled?: SettledFn, debug = false): Loop {
+export function createLoop(update: UpdateFn, isSettled?: SettledFn): Loop {
   let rafId = 0;
   let last = 0;
   let elapsed = 0;
   let running = false;
   let dirty = 0;
   let renders = 0;
-  let reasons = new Map<string, number>();
+  const reasons = new Map<string, number>();
   let reasonSnapshot = new Map<string, number>();
   let lastSnapshotSecond = Math.floor(performance.now() / 1000);
 
@@ -98,5 +98,3 @@ export function createLoop(update: UpdateFn, isSettled?: SettledFn, debug = fals
     },
   };
 }
-" path">
-src/core/loop.ts
