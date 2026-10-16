@@ -1,6 +1,6 @@
 import { BufferGeometry, Group, Line, LineBasicMaterial, Vector3 } from 'three';
 import { theme } from '@/config/theme';
-import type { CorridorLayout } from './corridor';
+import { endScreenZ, type CorridorLayout } from './corridor';
 
 export interface GuideHandle {
   line: Group;
@@ -13,7 +13,7 @@ export function createGuideLine(total: number, layout: CorridorLayout): GuideHan
   const spacing = layout.spacing;
   const center = ((total - 1) / 2) * spacing;
   const startZ = -center - spacing;
-  const endZ = center + spacing;
+  const endZ = endScreenZ(total, layout);
   const halfW = layout.wallOffset;
   const halfH = 2.2;
 

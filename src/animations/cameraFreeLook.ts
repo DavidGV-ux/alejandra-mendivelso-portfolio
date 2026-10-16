@@ -15,8 +15,13 @@ export interface CameraFreeLook {
   /** Fija el FOV de forma absoluta. */
   setFov: (value: number) => void;
   getFov: () => number;
-  /** Encuadra un marco concreto (modo detalle). */
-  focusOn: (index: number, total: number, layout: CorridorLayout) => void;
+  /** Encuadra un marco concreto (selección o detalle). */
+  focusOn: (
+    index: number,
+    total: number,
+    layout: CorridorLayout,
+    options?: { duration?: number; frontal?: boolean },
+  ) => void;
   /** Vuelve a la vista de pasillo. */
   release: () => void;
   isFocused: () => boolean;
@@ -30,9 +35,12 @@ const CAM_HEIGHT = 0.15;
 const LOOK_AHEAD = 9;
 export const YAW_SENSITIVITY = 0.0032;
 export const PITCH_SENSITIVITY = 0.0026;
+/** Rango frontal de la vista libre: nunca permite mirar hacia atrás. */
+const MAX_YAW = 1.05;
 const MAX_PITCH = Math.PI / 5;
 const MIN_FOV = 26;
 const MAX_FOV = 62;
+const FOCUS_DURATION = 0.62;
 
 export function createCameraFreeLook(camera: PerspectiveCamera): CameraFreeLook {
   const baseFov = camera.fov;
@@ -49,15 +57,25 @@ export function createCameraFreeLook(camera: PerspectiveCamera): CameraFreeLook 
   let desiredFov = baseFov;
 
   let focused = false;
+  let focusT = 1;
+  let focusDuration = FOCUS_DURATION;
   const focusPos = new Vector3();
   const focusLook = new Vector3();
+  const focusFromPos = new Vector3();
+  const focusFromLook = new Vector3();
 
   const dir = new Vector3();
 
   function computeDesired(): void {
     if (focused) {
-      desiredPos.copy(focusPos);
-      desiredLook.copy(focusLook);
+      if (focusT >= 1) {
+        desiredPos.copy(focusPos);
+        desiredLook.copy(focusLook);
+      } else {
+        const t = focusT * focusT * (3 - 2 * focusT);
+        desiredPos.lerpVectors(focusFromPos, focusPos, t);
+        desiredLook.lerpVectors(focusFromLook, focusLook, t);
+      }
       return;
     }
     desiredPos.set(0, CAM_HEIGHT, travelZ);
@@ -98,7 +116,7 @@ export function createCameraFreeLook(camera: PerspectiveCamera): CameraFreeLook 
     },
     setLook: (nextYaw, nextPitch) => {
       if (focused) return;
-      yaw = nextYaw;
+      yaw = MathUtils.clamp(nextYaw, -MAX_YAW, MAX_YAW);
       pitch = MathUtils.clamp(nextPitch, -MAX_PITCH, MAX_PITCH);
     },
     getLook: () => ({ yaw, pitch }),
@@ -109,24 +127,38 @@ export function createCameraFreeLook(camera: PerspectiveCamera): CameraFreeLook 
       desiredFov = MathUtils.clamp(value, MIN_FOV, MAX_FOV);
     },
     getFov: () => desiredFov,
-    focusOn: (index, total, layout) => {
+    focusOn: (index, total, layout, options) => {
       focused = true;
       const frame = framePositionCorridor(index, total, layout, new Vector3());
-      const inward = frame.x >= 0 ? -1 : 1;
-      focusPos.set(
-        frame.x + inward * (layout.wallOffset * 0.7),
-        CAM_HEIGHT,
-        frame.z - layout.spacing * 0.15,
-      );
-      focusLook.copy(frame);
-      desiredFov = 42;
+      if (options?.frontal) {
+        // Vista frontal desde el eje del pasillo: el marco queda centrado y de cara.
+        focusPos.set(0, CAM_HEIGHT, frame.z);
+        focusLook.set(frame.x, 0.42, frame.z);
+        desiredFov = layout.compact ? 52 : 44;
+      } else {
+        const inward = frame.x >= 0 ? -1 : 1;
+        focusPos.set(
+          frame.x + inward * (layout.wallOffset * 0.7),
+          CAM_HEIGHT,
+          frame.z - layout.spacing * 0.15,
+        );
+        focusLook.copy(frame);
+        desiredFov = 42;
+      }
+      focusFromPos.copy(position);
+      focusFromLook.copy(look);
+      focusDuration = options?.duration ?? FOCUS_DURATION;
+      focusT = focusDuration > 0 ? 0 : 1;
+      if (focusT >= 1) apply(true, 0);
     },
     release: () => {
       focused = false;
+      focusT = 1;
       desiredFov = baseFov;
     },
     isFocused: () => focused,
     isSettled: () => {
+      if (focused && focusT < 1) return false;
       computeDesired();
       return (
         position.distanceToSquared(desiredPos) < 1e-6 &&
@@ -134,7 +166,12 @@ export function createCameraFreeLook(camera: PerspectiveCamera): CameraFreeLook 
         Math.abs(fov - desiredFov) < 0.01
       );
     },
-    update: (dt) => apply(false, dt),
+    update: (dt) => {
+      if (focused && focusT < 1) {
+        focusT = Math.min(1, focusT + dt / focusDuration);
+      }
+      apply(false, dt);
+    },
     dispose: () => {},
   };
 }

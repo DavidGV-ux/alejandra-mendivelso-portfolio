@@ -27,6 +27,9 @@ export interface Scene3D {
   setInteractive: (enabled: boolean) => void;
   step: (delta: number) => void;
   goToIndex: (index: number) => void;
+  selectActive: () => void;
+  isSelected: () => boolean;
+  releaseSelection: () => void;
   openActive: () => void;
   openProject: (id: string) => void;
   closeDetail: (immediate?: boolean) => void;
@@ -203,6 +206,9 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
     setInteractive: (enabled) => works.setInteractive(enabled),
     step: (delta) => (delta < 0 ? works.prev() : works.next()),
     goToIndex: (index) => works.goToIndex(index),
+    selectActive: () => works.selectActive(),
+    isSelected: () => works.isSelected(),
+    releaseSelection: () => works.releaseSelection(),
     openActive: () => works.openActive(),
     openProject: (id) => works.openProject(id),
     closeDetail: (immediate) => works.closeDetail(immediate),

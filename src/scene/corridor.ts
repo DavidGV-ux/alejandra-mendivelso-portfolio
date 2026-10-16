@@ -25,6 +25,12 @@ export function buildCorridorLayout(caps: Capabilities): CorridorLayout {
   };
 }
 
+/** Profundidad de la pantalla que cierra el pasillo, más allá del último marco. */
+export function endScreenZ(total: number, layout: CorridorLayout): number {
+  const center = ((total - 1) / 2) * layout.spacing;
+  return center + layout.spacing * 1.3;
+}
+
 export function framePositionCorridor(
   index: number,
   total: number,

@@ -10,6 +10,8 @@ export interface UIActions {
   goToSection: (section: Section) => void;
   step: (delta: number) => void;
   goToIndex: (index: number) => void;
+  /** Centra el proyecto activo y, si ya está centrado, abre su detalle. */
+  openActive: () => void;
   openDetail: (projectId: string) => void;
   closeDetail: () => void;
   toggleTheme: () => void;

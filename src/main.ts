@@ -104,6 +104,11 @@ const actions: UIActions = {
     scene3d?.step(delta);
   },
   goToIndex: (index) => scene3d?.goToIndex(index),
+  openActive() {
+    const project = content.projects[store.get().activeIndex];
+    if (!project) return;
+    if (!run3D((scene) => scene.openActive())) openDetailUI(project.id);
+  },
   openDetail(projectId) {
     if (!run3D((scene) => scene.openProject(projectId))) openDetailUI(projectId);
   },
@@ -392,6 +397,9 @@ window.addEventListener('keydown', (event) => {
     } else if (state.detailProjectId) {
       event.preventDefault();
       actions.closeDetail();
+    } else if (state.section === 'works' && scene3d?.isSelected()) {
+      event.preventDefault();
+      scene3d.releaseSelection();
     } else if (state.section !== 'works') {
       event.preventDefault();
       actions.goToSection('works');
@@ -434,7 +442,9 @@ window.addEventListener('keydown', (event) => {
     case 'Enter':
     case ' ':
       event.preventDefault();
-      scene3d?.openActive();
+      if (scene3d?.isSelected()) scene3d.openActive();
+      else if (scene3d) scene3d.selectActive();
+      else actions.openActive();
       break;
   }
 });

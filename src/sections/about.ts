@@ -146,12 +146,24 @@ export function createAboutPanel(ctx: UIContext): AboutPanel {
     grid.append(node);
   });
 
-  const inner = el('div', { class: 'panel__inner' });
-  inner.append(
-    el('p', { class: 'panel__kicker', text: profile.location }),
-    el('h2', { class: 'panel__title', id: 'about-title', text: dict.about.title }),
-    grid,
+  const lead = el('p', { class: 'about__lead' });
+  lead.append(
+    el('span', { text: dict.about.leadStart }),
+    el('span', { class: 'about__hl', text: profile.name }),
+    el('span', { text: dict.about.leadAfter }),
+    el('span', { class: 'about__hl', text: dict.about.leadHl }),
+    el('span', { text: dict.about.leadEnd }),
   );
+
+  const hero = el('div', { class: 'about__hero' });
+  hero.append(
+    el('p', { class: 'about__label', text: dict.about.label }),
+    el('h2', { class: 'about__title', id: 'about-title', text: dict.about.headline }),
+    lead,
+  );
+
+  const inner = el('div', { class: 'panel__inner' });
+  inner.append(hero, grid);
 
   const panel = el('section', {
     class: 'panel panel--about',

@@ -1,5 +1,6 @@
 import type { PerspectiveCamera } from 'three';
-import { createCorridor, type Corridor } from '@/scene/corridor';
+import { createCorridor, endScreenZ, type Corridor } from '@/scene/corridor';
+import { createEndScreen } from '@/scene/endScreen';
 import { createCoverVideo, type CoverVideoHandle } from '@/scene/coverVideo';
 import {
   createCameraFreeLook,
@@ -27,6 +28,12 @@ export interface CorridorController {
   next: () => void;
   prev: () => void;
   goToIndex: (index: number) => void;
+  /** Centra el proyecto activo sin abrir su detalle. */
+  selectActive: () => void;
+  /** True si hay un proyecto centrado esperando apertura. */
+  isSelected: () => boolean;
+  /** Suelta el enfoque de selección y vuelve a la vista de pasillo. */
+  releaseSelection: () => void;
   openActive: () => void;
   openProject: (id: string) => void;
   closeDetail: (immediate?: boolean) => void;
@@ -65,15 +72,22 @@ export function createCorridorController(deps: Deps): CorridorController {
 
   const corridor = createCorridor(projects, caps, deps.theme);
   const cameraRig = createCameraFreeLook(camera);
+  const endScreen = createEndScreen();
+  endScreen.group.position.set(0, 0, endScreenZ(total, corridor.layout));
+  corridor.group.add(endScreen.group);
   let picker: ReturnType<typeof createPicker> | null = null;
 
   let progress = 0;
   let target = 0;
   let interactive = true;
   let draggingLook = false;
+  let selected = false;
+  let lastDragEndAt = 0;
+  let attached = false;
   let hovered: FrameHandle | null = null;
   let dragStartLook = { yaw: 0, pitch: 0 };
   let dragStartFov = 0;
+  const cleanups: Array<() => void> = [];
 
   const loaded = new Set<string>();
   const loading = new Set<string>();
@@ -146,24 +160,56 @@ export function createCorridorController(deps: Deps): CorridorController {
     corridor.frames.forEach((f) => f.setFocused(focused !== null && f.index !== focused));
   }
 
+  function releaseSelection(): void {
+    if (!selected) return;
+    selected = false;
+    cameraRig.release();
+    deps.invalidate();
+  }
+
   function step(delta: number): void {
     if (!interactive) return;
+    releaseSelection();
     target = clampTarget(target + delta);
     if (reducedMotion) progress = target;
     deps.invalidate();
   }
 
   function goToIndex(i: number): void {
+    releaseSelection();
     target = clampTarget(i);
     if (reducedMotion) progress = target;
     deps.invalidate();
   }
 
+  function doSelect(i: number): void {
+    const p = projects[i];
+    if (!p) return;
+    target = clampTarget(i);
+    if (reducedMotion) progress = target;
+    cameraRig.focusOn(i, total, corridor.layout, {
+      duration: reducedMotion ? 0 : 0.62,
+      frontal: true,
+    });
+    selected = true;
+    deps.invalidate();
+  }
+
+  function selectActive(): void {
+    if (!interactive) return;
+    doSelect(activeIndex());
+  }
+
   function doOpen(i: number): void {
     const p = projects[i];
     if (!p) return;
-    cameraRig.focusOn(i, total, corridor.layout);
+    const keepFrontal = selected;
+    cameraRig.focusOn(i, total, corridor.layout, {
+      duration: reducedMotion ? 0 : 0.62,
+      frontal: keepFrontal,
+    });
     applyFocusOpacity(i);
+    selected = false;
     interactive = false;
     deps.invalidate();
     deps.onOpenDetail(p.id);
@@ -184,6 +230,7 @@ export function createCorridorController(deps: Deps): CorridorController {
   function closeDetail(immediate = false): void {
     applyFocusOpacity(null);
     cameraRig.release();
+    selected = false;
     void immediate;
     interactive = true;
     deps.invalidate();
@@ -207,73 +254,104 @@ export function createCorridorController(deps: Deps): CorridorController {
   }
 
   function attach(dom: HTMLElement): void {
+    if (attached) return;
+    attached = true;
     if (!picker) picker = createPicker(camera, dom);
 
-    attachHover(dom, {
-      pick: (x, y) => picker?.pick(x, y, corridor.frames) ?? null,
-      onEnter: (f) => {
-        hovered = f;
-        f.setHover(true);
-        deps.invalidate();
-        deps.onHoverChange(true);
-      },
-      onLeave: (f) => {
-        f.setHover(false);
-        if (hovered === f) hovered = null;
-        deps.invalidate();
-        deps.onHoverChange(false);
-      },
-      isEnabled: () => interactive && !draggingLook && !store.get().detailProjectId,
-    });
+    cleanups.push(
+      attachHover(dom, {
+        pick: (x, y) => picker?.pick(x, y, corridor.frames) ?? null,
+        onEnter: (f) => {
+          hovered = f;
+          f.setHover(true);
+          deps.invalidate();
+          deps.onHoverChange(true);
+        },
+        onLeave: (f) => {
+          f.setHover(false);
+          if (hovered === f) hovered = null;
+          deps.invalidate();
+          deps.onHoverChange(false);
+        },
+        isEnabled: () => interactive && !draggingLook && !store.get().detailProjectId,
+      }),
+    );
 
-    attachDrag(dom, {
-      threshold: sceneConfig.controls.dragThreshold,
-      onDragStart: () => {
-        draggingLook = true;
-        dragStartLook = cameraRig.getLook();
-        dragStartFov = cameraRig.getFov();
-        if (hovered) hovered.setHover(false);
-        deps.invalidate();
-        deps.onHoverChange(false);
-      },
-      onDrag: (dx, dy) => {
-        if (!interactive || store.get().detailProjectId) {
-          cameraRig.setFov(dragStartFov + dy * 0.06);
-        } else {
-          cameraRig.setLook(
-            dragStartLook.yaw - dx * YAW_SENSITIVITY,
-            dragStartLook.pitch - dy * PITCH_SENSITIVITY,
-          );
-        }
-        deps.invalidate();
-      },
-      onDragEnd: () => {
-        draggingLook = false;
-      },
-      onTap: (event: PointerEvent) => {
-        if (!interactive || !picker) return;
-        const hit = picker.pick(event.clientX, event.clientY, corridor.frames);
-        if (hit) {
-          doOpen(hit.index);
-        }
-      },
-    });
+    cleanups.push(
+      attachDrag(dom, {
+        threshold: sceneConfig.controls.dragThreshold,
+        onDragStart: () => {
+          draggingLook = true;
+          if (selected && !store.get().detailProjectId) releaseSelection();
+          dragStartLook = cameraRig.getLook();
+          dragStartFov = cameraRig.getFov();
+          if (hovered) hovered.setHover(false);
+          deps.invalidate();
+          deps.onHoverChange(false);
+        },
+        onDrag: (dx, dy) => {
+          if (!interactive || store.get().detailProjectId) {
+            cameraRig.setFov(dragStartFov + dy * 0.06);
+          } else {
+            cameraRig.setLook(
+              dragStartLook.yaw - dx * YAW_SENSITIVITY,
+              dragStartLook.pitch - dy * PITCH_SENSITIVITY,
+            );
+          }
+          deps.invalidate();
+        },
+        onDragEnd: () => {
+          draggingLook = false;
+          lastDragEndAt = performance.now();
+        },
+        onTap: (event: PointerEvent) => {
+          if (!interactive || !picker || store.get().detailProjectId) return;
+          const hit = picker.pick(event.clientX, event.clientY, corridor.frames);
+          if (hit) doSelect(hit.index);
+        },
+      }),
+    );
 
-    attachWheel(dom, {
-      onWheel: (sign) => {
-        if (!interactive) cameraRig.zoom(sign > 0 ? 2 : -2);
-        else step(sign > 0 ? 1 : -1);
-        deps.invalidate();
-      },
-    });
+    cleanups.push(
+      attachWheel(dom, {
+        onWheel: (sign) => {
+          if (!interactive) cameraRig.zoom(sign > 0 ? 2 : -2);
+          else step(sign > 0 ? 1 : -1);
+          deps.invalidate();
+        },
+      }),
+    );
 
-    attachGestures(dom, {
-      onPinch: (deltaFov) => {
-        cameraRig.zoom(deltaFov);
+    cleanups.push(
+      attachGestures(dom, {
+        onPinch: (deltaFov) => {
+          cameraRig.zoom(deltaFov);
+          deps.invalidate();
+        },
+        onPinchEnd: () => {},
+      }),
+    );
+
+    const onDoubleClick = (event: MouseEvent): void => {
+      if (!interactive || !picker || store.get().detailProjectId) return;
+      if (performance.now() - lastDragEndAt < 400) return;
+      const hit = picker.pick(event.clientX, event.clientY, corridor.frames);
+      if (hit) doOpen(hit.index);
+    };
+    dom.addEventListener('dblclick', onDoubleClick);
+    cleanups.push(() => dom.removeEventListener('dblclick', onDoubleClick));
+  }
+
+  function loadEndScreen(): void {
+    const project = projects.find((p) => p.id === 'umbra') ?? projects[0];
+    if (!project) return;
+    loader
+      .loadTexture(project.cover, quality.textureMax, quality.anisotropy)
+      .then((t) => {
+        endScreen.setImage(t);
         deps.invalidate();
-      },
-      onPinchEnd: () => {},
-    });
+      })
+      .catch(() => {});
   }
 
   return {
@@ -283,6 +361,9 @@ export function createCorridorController(deps: Deps): CorridorController {
     next: () => step(1),
     prev: () => step(-1),
     goToIndex,
+    selectActive,
+    isSelected: () => selected,
+    releaseSelection,
     openActive,
     openProject,
     closeDetail,
@@ -296,14 +377,20 @@ export function createCorridorController(deps: Deps): CorridorController {
       Math.abs(target - progress) < 0.001 &&
       cameraRig.isSettled() &&
       corridor.frames.every((frame) => frame.isSettled()),
-    preload: () => loadAround(activeIndex()),
+    preload: () => {
+      loadAround(activeIndex());
+      loadEndScreen();
+    },
     attach,
     activeIndex,
     dispose: () => {
+      cleanups.forEach((dispose) => dispose());
+      cleanups.length = 0;
       picker?.dispose();
       cameraRig.dispose();
       coverVideos.forEach((v) => v.dispose());
       coverVideos.clear();
+      endScreen.dispose();
       corridor.dispose();
     },
   };

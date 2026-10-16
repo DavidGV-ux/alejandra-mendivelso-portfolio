@@ -14,6 +14,7 @@ export interface ThemeColors {
   bg: string;
   bgElevated: string;
   surface: string;
+  surface2: string;
   text: string;
   textMuted: string;
   textFaint: string;
