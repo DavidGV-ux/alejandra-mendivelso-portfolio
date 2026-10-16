@@ -114,8 +114,8 @@ export function createCorridorController(deps: Deps): CorridorController {
   const webpAnims = new Map<string, CoverWebpHandle>();
   const videoLoading = new Set<string>();
 
-  function videoKey(id: string, mode: 'light' | 'dark'): string {
-    return `${id}:${mode}`;
+  function videoKey(id: string, _mode: 'light' | 'dark'): string {
+    return id;
   }
 
   /** Vista previa ligera: solo el proyecto activo (hover o selección) reproduce su video. */
@@ -578,16 +578,6 @@ cleanups.push(
       }
       currentTheme = mode;
       corridor.frames.forEach((frame) => frame.setTheme(mode));
-      // Descarta los videos del tema anterior y recarga con el tema nuevo.
-      for (const [key, handle] of coverVideos) {
-        const [id, themeMode] = key.split(':');
-        if (themeMode !== mode && id) {
-          handle.dispose();
-          coverVideos.delete(key);
-          const project = projects.find((p) => p.id === id);
-          if (project) loaded.delete(project.id);
-        }
-      }
       loadAround(activeIndex());
       computeActiveVideos();
       deps.invalidate();
