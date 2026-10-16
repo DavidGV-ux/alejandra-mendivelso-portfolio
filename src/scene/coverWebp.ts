@@ -33,14 +33,14 @@ export function createCoverWebp(url: string, onFrame: () => void): CoverWebpHand
     img.src = url;
   });
 
-  if ('ImageDecoder' in window) {
+  if (typeof (window as any).ImageDecoder === 'function') {
     (async () => {
       try {
         await ready;
         const res = await fetch(url);
         const blob = await res.blob();
         const decoder = new (window as any).ImageDecoder({ data: blob, type: 'image/webp' });
-        const frameDuration = 100;
+        let frames = 0;
         const step = async () => {
           if (!running) return;
           try {
@@ -55,16 +55,20 @@ export function createCoverWebp(url: string, onFrame: () => void): CoverWebpHand
             if (typeof image.close === 'function') image.close();
             texture.needsUpdate = true;
             onFrame();
+            frames++;
+            if (frames % 10 === 0) console.debug('[coverWebp]', url, 'frames', frames);
           } catch {
             try { decoder.reset(); } catch {}
           }
-          window.setTimeout(step, frameDuration);
+          window.setTimeout(step, 100);
         };
         await step();
       } catch (e) {
         console.warn('ImageDecoder fallback to static WebP', e);
       }
     })();
+  } else {
+    console.warn('[coverWebp] ImageDecoder not supported', url);
   }
 
   return {
