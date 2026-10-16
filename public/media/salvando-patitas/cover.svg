@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <rect width="1080" height="1080" fill="#0f172a"/>
+  <rect x="80" y="80" width="920" height="920" rx="48" fill="#14253d" stroke="#243b5c" stroke-width="2"/>
+  <text x="120" y="220" font-family="Space Grotesk,system-ui,sans-serif" font-weight="800" font-size="92" fill="#f8f6f2">Salvando Patitas</text>
+  <text x="120" y="300" font-family="Space Grotesk,system-ui,sans-serif" font-weight="500" font-size="42" fill="#8ce99a">Boyacá</text>
+  <circle cx="540" cy="560" r="180" fill="#2f7a5b" opacity="0.25"/>
+  <text x="540" y="610" text-anchor="middle" font-family="Space Grotesk,system-ui,sans-serif" font-weight="800" font-size="72" fill="#f8f6f2">🐾</text>
+  <text x="120" y="820" font-family="Space Grotesk,system-ui,sans-serif" font-weight="500" font-size="30" fill="#a7a5ae">App & motion</text>
+  <rect x="120" y="900" width="200" height="8" rx="4" fill="#2F7A5B"/>
+</svg>

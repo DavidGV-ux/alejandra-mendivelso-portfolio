@@ -111,14 +111,14 @@
     "client_en": "Salvando Patitas Boyacá",
     "role": "Diseño de producto & motion",
     "role_en": "Product design & motion",
-    "description": "Animación de producto para la app de adopción y donación de Salvando Patitas Boyacá. Cinco escenas que recorren la experiencia: adopción con confianza, donación segura, apadrinamiento, hogar de paso y transparencia. Piezas pensadas para presentar la app en web y redes.",
-    "description_en": "Product animation for the Salvando Patitas Boyacá adoption and donation app. Five scenes that walk through the experience: trusted adoption, secure donations, sponsoring, foster homes and transparency. Pieces designed to present the app on web and social media.",
+    "description": "Animación de producto para la app de adopción y donación de Salvando Patitas Boyacá. Cinco escenas que recorren la experiencia: adopción con confianza, donación segura, apadrinamiento, hogar de paso y transparencia.",
+    "description_en": "Product animation for the Salvando Patitas Boyacá adoption and donation app: five scenes through trusted adoption, secure donations, sponsoring, foster homes and transparency.",
     "tools": [
       "After Effects",
       "Figma",
       "Lottie"
     ],
-    "cover": "/media/salvando-patitas/poster.jpg",
+    "cover": "/media/salvando-patitas/cover.svg",
     "coverVideo": {
       "light": "/media/salvando-patitas/preview-dia.mp4",
       "dark": "/media/salvando-patitas/preview-noche.mp4"
@@ -126,48 +126,17 @@
     "media": [
       {
         "kind": "video",
-        "src": "/media/salvando-patitas/preview.mp4",
-        "poster": "/media/salvando-patitas/poster.jpg",
+        "src": "/media/salvando-patitas/preview-dia.mp4",
+        "poster": "/media/salvando-patitas/cover.svg",
         "alt": "Recorrido animado de la app",
         "alt_en": "Animated app walkthrough",
-        "width": 1400,
-        "height": 962
-      },
-      {
-        "kind": "image",
-        "src": "/media/salvando-patitas/still-02.jpg",
-        "alt": "Pantallas de exploración de mascotas",
-        "alt_en": "Pet browsing screens",
-        "width": 1400,
-        "height": 962
-      },
-      {
-        "kind": "image",
-        "src": "/media/salvando-patitas/still-03.jpg",
-        "alt": "Historia y proceso de adopción",
-        "alt_en": "Story and adoption process",
-        "width": 1400,
-        "height": 962
-      },
-      {
-        "kind": "image",
-        "src": "/media/salvando-patitas/still-04.jpg",
-        "alt": "Donaciones y certificado",
-        "alt_en": "Donations and certificate",
-        "width": 1400,
-        "height": 962
-      },
-      {
-        "kind": "image",
-        "src": "/media/salvando-patitas/still-05.jpg",
-        "alt": "Las cinco formas de ayudar",
-        "alt_en": "The five ways to help",
-        "width": 1400,
-        "height": 962
+        "width": 1080,
+        "height": 1080
       }
     ],
     "links": [],
     "order": 4,
-    "accent": "#2F7A5B"
+    "accent": "#2F7A5B",
+    "title_en": "Salvando Patitas"
   }
 ]
