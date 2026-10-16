@@ -62,7 +62,8 @@
     "links": [],
     "order": 2,
     "accent": "#10B981",
-    "title_en": "WinAI Finance – UX/UI Redesign"
+    "title_en": "WinAI Finance – UX/UI Redesign",
+    "coverVideo": "/media/winai-finance/preview-loop.webm"
   },
   {
     "id": "app-movil-consulta",
@@ -94,7 +95,8 @@
     "links": [],
     "order": 3,
     "accent": "#38bdf8",
-    "title_en": "Voxy – Learn English by Speaking"
+    "title_en": "Voxy – Learn English by Speaking",
+    "coverVideo": "/media/voxy/preview-loop.webm"
   },
   {
     "id": "salvando-patitas",
@@ -113,11 +115,8 @@
       "Figma",
       "Lottie"
     ],
-    "cover": "/media/salvando-patitas/cover.jpg",
-    "coverVideo": {
-      "light": "/media/salvando-patitas/preview-dia.mp4",
-      "dark": "/media/salvando-patitas/preview-noche.mp4"
-    },
+    "cover": "/media/salvando-patitas/cover.svg",
+    "coverVideo": "/media/salvando-patitas/preview-loop.webm",
     "media": [
       {
         "kind": "video",
