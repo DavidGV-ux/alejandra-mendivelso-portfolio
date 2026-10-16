@@ -147,8 +147,9 @@ export function createCorridorController(deps: Deps): CorridorController {
   }
 
   function travelZFor(index: number): number {
-    const center = ((total - 1) / 2) * corridor.layout.spacing;
-    return index * corridor.layout.spacing - center;
+    const pairCount = Math.ceil(total / 2);
+    const center = ((pairCount - 1) / 2) * corridor.layout.spacing;
+    return Math.floor(index / 2) * corridor.layout.spacing - center;
   }
   function loadAround(index: number): void {
     const indices = new Set([index - 3, index - 2, index - 1, index, index + 1, index + 2, index + 3]);
@@ -327,7 +328,20 @@ onLeave: (f) => {
             const video = coverVideos.get(key);
             if (video) video.setPlaying(false);
             const poster = posterTextures.get(project.id);
-            if (poster) f.setImage(poster);
+            if (poster) {
+              f.setImage(poster);
+            } else {
+              // fallback si la portada no se había terminado de cargar
+              loader
+                .loadTexture(project.cover, quality.textureMax, quality.anisotropy)
+                .then((t) => {
+                  if (hovered === f) return;
+                  posterTextures.set(project.id, t);
+                  f.setImage(t);
+                  deps.invalidate();
+                })
+                .catch(() => {});
+            }
           }
           updateVideoPlayback();
           deps.invalidate();
