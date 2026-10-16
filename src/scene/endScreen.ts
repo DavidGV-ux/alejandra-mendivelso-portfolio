@@ -21,6 +21,10 @@ export interface EndScreenHandle {
     subtitle: string,
     mode: 'light' | 'dark',
   ) => void;
+  /** Paralaje del contenido según el puntero (`nx`, `ny` en [-1, 1]). */
+  setHover: (nx: number, ny: number, active: boolean) => void;
+  /** Avanza la animación; devuelve true mientras haya que repintar. */
+  update: (dt: number) => boolean;
   dispose: () => void;
 }
 
@@ -28,6 +32,9 @@ const W = 6;
 const H = 3.2;
 const MAT = 0.2;
 const BORDER = 0.04;
+
+const CW = 1536;
+const CH = 819; // aspecto 6 : 3.2
 
 function roundRect(
   ctx: CanvasRenderingContext2D,
@@ -81,53 +88,80 @@ export function createEndScreen(): EndScreenHandle {
 
   group.add(border, mat, image, hitMesh);
 
-  function drawCard(photo: HTMLImageElement | null, title: string, subtitle: string, mode: 'light' | 'dark'): void {
-    const CW = 1536;
-    const CH = 819; // aspecto 6 : 3.2
-    const canvas = document.createElement('canvas');
-    canvas.width = CW;
-    canvas.height = CH;
-    const ctx = canvas.getContext('2d')!;
+  // Lienzo persistente: se repinta en cada cambio (tema, carga o parallax).
+  const canvas = document.createElement('canvas');
+  canvas.width = CW;
+  canvas.height = CH;
+  const ctx = canvas.getContext('2d')!;
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  texture.minFilter = LinearFilter;
+  texture.magFilter = LinearFilter;
+  texture.generateMipmaps = false;
+  imageMat.map = texture;
+  imageMat.needsUpdate = true;
+
+  let photo: HTMLImageElement | null = null;
+  let title = '';
+  let subtitle = '';
+  let mode: 'light' | 'dark' = 'dark';
+  let hasCard = false;
+
+  // Parallax: valores actuales y objetivo (se interpola en `update`).
+  let curX = 0;
+  let curY = 0;
+  let curI = 0;
+  let targetX = 0;
+  let targetY = 0;
+  let targetI = 0;
+
+  function paint(): void {
+    if (!hasCard) return;
 
     const pal = getPalette(mode);
     const bg = mode === 'light' ? '#ffffff' : pal.bg;
-    const fg = mode === 'light' ? pal.text : pal.text;
+    const fg = pal.text;
     const muted = pal.textMuted;
 
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, CW, CH);
 
-    // Foto con esquinas redondeadas en el lado izquierdo.
-    const photoSize = CH * 0.78;
+    const i = curI;
+    const nx = curX;
+    const ny = curY;
+
+    // Foto con parallax suave y ligero zoom.
+    const photoSize = CH * 0.74;
     const photoX = CW * 0.075;
     const photoY = (CH - photoSize) / 2;
     const radius = 34;
+    const scale = 1 + 0.03 * i;
+    const ps = photoSize * scale;
+    const px = photoX - (ps - photoSize) / 2 - nx * 14;
+    const py = photoY - (ps - photoSize) / 2 - ny * 12;
 
+    ctx.save();
+    roundRect(ctx, photoX, photoY, photoSize, photoSize, radius);
+    ctx.clip();
     if (photo) {
       const sAspect = photo.width / photo.height;
-      ctx.save();
-      roundRect(ctx, photoX, photoY, photoSize, photoSize, radius);
-      ctx.clip();
-      let dw = photoSize;
-      let dh = photoSize;
-      let dx = photoX;
-      let dy = photoY;
+      let dw = ps;
+      let dh = ps;
+      let dx = px;
+      let dy = py;
       if (sAspect > 1) {
-        dw = photoSize * sAspect;
-        dx = photoX - (dw - photoSize) / 2;
+        dw = ps * sAspect;
+        dx = px - (dw - ps) / 2;
       } else {
-        dh = photoSize / sAspect;
-        dy = photoY - (dh - photoSize) / 2;
+        dh = ps / sAspect;
+        dy = py - (dh - ps) / 2;
       }
       ctx.drawImage(photo, dx, dy, dw, dh);
-      ctx.restore();
     } else {
-      ctx.save();
-      roundRect(ctx, photoX, photoY, photoSize, photoSize, radius);
       ctx.fillStyle = mode === 'light' ? '#f0f0f0' : pal.surface2;
-      ctx.fill();
-      ctx.restore();
+      ctx.fillRect(photoX, photoY, photoSize, photoSize);
     }
+    ctx.restore();
 
     // Marco fino alrededor de la foto.
     ctx.save();
@@ -137,28 +171,56 @@ export function createEndScreen(): EndScreenHandle {
     ctx.stroke();
     ctx.restore();
 
-    // Texto a la derecha, en la misma familia tipográfica del panel.
-    const textX = photoX + photoSize + CW * 0.06;
-    const maxTextW = CW - textX - CW * 0.06;
+    const textX = photoX + photoSize + CW * 0.055;
+    const maxTextW = CW - textX - CW * 0.055;
+    const chars = Array.from(title);
+    const trackingFor = (size: number): number => -size * 0.022;
 
+    // Ajuste automático del título para que nunca se corte.
+    const titleWidth = (size: number): number => {
+      ctx.font = `700 ${size}px ${theme.fonts.display}`;
+      let w = 0;
+      for (const c of chars) w += ctx.measureText(c).width;
+      return w + trackingFor(size) * Math.max(0, chars.length - 1);
+    };
+
+    let titleSize = 150;
+    while (titleSize > 56 && titleWidth(titleSize) > maxTextW) titleSize -= 2;
+
+    const titleY = CH * 0.42;
     ctx.fillStyle = fg;
     ctx.textBaseline = 'alphabetic';
 
-    const titleSize = 118;
-    ctx.font = `600 ${titleSize}px ${theme.fonts.display}`;
-    ctx.fillText(title, textX, CH * 0.47);
+    // Letras con onda suave que viaja con el puntero.
+    ctx.font = `700 ${titleSize}px ${theme.fonts.display}`;
+    const track = trackingFor(titleSize);
+    const amp = 10 * i;
+    const phase = nx * Math.PI * 1.2;
+    let cx = textX + nx * 6;
+    for (const [k, c] of chars.entries()) {
+      const dy = Math.sin(k * 0.6 + phase) * amp - ny * 8 * i;
+      ctx.fillText(c, cx, titleY + dy);
+      cx += ctx.measureText(c).width + track;
+    }
 
-    const subSize = 62;
+    // Subtítulo, también ajustado al ancho disponible.
+    let subSize = 58;
     ctx.font = `500 ${subSize}px ${theme.fonts.display}`;
+    while (subSize > 26 && ctx.measureText(subtitle).width > maxTextW) {
+      subSize -= 2;
+      ctx.font = `500 ${subSize}px ${theme.fonts.display}`;
+    }
+    const subY = titleY + titleSize * 0.72 + subSize * 0.9;
     ctx.fillStyle = muted;
-    ctx.fillText(subtitle, textX, CH * 0.47 + subSize * 1.35);
+    ctx.fillText(subtitle, textX + nx * 4, subY);
 
-    // Acento bajo el título.
-    ctx.fillStyle = mode === 'light' ? pal.accent : pal.accent;
-    ctx.fillRect(textX, CH * 0.47 + subSize * 1.62, 150, 8);
+    // Acento bajo el título (crece al acercar el ratón).
+    ctx.fillStyle = pal.accent;
+    ctx.fillRect(textX, subY + 42, 150 + 40 * i, 8);
 
     // Píldora de acción.
-    const hint = mode === 'light' ? 'Haz clic para conocer más sobre mí' : 'Click to learn more about me';
+    const hint =
+      mode === 'light' ? 'Haz clic para conocer más sobre mí' : 'Click to learn more about me';
     ctx.font = `500 30px ${theme.fonts.meta}`;
     const hintW = ctx.measureText(hint).width;
     const pillW = hintW + 64;
@@ -171,24 +233,47 @@ export function createEndScreen(): EndScreenHandle {
     ctx.fillStyle = muted;
     ctx.fillText(hint, pillX + 32, pillY + pillH / 2 + 11);
 
-    void maxTextW;
-
-    const texture = new CanvasTexture(canvas);
-    texture.colorSpace = SRGBColorSpace;
-    texture.minFilter = LinearFilter;
-    texture.magFilter = LinearFilter;
-    texture.generateMipmaps = false;
-
-    imageMat.map = texture;
-    imageMat.color.setRGB(1, 1, 1);
-    imageMat.needsUpdate = true;
+    texture.needsUpdate = true;
   }
 
   return {
     group,
     hitMesh,
-    renderCard: (photo, title, subtitle, mode) => {
-      drawCard(photo, title, subtitle, mode);
+    renderCard: (p, t, s, m) => {
+      photo = p;
+      title = t ?? '';
+      subtitle = s ?? '';
+      mode = m;
+      hasCard = true;
+      paint();
+    },
+    setHover: (nx, ny, active) => {
+      targetX = Math.max(-1, Math.min(1, nx));
+      targetY = Math.max(-1, Math.min(1, ny));
+      targetI = active ? 1 : 0;
+    },
+    update: (dt) => {
+      if (!hasCard) return false;
+      const k = 1 - Math.exp(-10 * Math.max(dt, 0));
+      let changed = false;
+      const dx = targetX - curX;
+      const dy = targetY - curY;
+      const di = targetI - curI;
+      if (Math.abs(dx) > 0.0006) {
+        curX += dx * k;
+        changed = true;
+      } else curX = targetX;
+      if (Math.abs(dy) > 0.0006) {
+        curY += dy * k;
+        changed = true;
+      } else curY = targetY;
+      if (Math.abs(di) > 0.0006) {
+        curI += di * k;
+        changed = true;
+      } else curI = targetI;
+      if (!changed) return false;
+      paint();
+      return true;
     },
     dispose: () => {
       border.geometry.dispose();
@@ -198,7 +283,7 @@ export function createEndScreen(): EndScreenHandle {
       borderMat.dispose();
       matMat.dispose();
       hitMat.dispose();
-      imageMat.map?.dispose();
+      texture.dispose();
       imageMat.dispose();
       group.clear();
     },

@@ -1557,10 +1557,12 @@ body.has-modal .bar {
   position: fixed;
   inset: 0;
   display: grid;
-  align-items: end;
-  padding: calc(var(--safe-top) + clamp(2rem, 8vh, 5rem))
+  justify-items: start;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: calc(var(--safe-top) + clamp(1.25rem, 4vh, 2.5rem))
     calc(var(--safe-right) + clamp(1rem, 4vw, 3rem))
-    calc(var(--safe-bottom) + clamp(6.5rem, 14vh, 8.5rem))
+    calc(var(--safe-bottom) + clamp(5.5rem, 12vh, 7.5rem))
     calc(var(--safe-left) + clamp(1rem, 4vw, 3rem));
   opacity: 0;
   transition: opacity 0.5s ease;
@@ -1577,6 +1579,7 @@ body.has-modal .bar {
 .hero__card {
   pointer-events: auto;
   width: min(680px, 100%);
+  margin-block: auto;
   display: grid;
   gap: 0.9rem;
   padding: clamp(1.5rem, 4vw, 2.5rem);

@@ -104,6 +104,7 @@ export function createCorridorController(deps: Deps): CorridorController {
   let lastActiveIdx = -1;
   let hovered: FrameHandle | null = null;
   let hoverSerial = 0;
+  let endHovering = false;
   let dragStartLook = { yaw: 0, pitch: 0 };
   let dragStartFov = 0;
   const cleanups: Array<() => void> = [];
@@ -272,6 +273,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     }
     corridor.setActiveIndex(idx);
     corridor.update(dt);
+    if (endScreen.update(dt)) deps.invalidate();
     loadAround(idx);
     if (store.get().activeIndex !== idx) store.set({ activeIndex: idx });
   }
@@ -350,6 +352,38 @@ onLeave: (f) => {
         isEnabled: () => interactive && !draggingLook && !store.get().detailProjectId,
       }),
     );
+
+    // Hover sobre la tarjeta final: mueve letras e imagen (parallax).
+    const onEndPointerMove = (event: PointerEvent): void => {
+      if (!interactive || draggingLook || store.get().detailProjectId) {
+        if (endHovering) {
+          endHovering = false;
+          endScreen.setHover(0, 0, false);
+          deps.invalidate();
+        }
+        return;
+      }
+      const rect = dom.getBoundingClientRect();
+      endPointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      endPointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+      endRaycaster.setFromCamera(endPointer, deps.camera);
+      const hit = endRaycaster.intersectObject(endScreen.hitMesh)[0];
+      if (hit?.uv) {
+        if (!endHovering) {
+          endHovering = true;
+          deps.onHoverChange(true);
+        }
+        endScreen.setHover(hit.uv.x * 2 - 1, hit.uv.y * 2 - 1, true);
+        deps.invalidate();
+      } else if (endHovering) {
+        endHovering = false;
+        endScreen.setHover(0, 0, false);
+        deps.onHoverChange(false);
+        deps.invalidate();
+      }
+    };
+    dom.addEventListener('pointermove', onEndPointerMove);
+    cleanups.push(() => dom.removeEventListener('pointermove', onEndPointerMove));
 
     cleanups.push(
       attachDrag(dom, {
