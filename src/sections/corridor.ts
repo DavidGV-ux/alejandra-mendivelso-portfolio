@@ -151,8 +151,8 @@ export function createCorridorController(deps: Deps): CorridorController {
     return index * corridor.layout.spacing - center;
   }
   function loadAround(index: number): void {
-    const w = [index - 2, index - 1, index, index + 1, index + 2];
-    for (const i of w) {
+    const indices = new Set([index - 3, index - 2, index - 1, index, index + 1, index + 2, index + 3]);
+    for (const i of indices) {
       if (i < 0 || i >= total) continue;
       const p = projects[i];
       const f = corridor.frames[i];

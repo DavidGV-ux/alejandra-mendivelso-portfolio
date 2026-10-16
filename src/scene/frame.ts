@@ -52,7 +52,7 @@ export function createFrame(
   group.userData.index = index;
 
   const imageMat = new MeshBasicMaterial({
-    color: theme.colors.textFaint,
+    color: '#000000',
     transparent: true,
     toneMapped: true,
   });
