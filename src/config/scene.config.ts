@@ -52,6 +52,12 @@ export const sceneConfig = {
     /** Duración total (s) de la animación de ensamblaje */
     duration: 2,
   },
+  video: {
+    /** Videos activos por tier */
+    maxActive: { high: 4, medium: 3, low: 1 } as Record<'high'|'medium'|'low', number>,
+    /** Distancia máxima de la cámara al marco para activar video */
+    maxDistance: 26,
+  },
   lights: {
     ambient: 0.85,
     key: 1.1,

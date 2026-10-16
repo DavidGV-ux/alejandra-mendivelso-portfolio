@@ -1,6 +1,6 @@
 import {
-  ACESFilmicToneMapping,
   Color,
+  NoToneMapping,
   PCFSoftShadowMap,
   WebGLRenderer,
 } from 'three';
@@ -30,7 +30,7 @@ export function createRenderer(
 
   renderer.setPixelRatio(quality.pixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight, false);
-  renderer.toneMapping = ACESFilmicToneMapping;
+  renderer.toneMapping = NoToneMapping;
   renderer.toneMappingExposure = 1.0;
 
   if (quality.shadows) {

@@ -30,7 +30,7 @@
     "order": 1,
     "accent": "#c084fc",
     "title_en": "Gigi and Kiki – 3D Character Showcase",
-    "coverVideo": "/media/gigi-y-kiki/preview-loop.webm"
+    "coverVideo": "/media/gigi-y-kiki/preview-loop.mp4"
   },
   {
     "id": "plataforma-domicilios",
@@ -63,7 +63,7 @@
     "order": 2,
     "accent": "#10B981",
     "title_en": "WinAI Finance – UX/UI Redesign",
-    "coverVideo": "/media/winai-finance/preview-loop.webm"
+    "coverVideo": "/media/winai-finance/preview-loop.mp4"
   },
   {
     "id": "app-movil-consulta",
@@ -96,7 +96,7 @@
     "order": 3,
     "accent": "#38bdf8",
     "title_en": "Voxy – Learn English by Speaking",
-    "coverVideo": "/media/voxy/preview-loop.webm"
+    "coverVideo": "/media/voxy/preview-loop.mp4"
   },
   {
     "id": "salvando-patitas",
@@ -116,7 +116,7 @@
       "Lottie"
     ],
     "cover": "/media/salvando-patitas/cover.svg",
-    "coverVideo": "/media/salvando-patitas/preview-loop.webm",
+    "coverVideo": "/media/salvando-patitas/preview-loop.mp4",
     "media": [
       {
         "kind": "video",
@@ -145,7 +145,7 @@
     "description_en": "New project with custom video.",
     "tools": [],
     "cover": "/media/apple/cover.svg",
-    "coverVideo": "/media/apple/preview-loop.webm",
+    "coverVideo": "/media/apple/preview-loop.mp4",
     "media": [
       {
         "kind": "video",
@@ -176,7 +176,7 @@
       "UI Design"
     ],
     "cover": "/media/kpexperience/cover.svg",
-    "coverVideo": "/media/kpexperience/preview-loop.webm",
+    "coverVideo": "/media/kpexperience/preview-loop.mp4",
     "media": [
       {
         "kind": "video",

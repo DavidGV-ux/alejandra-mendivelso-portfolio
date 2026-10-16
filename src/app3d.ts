@@ -3,7 +3,7 @@
  * toca three/gsap vive aquí para que el arranque (loader, UI, router,
  * fallback 2D) no descargue el motor 3D hasta conocer `use3D`.
  */
-import { Scene } from 'three';
+import { Color, Scene } from 'three';
 
 import { createIntro } from '@/animations/assembleIntro';
 import { createCamera } from '@/core/camera';
@@ -14,11 +14,10 @@ import { createRenderer } from '@/core/renderer';
 import { bindResize } from '@/core/resize';
 import { buildCorridorLayout } from '@/scene/corridor';
 import { createClouds } from '@/scene/clouds';
-import { createEnvironment } from '@/scene/environment';
 import { createGuideLine } from '@/scene/guideRing';
-import { createLights } from '@/scene/lights';
 import { createCorridorController } from '@/sections/corridor';
 import type { Store } from '@/state/store';
+import { getPalette } from '@/config/theme';
 import type { Project } from '@/types/project';
 import type { Capabilities } from '@/types/theme';
 
@@ -87,12 +86,9 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
   const camera = createCamera(layout);
 
   const scene = new Scene();
-  const environment = createEnvironment(scene, deps.theme);
+  scene.background = new Color(getPalette(deps.theme).bg ?? (deps.theme === 'light' ? '#ffffff' : '#101014'));
   const clouds = createClouds(scene, deps.theme, quality.tier === 'high' ? 8 : quality.tier === 'medium' ? 5 : 0);
   scene.add(camera);
-
-  const lights = createLights(deps.theme);
-  scene.add(lights.group);
 
   const loader = createLoader();
 
@@ -126,33 +122,38 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
   /* Render bajo demanda + resolución adaptativa                        */
   /* ------------------------------------------------------------------ */
   let ratio = quality.pixelRatio;
-  const renderSamples: number[] = [];
+  const frameIntervals: number[] = [];
+  let lastFrameTime = 0;
   let lastAdjust = 0;
 
   function renderFrame(dt: number): void {
     works.update(dt);
     clouds.update(camera);
-    const start = performance.now();
     rendererHandle.renderer.render(scene, camera);
     if (debugEl) debugEl.textContent = `FPS ~${dt > 0 ? (1 / dt).toFixed(0) : '–'} | calls ${rendererHandle.renderer.info.render.calls}`;
-    if (hires || !intro.done()) return;
-
-    renderSamples.push(performance.now() - start);
-    if (renderSamples.length < 30) return;
-
-    const avg = renderSamples.reduce((sum, v) => sum + v, 0) / renderSamples.length;
-    renderSamples.length = 0;
 
     const now = performance.now();
+    if (lastFrameTime > 0) {
+      const gap = now - lastFrameTime;
+      if (gap <= 250) {
+        frameIntervals.push(gap);
+        if (frameIntervals.length > 90) frameIntervals.shift();
+      }
+    }
+    lastFrameTime = now;
+
+    if (hires || !intro.done()) return;
+    if (frameIntervals.length < 30) return;
+
+    const avgGap = frameIntervals.reduce((a, b) => a + b, 0) / frameIntervals.length;
+    const estimatedFps = 1000 / avgGap;
+
     if (now - lastAdjust < 2000) return;
-    if (avg > 18 && ratio > 1) {
-      ratio = Math.max(1, ratio - 0.25);
+    const floor = caps.isTouch ? 1.5 : 1;
+    if (estimatedFps < 40 && ratio > floor) {
+      ratio = Math.max(floor, ratio * 0.85);
       rendererHandle.setPixelRatio(ratio);
-      lastAdjust = now;
-      loop?.invalidate();
-    } else if (avg < 8 && ratio < quality.pixelRatio) {
-      ratio = Math.min(quality.pixelRatio, ratio + 0.25);
-      rendererHandle.setPixelRatio(ratio);
+      rendererHandle.setSize(window.innerWidth, window.innerHeight, false);
       lastAdjust = now;
       loop?.invalidate();
     }
@@ -206,9 +207,8 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
   return {
     setTheme: (mode) => {
       rendererHandle.applyTheme(mode);
-      environment.setMode(mode);
+      scene.background = new Color(getPalette(mode).bg ?? (mode === 'light' ? '#ffffff' : '#101014'));
       clouds.setMode(mode);
-      lights.setMode(mode);
       works.setTheme(mode);
       guide.setMode(mode);
       loop?.invalidate();
