@@ -69,7 +69,7 @@ export function createCoverWebp(url: string, onFrame: () => void): CoverWebpHand
             frames++;
             if (frames % 10 === 0) console.debug('[coverWebp]', url, 'frames', frames);
           } catch {
-            try { decoder.reset(); } catch {}
+            try { decoder.reset(); } catch { void 0; }
           }
           window.setTimeout(step, 100);
         };
