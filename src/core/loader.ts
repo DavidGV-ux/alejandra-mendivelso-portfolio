@@ -62,7 +62,7 @@ export function createLoader(): LoaderHandle {
         const image = await decodeImage(resolved, maxSize);
         const texture = new Texture(image);
         texture.colorSpace = SRGBColorSpace;
-        texture.flipY = true;
+        texture.flipY = image instanceof ImageBitmap ? false : true;
         texture.anisotropy = anisotropy;
         texture.needsUpdate = true;
         texture.generateMipmaps = true;
