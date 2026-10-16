@@ -140,8 +140,8 @@
     "title_en": "Salvando Patitas"
   },
   {
-    "id": "nuevo-proyecto",
-    "title": "Grabación de pantalla 2026-10-16 a las 4.57.54 a.m..mov",
+    "id": "apple",
+    "title": "Apple",
     "category": "Video",
     "category_en": "Video",
     "year": 2026,
@@ -150,20 +150,17 @@
     "description": "Nuevo proyecto con video personalizado.",
     "description_en": "New project with custom video.",
     "tools": [],
-    "cover": "/media/nuevo-proyecto/cover.svg",
-    "coverVideo": {
-      "light": "/media/nuevo-proyecto/Grabación de pantalla 2026-10-16 a las 4.57.54 a.m..mov",
-      "dark": "/media/nuevo-proyecto/Grabación de pantalla 2026-10-16 a las 4.57.54 a.m..mov"
-    },
+    "cover": "/media/apple/cover.jpg",
+    "coverVideo": "/media/apple/preview.mp4",
     "media": [
       {
         "kind": "video",
-        "src": "/media/nuevo-proyecto/Grabación de pantalla 2026-10-16 a las 4.57.54 a.m..mov",
-        "poster": "/media/nuevo-proyecto/cover.svg",
+        "src": "/media/apple/preview.mp4",
+        "poster": "/media/apple/cover.jpg",
         "alt": "Video preview",
         "alt_en": "Video preview",
-        "width": 1080,
-        "height": 1080
+        "width": 1260,
+        "height": 1280
       }
     ],
     "links": [],
