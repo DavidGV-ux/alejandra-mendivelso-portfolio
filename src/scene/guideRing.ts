@@ -1,7 +1,7 @@
 import { BufferGeometry, Group, Line, LineBasicMaterial, Vector3 } from 'three';
 import { theme } from '@/config/theme';
 import type { ThemeMode } from '@/types/theme';
-import { endScreenZ, type CorridorLayout } from './corridor';
+import type { CorridorLayout } from './corridor';
 
 export interface GuideHandle {
   line: Group;
@@ -17,9 +17,11 @@ export function createGuideLine(
   mode: Exclude<ThemeMode, 'auto'> = 'light',
 ): GuideHandle {
   const spacing = layout.spacing;
-  const center = ((total - 1) / 2) * spacing;
+  const pairCount = Math.ceil(total / 2);
+  const center = ((pairCount - 1) / 2) * spacing;
+  // El pasillo termina justo después del último par de marcos para evitar vacío.
   const startZ = -center - spacing;
-  const endZ = endScreenZ(total, layout);
+  const endZ = (pairCount - 1) * spacing - center + spacing;
   const halfW = layout.wallOffset;
   const halfH = 2.2;
 
@@ -49,8 +51,8 @@ export function createGuideLine(
   rail(-halfW, halfH, matSoft);
   rail(halfW, halfH, matSoft);
 
-  for (let i = 0; i < total; i++) {
-    const z = i * spacing - center;
+for (let p = 0; p < pairCount; p++) {
+    const z = p * spacing - center;
     const geom = new BufferGeometry().setFromPoints([
       new Vector3(-halfW, -halfH, z),
       new Vector3(halfW, -halfH, z),
