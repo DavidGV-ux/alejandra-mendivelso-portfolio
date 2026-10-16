@@ -1,7 +1,5 @@
 import type { PerspectiveCamera } from 'three';
-import { Raycaster, Vector2 } from 'three';
-import { createCorridor, endScreenZ, type Corridor } from '@/scene/corridor';
-import { createEndScreen } from '@/scene/endScreen';
+import { createCorridor, type Corridor } from '@/scene/corridor';
 import { createCoverVideo, type CoverVideoHandle } from '@/scene/coverVideo';
 import {
   createCameraFreeLook,
@@ -65,10 +63,6 @@ interface Deps {
   onHoverChange: (hovering: boolean) => void;
   /** Despierta el loop de render bajo demanda. */
   invalidate: () => void;
-  /** Tarjeta final: texto e imagen de cierre. */
-  endCard: { title: string; subtitle: string; photo: string };
-  /** Al pulsar la pantalla final se navega a Acerca de mí. */
-  onOpenAbout: () => void;
 }
 
 function coverVideoUrl(project: Project, mode: 'light' | 'dark'): string | null {
@@ -85,12 +79,7 @@ export function createCorridorController(deps: Deps): CorridorController {
 
   const corridor = createCorridor(projects, caps);
   const cameraRig = createCameraFreeLook(camera);
-  const endScreen = createEndScreen();
-  endScreen.group.position.set(0, 0, endScreenZ(total, corridor.layout));
-  corridor.group.add(endScreen.group);
   let picker: ReturnType<typeof createPicker> | null = null;
-  const endRaycaster = new Raycaster();
-  const endPointer = new Vector2();
 
   let currentTheme: 'light' | 'dark' = deps.theme;
 
@@ -107,7 +96,6 @@ export function createCorridorController(deps: Deps): CorridorController {
   let lastActiveIdx = -1;
   let hovered: FrameHandle | null = null;
   let hoverSerial = 0;
-  let endHovering = false;
   let dragStartLook = { yaw: 0, pitch: 0 };
   let dragStartFov = 0;
   const cleanups: Array<() => void> = [];
@@ -119,7 +107,6 @@ export function createCorridorController(deps: Deps): CorridorController {
   /** Videos de cover por proyecto y tema (`${id}:${mode}`). */
   const coverVideos = new Map<string, CoverVideoHandle>();
   const videoLoading = new Set<string>();
-  let endCardPhoto: HTMLImageElement | null = null;
 
   function videoKey(id: string, mode: 'light' | 'dark'): string {
     return `${id}:${mode}`;
@@ -208,7 +195,7 @@ export function createCorridorController(deps: Deps): CorridorController {
   function travelZFor(index: number): number {
     const pairCount = Math.ceil(total / 2);
     const center = ((pairCount - 1) / 2) * corridor.layout.spacing;
-    return Math.floor(index / 2) * corridor.layout.spacing - center + corridor.layout.spacing * 2.5;
+    return Math.floor(index / 2) * corridor.layout.spacing - center - corridor.layout.spacing;
   }
   function loadAround(index: number): void {
     // Si hay pocos proyectos, los cargamos todos de golpe para evitar marcos negros al fondo.
@@ -368,14 +355,6 @@ export function createCorridorController(deps: Deps): CorridorController {
     corridor.setActiveIndex(idx);
     corridor.update(dt);
 
-    // Solo actualizamos la tarjeta final si estamos muy cerca o está siendo interactuada.
-    // Esto previene el lag al inicio y durante la navegación por los primeros proyectos.
-    const distToEnd = Math.abs(camera.position.z - endScreen.group.position.z);
-    const isVisible = distToEnd < 15;
-    if (isVisible && endScreen.update(dt)) {
-      deps.invalidate();
-    }
-
     loadAround(idx);
     if (store.get().activeIndex !== idx) store.set({ activeIndex: idx });
   }
@@ -420,41 +399,7 @@ export function createCorridorController(deps: Deps): CorridorController {
       }),
     );
 
-    // Hover sobre la tarjeta final: mueve letras e imagen (parallax).
-    const onEndPointerMove = (event: PointerEvent): void => {
-      if (!interactive || draggingLook || store.get().detailProjectId) {
-        if (endHovering) {
-          endHovering = false;
-          endScreen.setHover(0, 0, false);
-          deps.invalidate();
-        }
-        return;
-      }
-      const rect = dom.getBoundingClientRect();
-      endPointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      endPointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-      endRaycaster.setFromCamera(endPointer, deps.camera);
-      const hit = endRaycaster.intersectObject(endScreen.hitMesh)[0];
-      if (hit?.uv) {
-        const nx = hit.uv.x * 2 - 1;
-        const ny = hit.uv.y * 2 - 1;
-        if (!endHovering) {
-          endHovering = true;
-          deps.onHoverChange(true);
-        }
-        endScreen.setHover(nx, ny, true);
-        deps.invalidate();
-      } else if (endHovering) {
-        endHovering = false;
-        endScreen.setHover(0, 0, false);
-        deps.onHoverChange(false);
-        deps.invalidate();
-      }
-    };
-    dom.addEventListener('pointermove', onEndPointerMove);
-    cleanups.push(() => dom.removeEventListener('pointermove', onEndPointerMove));
-
-    cleanups.push(
+cleanups.push(
       attachDrag(dom, {
         threshold: sceneConfig.controls.dragThreshold,
         onDragStart: () => {
@@ -487,14 +432,6 @@ export function createCorridorController(deps: Deps): CorridorController {
           if (hit) {
             doSelect(hit.index);
             return;
-          }
-          // ¿Pulsó la pantalla final?
-          const rect = dom.getBoundingClientRect();
-          endPointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-          endPointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-          endRaycaster.setFromCamera(endPointer, deps.camera);
-          if (endRaycaster.intersectObject(endScreen.hitMesh).length > 0) {
-            deps.onOpenAbout();
           }
         },
       }),
@@ -553,35 +490,6 @@ export function createCorridorController(deps: Deps): CorridorController {
     });
   }
 
-  function loadPhoto(url: string): Promise<HTMLImageElement | null> {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = () => resolve(null);
-      img.src = url;
-    });
-  }
-
-  function loadEndScreen(): void {
-    const render = (photo: HTMLImageElement | null) => {
-      endScreen.renderCard(photo, deps.endCard.title, deps.endCard.subtitle, currentTheme);
-      deps.invalidate();
-    };
-    if (endCardPhoto) {
-      render(endCardPhoto);
-      return;
-    }
-    const url = deps.endCard.photo;
-    if (!url) {
-      render(null);
-      return;
-    }
-    void loadPhoto(url).then((img) => {
-      endCardPhoto = img;
-      render(img);
-    });
-  }
-
   return {
     corridor,
     cameraRig,
@@ -615,19 +523,16 @@ export function createCorridorController(deps: Deps): CorridorController {
           if (project) loaded.delete(project.id);
         }
       }
-      loadEndScreen();
       loadAround(activeIndex());
       deps.invalidate();
     },
     isSettled: () =>
       Math.abs(target - progress) < 0.001 &&
       cameraRig.isSettled() &&
-      endScreen.isSettled() &&
       corridor.frames.every((frame) => frame.isSettled()),
     preload: () => {
       loadAround(activeIndex());
       updateVideoPlayback();
-      loadEndScreen();
     },
     attach,
     activeIndex,
@@ -638,7 +543,6 @@ export function createCorridorController(deps: Deps): CorridorController {
       cameraRig.dispose();
       coverVideos.forEach((v) => v.dispose());
       coverVideos.clear();
-      endScreen.dispose();
       corridor.dispose();
     },
   };

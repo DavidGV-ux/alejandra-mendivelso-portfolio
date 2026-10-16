@@ -391,15 +391,6 @@ function boot3D(): void {
         onCloseDetail: () => closeDetailUI(),
         onHoverChange: (hovering) => cursor.setInteractive(hovering),
         onIntroEnd: () => updateInteractive(),
-        onOpenAbout: () => {
-          closeHeroUI();
-          setSection('about');
-        },
-        endCard: {
-          title: dict.endcard.title,
-          subtitle: dict.endcard.subtitle,
-          photo: content.profile.photo,
-        },
       });
 
       for (const action of pending3d.splice(0)) action(scene3d);
