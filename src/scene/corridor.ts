@@ -32,6 +32,11 @@ export function endScreenZ(total: number, layout: CorridorLayout): number {
   return Math.floor((total - 1) / 2) * layout.spacing - center + layout.spacing * 2.2;
 }
 
+/** Profundidad para el proyecto centrado al fondo del pasillo. */
+export function endBackdropZ(layout: CorridorLayout): number {
+  return layout.spacing * 2;
+}
+
 export function framePositionCorridor(
   index: number,
   total: number,
@@ -68,8 +73,15 @@ export function createCorridor(
     const frame = createFrame(project, index);
     const wrapper = new Group();
     framePositionCorridor(index, projects.length, layout, tmp);
-    wrapper.position.copy(tmp);
-    wrapper.lookAt(0, tmp.y, tmp.z);
+    if (index === projects.length - 1) {
+      // Último proyecto centrado al fondo del pasillo para cerrar la vista.
+      tmp.set(0, 0, endBackdropZ(layout));
+      wrapper.position.copy(tmp);
+      wrapper.rotation.y = Math.PI;
+    } else {
+      wrapper.position.copy(tmp);
+      wrapper.lookAt(0, tmp.y, tmp.z);
+    }
     wrapper.add(frame.group);
     frame.group.userData.wrapper = wrapper;
     group.add(wrapper);
