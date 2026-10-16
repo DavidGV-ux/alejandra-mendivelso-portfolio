@@ -27,47 +27,40 @@ const MAT_FRAGMENT = /* glsl */ `
   uniform vec3 uOrange;
   uniform vec3 uCream;
   uniform vec3 uWhite;
-  uniform vec3 uCloudBlue;
-  uniform vec3 uCloudGray;
+  uniform vec3 uBlueDeep;
+  uniform vec3 uBlueSoft;
+  uniform vec2 uMatHalf;
+  uniform float uMatWidth;
   varying vec2 vUv;
 
-  float hash(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
-  }
-
-  float noise(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    vec2 u = f * f * (3.0 - 2.0 * f);
-    return mix(
-      mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
-      mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
-      u.y
-    );
-  }
-
-  float fbm(vec2 p) {
-    float v = 0.0;
-    float a = 0.55;
-    for (int i = 0; i < 4; i++) {
-      v += a * noise(p);
-      p = p * 2.03 + vec2(11.3, 7.7);
-      a *= 0.5;
-    }
-    return v;
+  float sdRoundBox(vec2 p, vec2 b, float r) {
+    vec2 q = abs(p) - b + r;
+    return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r;
   }
 
   void main() {
     vec3 color;
     float pulse;
     if (uMode > 0.5) {
-      // Modo día: blanco con nubes suaves azules y grises que derivan lento.
-      vec2 p = vec2(vUv.x * 2.6, vUv.y * 1.9);
-      float n1 = fbm(p + vec2(uTime * 0.035, -uTime * 0.02));
-      float n2 = fbm(p * 1.7 + vec2(-uTime * 0.022, uTime * 0.03) + 4.7);
+      // Modo día: blanco con líneas y curvas azules que fluyen por el paspartú.
+      float corner = 0.34;
+      vec2 p = (vUv - 0.5) * 2.0 * uMatHalf;
+      float d = sdRoundBox(p, uMatHalf - vec2(corner), corner) - corner;
       color = uWhite;
-      color = mix(color, uCloudGray, smoothstep(0.48, 0.74, n1) * 0.9);
-      color = mix(color, uCloudBlue, smoothstep(0.52, 0.8, n2) * 0.75);
+      // lavado azul suave que se intensifica hacia el video
+      color = mix(color, uBlueSoft, smoothstep(-0.02, -uMatWidth, d) * 0.4);
+      // ondas concéntricas que recorren el marco hacia afuera
+      float phase = (d - uTime * 0.05) / 0.075;
+      float wave = 1.0 - smoothstep(0.03, 0.12, abs(fract(phase) - 0.5));
+      float fade = smoothstep(0.0, -0.06, d) * (0.5 + 0.3 * sin(phase * 2.0));
+      vec3 waveColor = mix(uBlueSoft, uBlueDeep, smoothstep(-0.05, -uMatWidth * 0.9, d));
+      color = mix(color, waveColor, wave * fade * 0.75);
+      // línea fina junto al borde del marco
+      float edge = 1.0 - smoothstep(0.0, 0.012, abs(d + 0.014));
+      color = mix(color, uBlueDeep, edge * 0.85);
+      // línea fina que enmarca el video
+      float inner = 1.0 - smoothstep(0.0, 0.012, abs(d + uMatWidth - 0.008));
+      color = mix(color, uBlueDeep, inner * 0.7);
       pulse = 0.97 + 0.03 * sin(uTime * 0.9);
     } else {
       // Modo noche: la paleta del video fluye alrededor del marco.
@@ -90,8 +83,8 @@ const HALO_FRAGMENT = /* glsl */ `
   uniform float uMode;
   uniform vec3 uGreen;
   uniform vec3 uOrange;
-  uniform vec3 uCloudBlue;
-  uniform vec3 uCloudGray;
+  uniform vec3 uBlueGlow;
+  uniform vec3 uBlueSoft;
   uniform vec2 uFrameHalf;
   uniform vec2 uPlaneHalf;
   uniform float uFalloff;
@@ -106,8 +99,8 @@ const HALO_FRAGMENT = /* glsl */ `
     vec3 color;
     float strength;
     if (uMode > 0.5) {
-      color = mix(uCloudBlue, uCloudGray, wave * 0.6);
-      strength = 0.18 + 0.14 * (0.5 + 0.5 * sin(uTime * 0.9 + 1.2));
+      color = mix(uBlueGlow, uBlueSoft, wave * 0.5);
+      strength = 0.34 + 0.2 * (0.5 + 0.5 * sin(uTime * 0.9 + 1.2));
     } else {
       color = mix(uGreen, uOrange, wave * 0.6);
       strength = 0.2 + 0.18 * (0.5 + 0.5 * sin(uTime * 1.1 + 1.2));
@@ -126,16 +119,17 @@ const NIGHT_PALETTE = {
 
 const DAY_PALETTE = {
   white: '#ffffff',
-  cloudBlue: '#a9c6de',
-  cloudGray: '#d7dce1',
+  blueDeep: '#5f92c4',
+  blueSoft: '#c3d9ec',
+  blueGlow: '#86b3da',
 };
 
 const HALO = 0.55;
 
 /**
  * Marco "vivo" para los proyectos con video. De noche el paspartú fluye con
- * la paleta del video; de día es blanco con nubes azules y grises que derivan
- * despacio. Un halo suave respira alrededor del marco. La animación avanza
+ * la paleta del video; de día es blanco con líneas y curvas azules que
+ * recorren el marco y un halo azul que brilla alrededor. La animación avanza
  * con los renders del corredor (el video los despierta a ~30 fps).
  */
 export function createLiveFrameFx(frameW: number, frameH: number, border: number, mat: number): LiveFrameFx {
@@ -148,8 +142,9 @@ export function createLiveFrameFx(frameW: number, frameH: number, border: number
   const orange = new Color(NIGHT_PALETTE.orange);
   const cream = new Color(NIGHT_PALETTE.cream);
   const white = new Color(DAY_PALETTE.white);
-  const cloudBlue = new Color(DAY_PALETTE.cloudBlue);
-  const cloudGray = new Color(DAY_PALETTE.cloudGray);
+  const blueDeep = new Color(DAY_PALETTE.blueDeep);
+  const blueSoft = new Color(DAY_PALETTE.blueSoft);
+  const blueGlow = new Color(DAY_PALETTE.blueGlow);
 
   const matMaterial = new ShaderMaterial({
     uniforms: {
@@ -160,8 +155,10 @@ export function createLiveFrameFx(frameW: number, frameH: number, border: number
       uOrange: { value: orange },
       uCream: { value: cream },
       uWhite: { value: white },
-      uCloudBlue: { value: cloudBlue },
-      uCloudGray: { value: cloudGray },
+      uBlueDeep: { value: blueDeep },
+      uBlueSoft: { value: blueSoft },
+      uMatHalf: { value: [(frameW + 2 * mat) / 2, (frameH + 2 * mat) / 2] },
+      uMatWidth: { value: mat },
     },
     vertexShader: VERTEX,
     fragmentShader: MAT_FRAGMENT,
@@ -175,8 +172,8 @@ export function createLiveFrameFx(frameW: number, frameH: number, border: number
       uMode: { value: 0 },
       uGreen: { value: green },
       uOrange: { value: orange },
-      uCloudBlue: { value: cloudBlue },
-      uCloudGray: { value: cloudGray },
+      uBlueGlow: { value: blueGlow },
+      uBlueSoft: { value: blueSoft },
       uFrameHalf: { value: [outerW / (2 * planeW), outerH / (2 * planeH)] },
       uPlaneHalf: { value: [planeW / 2, planeH / 2] },
       uFalloff: { value: HALO },
