@@ -501,16 +501,6 @@ window.addEventListener('keydown', (event) => {
   if (state.section !== 'works') return;
 
   switch (event.key) {
-    case 'ArrowLeft':
-    case 'ArrowUp':
-      event.preventDefault();
-      actions.step(-1);
-      break;
-    case 'ArrowRight':
-    case 'ArrowDown':
-      event.preventDefault();
-      actions.step(1);
-      break;
     case 'Enter':
     case ' ':
       event.preventDefault();

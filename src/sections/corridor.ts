@@ -107,6 +107,7 @@ export function createCorridorController(deps: Deps): CorridorController {
   let endHovering = false;
   let dragStartLook = { yaw: 0, pitch: 0 };
   let dragStartFov = 0;
+  const keys = { up: false, down: false, left: false, right: false };
   const cleanups: Array<() => void> = [];
 
   const loaded = new Set<string>();
@@ -267,6 +268,20 @@ export function createCorridorController(deps: Deps): CorridorController {
 
   function update(dt: number): void {
     const lambda = reducedMotion ? 1000 : 6;
+
+    // Movimiento continuo por teclado (flechas).
+    if (interactive && !store.get().detailProjectId) {
+      const speed = 3.0 * dt; // velocidad de desplazamiento en unidades de "índice"
+      if (keys.up || keys.left) {
+        releaseSelection();
+        target = clampTarget(target - speed);
+      }
+      if (keys.down || keys.right) {
+        releaseSelection();
+        target = clampTarget(target + speed);
+      }
+    }
+
     progress += (target - progress) * (1 - Math.exp(-lambda * dt));
     if (Math.abs(target - progress) < 0.001) progress = target;
 
@@ -477,6 +492,29 @@ onLeave: (f) => {
     };
     dom.addEventListener('dblclick', onDoubleClick);
     cleanups.push(() => dom.removeEventListener('dblclick', onDoubleClick));
+
+    const onKeyDown = (e: KeyboardEvent): void => {
+      if (!interactive || store.get().detailProjectId) return;
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+      }
+      if (e.key === 'ArrowUp') keys.up = true;
+      if (e.key === 'ArrowDown') keys.down = true;
+      if (e.key === 'ArrowLeft') keys.left = true;
+      if (e.key === 'ArrowRight') keys.right = true;
+    };
+    const onKeyUp = (e: KeyboardEvent): void => {
+      if (e.key === 'ArrowUp') keys.up = false;
+      if (e.key === 'ArrowDown') keys.down = false;
+      if (e.key === 'ArrowLeft') keys.left = false;
+      if (e.key === 'ArrowRight') keys.right = false;
+    };
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    cleanups.push(() => {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+    });
   }
 
   function loadPhoto(url: string): Promise<HTMLImageElement | null> {
