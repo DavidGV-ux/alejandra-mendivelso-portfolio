@@ -188,8 +188,12 @@ const guide = createGuideLine(projects.length, works.corridor.layout, deps.theme
   });
 
   store.subscribeKey('section', (section) => {
-    if (section === 'works') loop?.start();
-    else if (!store.get().detailProjectId) loop?.stop();
+    if (section === 'works') {
+      loop?.start();
+    } else {
+      if (!store.get().detailProjectId) loop?.stop();
+      overlay.hide();
+    }
   });
 
   function finishIntro(): void {

@@ -5,6 +5,7 @@ export interface SelectionOverlay {
   el: HTMLElement;
   update(frames: FrameHandle[], camera: any, selectedIdx: number | null, hoverIdx: number | null): void;
   dispose(): void;
+  hide(): void;
 }
 
 export function createSelectionOverlay(ctx: UIContext, _canvas: HTMLElement): SelectionOverlay {
@@ -177,6 +178,13 @@ export function createSelectionOverlay(ctx: UIContext, _canvas: HTMLElement): Se
       sel.remove();
       labels.forEach((l) => l.remove());
       goBtn.remove();
+    },
+    hide() {
+      sel.setAttribute('points', '');
+      boxPoly.setAttribute('points', '');
+      rects.forEach((r) => (r.style.display = 'none'));
+      labels.forEach((l) => (l.style.display = 'none'));
+      goBtn.style.display = 'none';
     },
   };
 }
