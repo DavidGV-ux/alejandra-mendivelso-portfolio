@@ -9,3 +9,4 @@ dist
 stats.html
 stats.json
 src/content/generated
+.aider*

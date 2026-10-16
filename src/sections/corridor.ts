@@ -340,6 +340,45 @@ if (
       duration: reducedMotion ? 0 : 0.62,
       frontal: true,
     });
+    // DEBUG LOGGING - START
+    const debug = new URLSearchParams(location.search).has('debug');
+    if (debug) {
+      // Get the selected frame
+      const selectedFrame = corridor.frames[i];
+      if (selectedFrame) {
+        // Update matrixWorld for accurate position/normal
+        selectedFrame.image.updateMatrixWorld(true);
+
+        // Get world position of image center (C)
+        const C = new Vector3();
+        selectedFrame.image.getWorldPosition(C);
+
+        // Get world normal of image plane (n)
+        // Local normal is (0,0,1) for PlaneGeometry
+        const n = new Vector3(0, 0, 1).applyMatrix4(selectedFrame.image.matrixWorld).normalize();
+
+        // Get camera position (P)
+        const P = camera.position.clone();
+
+        // Get camera forward direction (F)
+        const F = camera.getWorldDirection(new Vector3());
+
+        // Calculate dot products
+        const dotFn = F.dot(n);
+        const dotPCn = P.clone().sub(C).dot(n);
+
+        // Get internal yaw/pitch from rig
+        const look = cameraRig.getLook();
+
+        console.log(`[DEBUG FRAME ${i}] C:(${C.x.toFixed(3)},${C.y.toFixed(3)},${C.z.toFixed(3)}) ` +
+                   `n:(${n.x.toFixed(3)},${n.y.toFixed(3)},${n.z.toFixed(3)}) ` +
+                   `P:(${P.x.toFixed(3)},${P.y.toFixed(3)},${P.z.toFixed(3)}) ` +
+                   `F:(${F.x.toFixed(3)},${F.y.toFixed(3)},${F.z.toFixed(3)}) ` +
+                   `dot(F,n):${dotFn.toFixed(3)} dot(P-C,n):${dotPCn.toFixed(3)} ` +
+                   `yaw:${look.yaw.toFixed(3)} pitch:${look.pitch.toFixed(3)}`);
+      }
+    }
+    // DEBUG LOGGING - END
     selectedIndex = i;
     previewIndex = i;
     requestPreview(i);
