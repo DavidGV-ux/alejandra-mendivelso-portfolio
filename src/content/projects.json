@@ -52,12 +52,12 @@
       "UX research",
       "Prototipado"
     ],
-    "cover": "/media/plataforma-domicilios/cover.svg",
+    "cover": "/media/winai-finance/cover.svg",
     "media": [
       {
         "kind": "video",
         "src": "/media/winai-finance/preview-dia.mp4",
-        "poster": "/media/plataforma-domicilios/cover.svg",
+        "poster": "/media/winai-finance/cover.svg",
         "alt": "Recorrido de la app WinAI Finance",
         "alt_en": "WinAI Finance app walkthrough",
         "width": 1080,

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <rect width="1080" height="1080" fill="#0B1424"/>
+  <rect x="80" y="80" width="920" height="920" rx="48" fill="#13203A" stroke="#233453" stroke-width="2"/>
+  <text x="120" y="220" font-family="Manrope,system-ui,sans-serif" font-weight="900" font-size="96" fill="#EAF0F8">winAI Finance</text>
+  <text x="120" y="300" font-family="Manrope,system-ui,sans-serif" font-weight="600" font-size="42" fill="#8C9BB3">Rediseño UX/UI</text>
+  <rect x="120" y="420" width="260" height="260" rx="40" fill="#10B981" opacity="0.18"/>
+  <text x="250" y="585" text-anchor="middle" font-family="Manrope,system-ui,sans-serif" font-weight="900" font-size="72" fill="#34D399">AI</text>
+  <text x="120" y="780" font-family="Manrope,system-ui,sans-serif" font-weight="700" font-size="34" fill="#EAF0F8">COP 1.206.000</text>
+  <text x="120" y="830" font-family="Manrope,system-ui,sans-serif" font-weight="500" font-size="28" fill="#8C9BB3">Disponible este mes</text>
+  <rect x="120" y="900" width="200" height="8" rx="4" fill="#10B981"/>
+</svg>

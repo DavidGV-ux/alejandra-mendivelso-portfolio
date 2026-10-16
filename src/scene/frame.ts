@@ -11,10 +11,8 @@ import { theme } from '@/config/theme';
 import { damp } from '@/utils/math';
 import type { Project } from '@/types/project';
 import type { ThemeMode } from '@/types/theme';
-import { createLabel, type LabelHandle } from './label';
 
 const { width: W, height: H } = sceneConfig.frame;
-const MAT = 0.14;
 
 export interface FrameHandle {
   group: Group;
@@ -39,8 +37,6 @@ export function createFrame(
   project: Project,
   index: number,
 ): FrameHandle {
-  const accent = project.accent ?? theme.colors.accent;
-
   const group = new Group();
   group.userData.index = index;
 
@@ -54,38 +50,13 @@ export function createFrame(
   const image = new Mesh(imageGeometry, imageMat);
   image.position.z = 0.024;
 
-  const metaLabel: LabelHandle = createLabel({
-    text: `${project.category} / ${project.year}`.toUpperCase(),
-    fontFamily: theme.fonts.meta,
-    fontSize: 20,
-    weight: '700',
-    color: '#f8f6f2',
-    background: 'rgba(16, 16, 20, 0.72)',
-    worldHeight: 0.16,
-    letterSpacing: 3.6,
-  });
-  metaLabel.sprite.position.set(0, H / 2 + MAT + 0.36, 0.03);
+  // Solo la imagen/video flota, sin marco ni títulos.
+  group.add(image);
 
-  const titleLabel: LabelHandle = createLabel({
-    text: project.title,
-    fontFamily: theme.fonts.display,
-    fontSize: 36,
-    weight: '600',
-    color: '#f8f6f2',
-    background: 'rgba(16, 16, 20, 0.7)',
-    accent,
-    worldHeight: 0.28,
-    letterSpacing: -2.5,
-  });
-  titleLabel.sprite.position.set(0, H / 2 + MAT + 0.68, 0.03);
-
-  group.add(image, metaLabel.sprite, titleLabel.sprite);
-
-  // La hitbox coincide con el marco completo para facilitar el clic.
-  const hitGeometry = new PlaneGeometry(W + 2 * MAT, H + 2 * MAT + 0.9);
+  // La hitbox coincide con la imagen para facilitar el clic.
+  const hitGeometry = new PlaneGeometry(W, H);
   const hitMat = new MeshBasicMaterial({ visible: false });
   const hitMesh = new Mesh(hitGeometry, hitMat);
-  hitMesh.position.set(0, 0.35, 0.05);
   group.add(hitMesh);
 
   const state = {
@@ -97,9 +68,7 @@ export function createFrame(
     imageAspect: W / H,
   };
 
-  titleLabel.setOpacity(0);
-
-  function targets(): { scale: number; lift: number; opacity: number; title: number } {
+  function targets(): { scale: number; lift: number; opacity: number } {
     return {
       scale: state.hover
         ? sceneConfig.frame.hoverScale
@@ -112,13 +81,11 @@ export function createFrame(
         : state.hover || state.active
           ? 1
           : sceneConfig.frame.inactiveOpacity,
-      title: state.hover || state.active ? 1 : 0,
     };
   }
 
   function update(dt: number): void {
-    const { scale: targetScale, lift: targetLift, opacity: targetOpacity, title: titleTarget } =
-      targets();
+    const { scale: targetScale, lift: targetLift, opacity: targetOpacity } = targets();
 
     state.scale = damp(state.scale, targetScale, 8, dt);
     state.lift = damp(state.lift, targetLift, 8, dt);
@@ -129,11 +96,6 @@ export function createFrame(
     const next = damp(opacity, targetOpacity, 10, dt);
     imageMat.opacity = next;
 
-    const metaTarget = state.focused ? 0 : next;
-    const titleOpacity = damp(titleLabel.sprite.material.opacity, titleTarget, 10, dt);
-    titleLabel.setOpacity(titleOpacity * (state.focused ? 0 : 1));
-    metaLabel.setOpacity(metaTarget);
-
     group.visible = next > 0.01;
   }
 
@@ -142,8 +104,7 @@ export function createFrame(
     return (
       Math.abs(state.scale - target.scale) < 0.002 &&
       Math.abs(state.lift - target.lift) < 0.002 &&
-      Math.abs(imageMat.opacity - target.opacity) < 0.004 &&
-      Math.abs(titleLabel.sprite.material.opacity - target.title) < 0.004
+      Math.abs(imageMat.opacity - target.opacity) < 0.004
     );
   }
 
@@ -194,8 +155,6 @@ export function createFrame(
       hitGeometry.dispose();
       imageMat.dispose();
       hitMat.dispose();
-      metaLabel.dispose();
-      titleLabel.dispose();
       group.clear();
     },
   };
