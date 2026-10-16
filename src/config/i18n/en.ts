@@ -11,6 +11,13 @@ export const en: Dictionary = {
     help: 'Help',
     close: 'Close',
     theme: 'Theme',
+    music: 'Piano music',
+    musicOn: 'Pause piano music',
+    musicOff: 'Play piano music',
+    sections: 'Sections',
+    bar: 'Navigation bar',
+    changeLanguage: 'Change language / Cambiar idioma',
+    skip: 'Skip to navigation',
   },
   loader: {
     loading: 'Preparing the gallery',
@@ -20,7 +27,6 @@ export const en: Dictionary = {
   },
   cursor: {
     client: 'Visitor',
-    owner: 'Alejandra',
   },
   intro: {
     skip: 'Skip intro',
@@ -64,6 +70,8 @@ export const en: Dictionary = {
     noMedia: 'This project has no additional media.',
     mediaError: 'This asset could not be loaded.',
     playVideo: 'Play video',
+    captions: 'Spanish',
+    openModel: 'Open .glb model',
   },
   about: {
     title: 'About',

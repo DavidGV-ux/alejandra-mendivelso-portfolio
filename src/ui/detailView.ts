@@ -31,7 +31,13 @@ function buildSlide(item: MediaItem, dict: UIContext['dict']): HTMLElement {
     video.append(source);
     if (item.captions) {
       const track = el('track', {
-        attrs: { kind: 'captions', src: item.captions, srclang: 'es', label: 'Español', default: 'true' },
+        attrs: {
+          kind: 'captions',
+          src: item.captions,
+          srclang: 'es',
+          label: dict.detail.captions,
+          default: 'true',
+        },
       });
       video.append(track);
     }
@@ -43,7 +49,7 @@ function buildSlide(item: MediaItem, dict: UIContext['dict']): HTMLElement {
           el('span', { class: 'detail__badge', text: '3D' }),
           el('a', {
             class: 'btn',
-            text: 'Abrir modelo .glb',
+            text: dict.detail.openModel,
             attrs: { href: item.src, target: '_blank', rel: 'noopener noreferrer' },
           }),
         ],
@@ -119,6 +125,9 @@ export function createDetailView(ctx: UIContext): DetailView {
     linksList,
   );
 
+  const body = el('div', { class: 'detail__body' });
+  body.append(stage, info);
+
   const closeBtn = el('button', {
     class: 'modal__close',
     html: closeSvg(),
@@ -141,11 +150,38 @@ export function createDetailView(ctx: UIContext): DetailView {
     class: 'detail',
     attrs: { role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'detail-title' },
   });
-  card.append(closeBtn, stage, info, footer);
+  card.append(closeBtn, body, footer);
 
   const backdrop = el('div', { class: 'modal modal--detail', attrs: { role: 'presentation' } });
   backdrop.append(card);
   backdrop.hidden = true;
+
+  let lastFocused: HTMLElement | null = null;
+
+  function focusables(): HTMLElement[] {
+    const selector =
+      'a[href], button:not([disabled]), video[controls], [tabindex]:not([tabindex="-1"])';
+    return Array.from(backdrop.querySelectorAll<HTMLElement>(selector)).filter(
+      (node) => !node.hidden && node.getClientRects().length > 0,
+    );
+  }
+
+  function onKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Tab') return;
+    const items = focusables();
+    if (items.length === 0) return;
+    const first = items[0]!;
+    const last = items[items.length - 1]!;
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || !backdrop.contains(active))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+  backdrop.addEventListener('keydown', onKeydown);
 
   function renderMedia(): void {
     if (!project) return;
@@ -283,6 +319,7 @@ export function createDetailView(ctx: UIContext): DetailView {
     render,
     open(): boolean {
       if (!project) return false;
+      lastFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       backdrop.hidden = false;
       document.body.classList.add('has-modal');
       closeBtn.focus();
@@ -292,6 +329,14 @@ export function createDetailView(ctx: UIContext): DetailView {
       backdrop.hidden = true;
       if (!ctx.store.get().helpOpen) document.body.classList.remove('has-modal');
       project = null;
+      const target = lastFocused;
+      lastFocused = null;
+      if (target && target.isConnected && target !== document.body) {
+        target.focus();
+      } else {
+        const canvas = document.getElementById('scene');
+        if (canvas) canvas.focus();
+      }
     },
     nextMedia,
     prevMedia,

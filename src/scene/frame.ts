@@ -73,13 +73,14 @@ export function createFrame(project: Project, index: number): FrameHandle {
   line.position.set(0, H / 2 + MAT + 0.11, 0.02);
 
   const metaLabel: LabelHandle = createLabel({
-    text: `${project.category} / ${project.year}`,
+    text: `${project.category} / ${project.year}`.toUpperCase(),
     fontFamily: theme.fonts.meta,
     fontSize: 20,
-    color: '#f6f2ec',
-    background: 'rgba(18, 16, 13, 0.72)',
+    weight: '700',
+    color: '#f8f6f2',
+    background: 'rgba(16, 16, 20, 0.72)',
     worldHeight: 0.16,
-    letterSpacing: 1.4,
+    letterSpacing: 3.6,
   });
   metaLabel.sprite.position.set(0, H / 2 + MAT + 0.36, 0.03);
 
@@ -88,10 +89,11 @@ export function createFrame(project: Project, index: number): FrameHandle {
     fontFamily: theme.fonts.display,
     fontSize: 36,
     weight: '600',
-    color: '#f6f2ec',
-    background: 'rgba(18, 16, 13, 0.7)',
+    color: '#f8f6f2',
+    background: 'rgba(16, 16, 20, 0.7)',
     accent,
     worldHeight: 0.28,
+    letterSpacing: -2.5,
   });
   titleLabel.sprite.position.set(0, H / 2 + MAT + 0.68, 0.03);
 

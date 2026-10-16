@@ -65,8 +65,8 @@ export function createEnvironment(
 
   function setMode(next: Exclude<ThemeMode, 'auto'>): void {
     const palette = next === 'dark'
-      ? { top: '#1f1b18', bottom: '#0f0d0b', fog: '#141210' }
-      : { top: '#fbf8f3', bottom: '#e7dfd4', fog: theme.colors.fog };
+      ? { top: '#1b1b24', bottom: '#101014', fog: '#101014' }
+      : { top: '#fbf9f3', bottom: '#e7e3d8', fog: '#e7e3d8' };
     top.set(palette.top);
     bottom.set(palette.bottom);
     const uniforms = material.uniforms as Record<string, { value: unknown }>;

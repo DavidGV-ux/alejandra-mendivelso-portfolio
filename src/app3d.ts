@@ -13,6 +13,7 @@ import { getQuality } from '@/core/quality';
 import { createRenderer } from '@/core/renderer';
 import { bindResize } from '@/core/resize';
 import { buildCorridorLayout } from '@/scene/corridor';
+import { createClouds } from '@/scene/clouds';
 import { createEnvironment } from '@/scene/environment';
 import { createGuideLine } from '@/scene/guideRing';
 import { createLights } from '@/scene/lights';
@@ -56,8 +57,8 @@ export interface Scene3DDeps {
 async function ensureLabelFonts(): Promise<void> {
   if (!('fonts' in document)) return;
   const load = Promise.all([
-    document.fonts.load('500 36px Fraunces'),
-    document.fonts.load('500 20px Inter'),
+    document.fonts.load('600 36px "Space Grotesk"'),
+    document.fonts.load('700 20px "DM Sans"'),
   ]).then(() => undefined);
   const timeout = new Promise<void>((resolve) => window.setTimeout(resolve, 1500));
   await Promise.race([load, timeout]);
@@ -76,6 +77,7 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
 
   const scene = new Scene();
   const environment = createEnvironment(scene, deps.theme);
+  const clouds = createClouds(scene, deps.theme, quality.tier === 'high' ? 14 : quality.tier === 'medium' ? 10 : 6);
   scene.add(camera);
 
   const lights = createLights(deps.theme);
@@ -117,6 +119,7 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
 
   function renderFrame(dt: number): void {
     works.update(dt);
+    clouds.update(camera);
     const start = performance.now();
     rendererHandle.renderer.render(scene, camera);
     if (hires || !intro.done()) return;
@@ -191,6 +194,7 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
     setTheme: (mode) => {
       rendererHandle.applyTheme(mode);
       environment.setMode(mode);
+      clouds.setMode(mode);
       lights.setMode(mode);
       loop?.invalidate();
     },
@@ -204,6 +208,7 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
     dispose: () => {
       resizeHandle.dispose();
       works.dispose();
+      clouds.dispose();
       loader.dispose();
       rendererHandle.dispose();
     },

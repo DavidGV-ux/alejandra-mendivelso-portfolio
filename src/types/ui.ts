@@ -20,12 +20,19 @@ export interface UIActions {
   closeHelp: () => void;
 }
 
+export interface UIMusic {
+  isPlaying: () => boolean;
+  toggle: () => boolean;
+  setOnChange: (fn: (playing: boolean) => void) => void;
+}
+
 export interface UIContext {
   dict: Dictionary;
   profile: Profile;
   projects: Project[];
   store: Store;
   actions: UIActions;
+  music: UIMusic;
   currentThemeMode: () => ThemeMode;
   currentLocale: () => 'es' | 'en';
 }

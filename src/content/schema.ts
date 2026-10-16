@@ -6,7 +6,9 @@ const mediaItemSchema = z
     src: z.string().min(1),
     poster: z.string().optional(),
     alt: z.string().optional(),
+    alt_en: z.string().optional(),
     captions: z.string().optional(),
+    captions_en: z.string().optional(),
     width: z.number().positive().optional(),
     height: z.number().positive().optional(),
   })
@@ -22,14 +24,26 @@ export const projectSchema = z.object({
     .regex(/^[a-z0-9-]+$/, 'El id debe ser minúsculas, números y guiones (slug).'),
   title: z.string().min(1),
   category: z.string().min(1),
+  category_en: z.string().min(1).optional(),
   year: z.number().int().min(1900).max(2100),
   client: z.string().optional(),
+  client_en: z.string().optional(),
   role: z.string().min(1),
+  role_en: z.string().min(1).optional(),
   description: z.string().min(1),
+  description_en: z.string().min(1).optional(),
   tools: z.array(z.string()).default([]),
   cover: z.string().min(1),
   media: z.array(mediaItemSchema).default([]),
-  links: z.array(z.object({ label: z.string().min(1), url: z.string().url() })).default([]),
+  links: z
+    .array(
+      z.object({
+        label: z.string().min(1),
+        label_en: z.string().min(1).optional(),
+        url: z.string().url(),
+      }),
+    )
+    .default([]),
   order: z.number(),
   accent: z
     .string()
@@ -39,35 +53,51 @@ export const projectSchema = z.object({
 
 export const projectsSchema = z.array(projectSchema);
 
-const statSchema = z.object({ label: z.string().min(1), value: z.string().min(1) });
+const statSchema = z.object({
+  label: z.string().min(1),
+  label_en: z.string().min(1).optional(),
+  value: z.string().min(1),
+});
 const experienceSchema = z.object({
   period: z.string().min(1),
+  period_en: z.string().min(1).optional(),
   title: z.string().min(1),
+  title_en: z.string().min(1).optional(),
   org: z.string().min(1),
+  org_en: z.string().min(1).optional(),
   description: z.string().optional(),
+  description_en: z.string().optional(),
 });
 const skillSchema = z.object({
   name: z.string().min(1),
+  name_en: z.string().min(1).optional(),
   level: z.number().min(0).max(100).optional(),
 });
 const socialSchema = z.object({
   label: z.string().min(1),
+  label_en: z.string().min(1).optional(),
   url: z.string().min(1),
   icon: z.enum(['instagram', 'linkedin', 'behance', 'whatsapp', 'mail', 'dribbble', 'x']),
 });
 const aboutCardSchema = z.object({
   type: z.enum(['profile', 'bio', 'stats', 'experience', 'skills', 'text']),
   title: z.string().optional(),
+  title_en: z.string().optional(),
   span: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
   body: z.string().optional(),
+  body_en: z.string().optional(),
 });
 
 export const profileCoreSchema = z.object({
   name: z.string().min(1),
   role: z.string().min(1),
+  role_en: z.string().min(1).optional(),
   location: z.string().min(1),
+  location_en: z.string().min(1).optional(),
   tagline: z.string().min(1),
+  tagline_en: z.string().min(1).optional(),
   bio: z.string().min(1),
+  bio_en: z.string().min(1).optional(),
   photo: z.string().min(1),
   email: z.string().email(),
   phone: z.string().optional(),

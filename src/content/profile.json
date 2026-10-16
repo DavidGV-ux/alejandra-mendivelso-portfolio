@@ -1,9 +1,13 @@
 {
   "name": "Liseth Alejandra Rairan Mendivelso",
   "role": "Ingeniera Multimedia | UI/UX | Diseño",
+  "role_en": "Multimedia Engineer | UI/UX | Design",
   "location": "Sogamoso, Boyacá, Colombia",
+  "location_en": "Sogamoso, Boyacá, Colombia",
   "tagline": "Diseño experiencias digitales funcionales, accesibles y con identidad propia.",
+  "tagline_en": "I design digital experiences that are functional, accessible and full of character.",
   "bio": "Ingeniera Multimedia con sólidos conocimientos en UI/UX, diseño gráfico y desarrollo front-end. Me apasiona crear interfaces claras, atractivas y centradas en el usuario, combinando estética, usabilidad y rendimiento para dar vida a productos digitales coherentes y memorables.",
+  "bio_en": "Multimedia Engineer with solid knowledge of UI/UX, graphic design and front-end development. I love creating clear, engaging, user-centered interfaces, combining aesthetics, usability and performance to bring coherent, memorable digital products to life.",
   "photo": "/media/profile/alejandra.svg",
   "email": "larairan@uniboyaca.edu.co",
   "phone": "+57 302 744 9084",
@@ -13,22 +17,22 @@
     { "label": "Behance", "url": "https://www.behance.net/", "icon": "behance" },
     { "label": "Instagram", "url": "https://instagram.com/", "icon": "instagram" },
     { "label": "WhatsApp", "url": "https://wa.me/573027449084", "icon": "whatsapp" },
-    { "label": "Correo", "url": "mailto:larairan@uniboyaca.edu.co", "icon": "mail" }
+    { "label": "Correo", "label_en": "Email", "url": "mailto:larairan@uniboyaca.edu.co", "icon": "mail" }
   ],
   "skills": [
     { "name": "UI/UX Design", "level": 95 },
-    { "name": "Diseño Gráfico", "level": 95 },
-    { "name": "Ingeniería Multimedia", "level": 90 },
-    { "name": "Prototipado (Figma)", "level": 95 },
-    { "name": "Desarrollo Front-end", "level": 85 },
+    { "name": "Diseño Gráfico", "name_en": "Graphic Design", "level": 95 },
+    { "name": "Ingeniería Multimedia", "name_en": "Multimedia Engineering", "level": 90 },
+    { "name": "Prototipado (Figma)", "name_en": "Prototyping (Figma)", "level": 95 },
+    { "name": "Desarrollo Front-end", "name_en": "Front-end Development", "level": 85 },
     { "name": "Motion & 3D", "level": 80 }
   ],
   "aboutCards": [
     { "type": "profile", "span": 1 },
     { "type": "bio", "span": 2 },
     { "type": "stats", "span": 3 },
-    { "type": "experience", "title": "Experiencia y formación", "span": 2 },
-    { "type": "skills", "title": "Habilidades", "span": 1 },
-    { "type": "text", "title": "Cómo trabajo", "span": 3, "body": "Parto desde la investigación y las necesidades del usuario para definir flujos claros. Creo sistemas de diseño reutilizables, priorizo legibilidad, contraste y accesibilidad (WCAG), y cuido cada detalle visual para lograr experiencias limpias, funcionales y profesionales." }
+    { "type": "experience", "title": "Experiencia y formación", "title_en": "Experience & education", "span": 2 },
+    { "type": "skills", "title": "Habilidades", "title_en": "Skills", "span": 1 },
+    { "type": "text", "title": "Cómo trabajo", "title_en": "How I work", "span": 3, "body": "Parto desde la investigación y las necesidades del usuario para definir flujos claros. Creo sistemas de diseño reutilizables, priorizo legibilidad, contraste y accesibilidad (WCAG), y cuido cada detalle visual para lograr experiencias limpias, funcionales y profesionales.", "body_en": "I start from research and user needs to define clear flows. I build reusable design systems, prioritize legibility, contrast and accessibility (WCAG), and take care of every visual detail to achieve clean, functional, professional experiences." }
   ]
 }

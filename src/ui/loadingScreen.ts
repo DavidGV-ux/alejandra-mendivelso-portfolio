@@ -1,5 +1,4 @@
 import { el } from '@/utils/dom';
-import { createCursorVisual, placeCursor } from '@/ui/cursor';
 import { siteConfig } from '@/config/site.config';
 import type { Dictionary } from '@/config/i18n';
 import type { Profile } from '@/types/profile';
@@ -17,24 +16,6 @@ export interface LoadingScreen extends UIComponent {
   setProgress: (value: number) => void;
   hide: (onHidden?: () => void) => void;
   showSlow: () => void;
-}
-
-function pointOnRect(progress: number, rect: DOMRect): { x: number; y: number } {
-  const w = rect.width;
-  const h = rect.height;
-  const perimeter = 2 * (w + h);
-  let d = progress * perimeter;
-
-  if (d <= w) return { x: rect.left + d, y: rect.top };
-  d -= w;
-
-  if (d <= h) return { x: rect.right, y: rect.top + d };
-  d -= h;
-
-  if (d <= w) return { x: rect.right - d, y: rect.bottom };
-  d -= w;
-
-  return { x: rect.left, y: rect.bottom - d };
 }
 
 export function createLoadingScreen(dict: Dictionary, profile: Profile): LoadingScreen {
@@ -79,8 +60,6 @@ export function createLoadingScreen(dict: Dictionary, profile: Profile): Loading
   const panel = el('div', { class: 'loader__panel' });
   panel.append(box, progress, note);
 
-  const owner = createCursorVisual('owner', dict.cursor.owner);
-
   const skip = el('button', { class: 'loader__skip', attrs: { type: 'button' } });
   skip.append(dict.loader.skip, el('span', { text: '↗' }));
 
@@ -88,7 +67,7 @@ export function createLoadingScreen(dict: Dictionary, profile: Profile): Loading
     class: 'loader',
     attrs: { role: 'status', 'aria-live': 'polite', 'aria-label': dict.loader.loading },
   });
-  root.append(panel, skip, owner.el);
+  root.append(panel, skip);
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const hiddenCallbacks: Array<() => void> = [];
@@ -127,7 +106,6 @@ export function createLoadingScreen(dict: Dictionary, profile: Profile): Loading
     document.removeEventListener('keydown', onKeydown);
 
     root.classList.add('is-done');
-    owner.el.classList.remove('is-visible');
 
     window.setTimeout(() => {
       root.setAttribute('hidden', 'true');
@@ -145,11 +123,6 @@ export function createLoadingScreen(dict: Dictionary, profile: Profile): Loading
       elapsed <= START_DELAY ? 0 : Math.min(1, (elapsed - START_DELAY) / DRAW_DURATION);
 
     rect.style.strokeDashoffset = String(STROKE_LENGTH * (1 - drawProgress));
-
-    const boxRect = box.getBoundingClientRect();
-    const point = pointOnRect(drawProgress, boxRect);
-    placeCursor(owner, point.x, point.y);
-    owner.el.classList.add('is-visible');
 
     if (drawProgress >= 0.25) revealText();
 
@@ -175,7 +148,6 @@ export function createLoadingScreen(dict: Dictionary, profile: Profile): Loading
     window.clearTimeout(holdTimer);
 
     rect.style.strokeDashoffset = '0';
-    owner.el.classList.remove('is-visible');
     revealText();
 
     holdDone = true;

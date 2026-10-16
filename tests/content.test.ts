@@ -10,6 +10,10 @@ import {
 const content = generated as {
   projects: Array<Record<string, unknown>>;
   profile: Record<string, unknown>;
+  en?: {
+    projects: Array<Record<string, unknown>>;
+    profile: Record<string, unknown>;
+  };
 };
 
 describe('contenido generado', () => {
@@ -44,5 +48,22 @@ describe('contenido generado', () => {
     expect(new Set(ids).size).toBe(ids.length);
     const orders = content.projects.map((p) => p.order as number);
     expect([...orders].sort((a, b) => a - b)).toEqual(orders);
+  });
+
+  it('la versión en inglés valida y no filtra campos _en', () => {
+    expect(content.en).toBeDefined();
+    const en = content.en!;
+    expect(projectsSchema.safeParse(en.projects).success).toBe(true);
+    const { stats, experience, ...core } = en.profile;
+    expect(profileCoreSchema.safeParse(core).success).toBe(true);
+    expect(statsSchema.safeParse(stats).success).toBe(true);
+    expect(experienceListSchema.safeParse(experience).success).toBe(true);
+
+    const json = JSON.stringify(en);
+    expect(json.includes('_en')).toBe(false);
+
+    const idsEs = content.projects.map((p) => p.id);
+    const idsEn = en.projects.map((p) => p.id);
+    expect(idsEn).toEqual(idsEs);
   });
 });

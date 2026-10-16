@@ -14,7 +14,8 @@ import { createHud } from '@/ui/hud';
 import { createDetailView } from '@/ui/detailView';
 import { createHelpCard } from '@/ui/helpCard';
 import { createLoadingScreen } from '@/ui/loadingScreen';
-import { createCursor, createOwnerCursor } from '@/ui/cursor';
+import { createCursor } from '@/ui/cursor';
+import { createPiano } from '@/audio/piano';
 import { createStore, type Section } from '@/state/store';
 import { createRouter, type Route } from '@/state/router';
 import { el, qs } from '@/utils/dom';
@@ -52,7 +53,7 @@ document.documentElement.lang = locale;
 
 let content: Content;
 try {
-  content = await loadContent();
+  content = await loadContent(locale);
 } catch (error) {
   renderFatalError(error);
   throw error;
@@ -134,6 +135,7 @@ const uiContext: UIContext = {
   projects: content.projects,
   store,
   actions,
+  music: createPiano(),
   currentThemeMode: () => themeMode,
   currentLocale: () => locale,
 };
@@ -150,21 +152,10 @@ const bottomBar = createBottomBar(uiContext);
 const hud = createHud(uiContext);
 const loadingScreen = createLoadingScreen(dict, content.profile);
 const cursor = createCursor(window.matchMedia('(pointer: fine)').matches, dict.cursor.client);
-let loaderOpen = true;
-const ownerCursor = createOwnerCursor(dict.cursor.owner, () => {
-  const state = store.get();
-  return (
-    !loaderOpen &&
-    state.introDone &&
-    state.section === 'works' &&
-    !state.helpOpen &&
-    !state.detailProjectId
-  );
-});
 
 uiRoot.append(bottomBar.el, hud.el);
 overlayRoot.append(detailView.el, aboutPanel.el, contactPanel.el, fallbackList.el);
-document.body.append(ownerCursor.el, cursor.el, helpCard.el, loadingScreen.el);
+document.body.append(cursor.el, helpCard.el, loadingScreen.el);
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                            */
@@ -249,7 +240,6 @@ store.subscribe((state, prev) => {
   ) {
     updateInteractive();
   }
-  ownerCursor.sync();
 });
 
 /* ------------------------------------------------------------------ */
@@ -320,9 +310,7 @@ function boot3D(): void {
     loadingScreen.setProgress(100);
     window.setTimeout(() => {
       loadingScreen.hide(() => {
-        loaderOpen = false;
         scene3d?.start();
-        ownerCursor.sync();
       });
     }, 250);
   }
@@ -375,10 +363,7 @@ function boot3D(): void {
 function startFallback(): void {
   store.set({ ready: true, introDone: true });
   loadingScreen.setProgress(100);
-  loadingScreen.hide(() => {
-    loaderOpen = false;
-    ownerCursor.sync();
-  });
+  loadingScreen.hide();
   fallbackList.el.hidden = false;
   fallbackList.el.classList.add('is-visible');
   canvas.hidden = true;
@@ -458,13 +443,15 @@ window.addEventListener('keydown', (event) => {
 /* SEO / JSON-LD                                                      */
 /* ------------------------------------------------------------------ */
 function renderMeta(): void {
-  document.title = siteConfig.title;
+  const title = locale === 'en' ? siteConfig.titleEn : siteConfig.title;
+  const description = locale === 'en' ? siteConfig.descriptionEn : siteConfig.description;
+  document.title = title;
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: content.profile.name,
     jobTitle: content.profile.role,
-    description: siteConfig.description,
+    description,
     address: {
       '@type': 'PostalAddress',
       addressLocality: content.profile.location,

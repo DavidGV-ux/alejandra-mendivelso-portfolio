@@ -4,8 +4,6 @@ import type { UIComponent } from '@/types/ui';
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const ARROW_PATH = 'M2 2L19 15L11 16.5L7 24L2 2Z';
 
-export type CursorVariant = 'client' | 'owner';
-
 export interface CursorVisual {
   el: HTMLElement;
   label: HTMLElement;
@@ -13,8 +11,8 @@ export interface CursorVisual {
   labelSize: { width: number; height: number } | null;
 }
 
-/** Flecha + etiqueta compartida por los cursores y la pantalla de carga. */
-export function createCursorVisual(variant: CursorVariant, labelText: string): CursorVisual {
+/** Flecha + etiqueta del cursor del visitante. */
+export function createCursorVisual(labelText: string): CursorVisual {
   const arrow = document.createElementNS(SVG_NS, 'svg');
   arrow.setAttribute('class', 'cursor__arrow');
   arrow.setAttribute('viewBox', '0 0 22 26');
@@ -33,7 +31,7 @@ export function createCursorVisual(variant: CursorVariant, labelText: string): C
   const label = el('div', { class: 'cursor__label', text: labelText });
 
   const root = el('div', {
-    class: `cursor cursor--${variant}`,
+    class: 'cursor',
     attrs: { 'aria-hidden': 'true' },
   });
   root.append(arrow, label);
@@ -66,7 +64,7 @@ export interface Cursor extends UIComponent {
 
 /** Cursor del visitante: sigue al puntero. */
 export function createCursor(enabled: boolean, labelText: string): Cursor {
-  const visual = createCursorVisual('client', labelText);
+  const visual = createCursorVisual(labelText);
   const { el: cursor } = visual;
 
   let interactive = false;
@@ -129,109 +127,6 @@ export function createCursor(enabled: boolean, labelText: string): Cursor {
       if (raf) cancelAnimationFrame(raf);
       cursor.remove();
       document.documentElement.classList.remove('has-custom-cursor');
-    },
-  };
-}
-
-export interface OwnerCursor extends UIComponent {
-  sync: () => void;
-}
-
-/**
- * Cursor decorativo de Alejandra: se pasea solo por la escena.
- * No es una conexión en vivo.
- */
-export function createOwnerCursor(labelText: string, isEnabled: () => boolean): OwnerCursor {
-  const visual = createCursorVisual('owner', labelText);
-  const { el: cursor } = visual;
-  const desktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)');
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  let frame: number | null = null;
-  let start: number | null = null;
-  let pageActive = document.hasFocus();
-  let active = false;
-
-  function animate(time: number): void {
-    frame = null;
-    if (!active) return;
-    if (start === null) start = time;
-
-    const elapsed = (time - start) / 1000;
-    const top = 96;
-    const bottom = window.innerHeight - 128;
-    const left = 64;
-    const right = window.innerWidth - 168;
-
-    if (bottom - top > 90 && right - left > 120) {
-      const centerX = left + (right - left) * 0.58;
-      const centerY = (top + bottom) / 2;
-      const amplitudeX = Math.min((right - left) * 0.34, 190);
-      const amplitudeY = Math.min((bottom - top) * 0.28, 80);
-
-      const rawX =
-        centerX + Math.sin(elapsed * 0.52) * amplitudeX + Math.sin(elapsed * 1.13) * 16;
-      const rawY =
-        centerY + Math.sin(elapsed * 0.71 + 1.2) * amplitudeY + Math.cos(elapsed * 1.07) * 10;
-
-      const x = Math.max(left, Math.min(right, rawX));
-      const y = Math.max(top, Math.min(bottom, rawY));
-
-      placeCursor(visual, x, y);
-      cursor.classList.add('is-visible');
-    } else {
-      cursor.classList.remove('is-visible');
-    }
-
-    frame = requestAnimationFrame(animate);
-  }
-
-  function stop(): void {
-    if (frame !== null) cancelAnimationFrame(frame);
-    frame = null;
-    start = null;
-    cursor.classList.remove('is-visible');
-  }
-
-  function sync(): void {
-    active =
-      isEnabled() &&
-      desktopPointer.matches &&
-      !reducedMotion.matches &&
-      !document.hidden &&
-      pageActive;
-
-    if (active) {
-      if (frame === null) frame = requestAnimationFrame(animate);
-    } else {
-      stop();
-    }
-  }
-
-  window.addEventListener('blur', () => {
-    pageActive = false;
-    sync();
-  });
-
-  window.addEventListener('focus', () => {
-    pageActive = true;
-    sync();
-  });
-
-  document.addEventListener('visibilitychange', () => {
-    pageActive = document.hasFocus();
-    sync();
-  });
-
-  desktopPointer.addEventListener('change', sync);
-  reducedMotion.addEventListener('change', sync);
-
-  return {
-    el: cursor,
-    sync,
-    dispose(): void {
-      stop();
-      cursor.remove();
     },
   };
 }

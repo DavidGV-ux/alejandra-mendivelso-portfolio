@@ -1,26 +1,39 @@
 [
   {
     "period": "2023 — Actualidad",
+    "period_en": "2023 — Present",
     "title": "Diseñadora UI/UX",
+    "title_en": "UI/UX Designer",
     "org": "Proyectos Freelance",
-    "description": "Diseño de interfaces, sistemas de diseño, wireframes, prototipado y diseño centrado en el usuario para productos web y móviles."
+    "org_en": "Freelance Projects",
+    "description": "Diseño de interfaces, sistemas de diseño, wireframes, prototipado y diseño centrado en el usuario para productos web y móviles.",
+    "description_en": "Interface design, design systems, wireframes, prototyping and user-centered design for web and mobile products."
   },
   {
     "period": "2021 — 2023",
     "title": "Diseñadora Gráfica",
+    "title_en": "Graphic Designer",
     "org": "Estudios Creativos",
-    "description": "Branding, identidad visual, piezas para redes sociales y material corporativo con enfoque estratégico."
+    "org_en": "Creative Studios",
+    "description": "Branding, identidad visual, piezas para redes sociales y material corporativo con enfoque estratégico.",
+    "description_en": "Branding, visual identity, social media assets and corporate material with a strategic approach."
   },
   {
     "period": "2019 — 2023",
     "title": "Ingeniería Multimedia",
+    "title_en": "Multimedia Engineering",
     "org": "Universidad de Boyacá",
-    "description": "Formación con énfasis en diseño interactivo, UI/UX, animación y desarrollo web."
+    "org_en": "Universidad de Boyacá",
+    "description": "Formación con énfasis en diseño interactivo, UI/UX, animación y desarrollo web.",
+    "description_en": "Degree focused on interactive design, UI/UX, animation and web development."
   },
   {
     "period": "2022",
     "title": "Especialización en Diseño UX/UI",
+    "title_en": "UX/UI Design Specialization",
     "org": "Formación Complementaria",
-    "description": "Profundización en investigación de usuarios, arquitectura de información, diseño de componentes y accesibilidad."
+    "org_en": "Continuing Education",
+    "description": "Profundización en investigación de usuarios, arquitectura de información, diseño de componentes y accesibilidad.",
+    "description_en": "In-depth training in user research, information architecture, component design and accessibility."
   }
 ]

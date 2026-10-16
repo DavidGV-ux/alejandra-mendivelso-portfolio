@@ -56,23 +56,23 @@ function assertUniqueIds(projects) {
   return seen;
 }
 
-function normalizeProject(p) {
-  const project = {
-    id: p.id,
-    title: p.title,
-    category: p.category,
-    year: p.year,
-    role: p.role,
-    description: p.description,
-    tools: p.tools,
-    cover: p.cover,
-    media: p.media,
-    links: p.links,
-    order: p.order,
-  };
-  if (p.client !== undefined) project.client = p.client;
-  if (p.accent !== undefined) project.accent = p.accent;
-  return project;
+/**
+ * Resuelve un objeto (y sus anidados) a un idioma: para 'en' reemplaza cada
+ * campo `x` por `x_en` cuando existe y elimina los sufijos `_en`.
+ */
+function localized(value, lang) {
+  if (Array.isArray(value)) return value.map((item) => localized(item, lang));
+  if (value && typeof value === 'object') {
+    const out = {};
+    for (const [key, raw] of Object.entries(value)) {
+      if (key.endsWith('_en')) continue;
+      out[key] = lang === 'en' && value[`${key}_en`] !== undefined
+        ? value[`${key}_en`]
+        : localized(raw, lang);
+    }
+    return out;
+  }
+  return value;
 }
 
 function normalizeProfile(core, stats, experience) {
@@ -93,6 +93,18 @@ function normalizeProfile(core, stats, experience) {
   if (core.phone !== undefined) profile.phone = core.phone;
   if (core.calcom !== undefined) profile.calcom = core.calcom;
   return profile;
+}
+
+function buildContent(lang, projects, profileCore, stats, experience) {
+  const sorted = [...projects].sort((a, b) => a.order - b.order);
+  return {
+    projects: sorted.map((p) => localized(p, lang)),
+    profile: normalizeProfile(
+      localized(profileCore, lang),
+      localized(stats, lang),
+      localized(experience, lang),
+    ),
+  };
 }
 
 async function writeSitemap(ids) {
@@ -126,10 +138,9 @@ export async function runContentPipeline({ silent = false } = {}) {
 
   const ids = assertUniqueIds(projects);
 
-  const sorted = [...projects].sort((a, b) => a.order - b.order);
   const content = {
-    projects: sorted.map(normalizeProject),
-    profile: normalizeProfile(profileCore, stats, experience),
+    ...buildContent('es', projects, profileCore, stats, experience),
+    en: buildContent('en', projects, profileCore, stats, experience),
   };
 
   if (!checkOnly) {

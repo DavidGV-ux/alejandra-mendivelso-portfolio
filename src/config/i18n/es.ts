@@ -9,6 +9,13 @@ export const es = {
     help: 'Ayuda',
     close: 'Cerrar',
     theme: 'Tema',
+    music: 'Música de piano',
+    musicOn: 'Pausar música de piano',
+    musicOff: 'Activar música de piano',
+    sections: 'Secciones',
+    bar: 'Barra de navegación',
+    changeLanguage: 'Cambiar idioma / Change language',
+    skip: 'Saltar a la navegación',
   },
   loader: {
     loading: 'Cargando portafolio',
@@ -18,7 +25,6 @@ export const es = {
   },
   cursor: {
     client: 'Cliente',
-    owner: 'Alejandra',
   },
   intro: {
     skip: 'Omitir intro',
@@ -62,6 +68,8 @@ export const es = {
     noMedia: 'Este proyecto no tiene medios adicionales.',
     mediaError: 'No se pudo cargar este recurso.',
     playVideo: 'Reproducir video',
+    captions: 'Español',
+    openModel: 'Abrir modelo .glb',
   },
   about: {
     title: 'Sobre mí',

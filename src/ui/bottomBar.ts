@@ -1,6 +1,6 @@
 import { el, on } from '@/utils/dom';
 import { pad2 } from '@/utils/format';
-import { arrowSvg, moonSvg, sunSvg, helpSvg } from './icons';
+import { arrowSvg, moonSvg, sunSvg, helpSvg, musicSvg } from './icons';
 import type { UIContext, UIComponent } from '@/types/ui';
 import type { Section } from '@/state/store';
 
@@ -10,7 +10,7 @@ export function createBottomBar(ctx: UIContext): UIComponent {
   const sectionButtons = new Map<Section, HTMLButtonElement>();
   const sectionGroup = el('div', {
     class: 'bar__group bar__sections',
-    attrs: { role: 'tablist', 'aria-label': 'Secciones' },
+    attrs: { role: 'tablist', 'aria-label': dict.nav.sections },
   });
   (['works', 'about', 'contact'] as const).forEach((section) => {
     const btn = el('button', {
@@ -47,8 +47,17 @@ export function createBottomBar(ctx: UIContext): UIComponent {
   });
   const localeBtn = el('button', {
     class: 'bar__icon bar__locale',
-    text: 'ES',
-    attrs: { type: 'button', 'aria-label': 'Cambiar idioma / Change language' },
+    text: ctx.currentLocale().toUpperCase(),
+    attrs: { type: 'button', 'aria-label': dict.nav.changeLanguage },
+  });
+  const musicBtn = el('button', {
+    class: 'bar__icon bar__music',
+    html: musicSvg(),
+    attrs: {
+      type: 'button',
+      'aria-pressed': 'false',
+      'aria-label': dict.nav.musicOff,
+    },
   });
   const helpBtn = el('button', {
     class: 'bar__icon',
@@ -56,11 +65,11 @@ export function createBottomBar(ctx: UIContext): UIComponent {
     attrs: { type: 'button', 'aria-label': dict.nav.help },
   });
   const toolsGroup = el('div', { class: 'bar__group bar__tools' });
-  toolsGroup.append(themeBtn, localeBtn, helpBtn);
+  toolsGroup.append(themeBtn, localeBtn, musicBtn, helpBtn);
 
   const bar = el('nav', {
     class: 'bar',
-    attrs: { 'aria-label': 'Barra de navegación' },
+    attrs: { 'aria-label': dict.nav.bar },
   });
   bar.append(sectionGroup, navGroup, toolsGroup);
 
@@ -87,10 +96,18 @@ export function createBottomBar(ctx: UIContext): UIComponent {
     navGroup.classList.toggle('is-dimmed', section !== 'works');
   }
 
+  function renderMusic(): void {
+    const playing = ctx.music.isPlaying();
+    musicBtn.setAttribute('aria-pressed', String(playing));
+    musicBtn.setAttribute('aria-label', playing ? dict.nav.musicOn : dict.nav.musicOff);
+    musicBtn.classList.toggle('is-active', playing);
+  }
+
   function update(): void {
     renderCounter();
     renderSections();
     renderTheme();
+    renderMusic();
   }
 
   const disposers = [
@@ -99,11 +116,13 @@ export function createBottomBar(ctx: UIContext): UIComponent {
     on(helpBtn, 'click', () => actions.openHelp()),
     on(themeBtn, 'click', () => actions.cycleTheme()),
     on(localeBtn, 'click', () => actions.toggleLocale()),
+    on(musicBtn, 'click', () => ctx.music.toggle()),
     ...[...sectionButtons.entries()].map(([section, btn]) =>
       on(btn, 'click', () => actions.goToSection(section)),
     ),
   ];
 
+  ctx.music.setOnChange(renderMusic);
   store.subscribe(update);
   update();
 

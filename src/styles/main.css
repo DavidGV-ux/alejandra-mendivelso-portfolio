@@ -4,40 +4,19 @@
    ================================================================== */
 
 /* ------------------------------------------------------------------
-   Fuentes autoalojadas
+   Fuentes autoalojadas (variables, subset latin)
    ------------------------------------------------------------------ */
 @font-face {
-  font-family: 'Fraunces';
-  src: url('/fonts/fraunces-400.woff2') format('woff2');
-  font-weight: 400;
+  font-family: 'Space Grotesk';
+  src: url('/fonts/space-grotesk.woff2') format('woff2');
+  font-weight: 400 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Fraunces';
-  src: url('/fonts/fraunces-500.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Inter';
-  src: url('/fonts/inter-400.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Inter';
-  src: url('/fonts/inter-500.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Inter';
-  src: url('/fonts/inter-700.woff2') format('woff2');
-  font-weight: 700;
+  font-family: 'DM Sans';
+  src: url('/fonts/dm-sans.woff2') format('woff2');
+  font-weight: 400 700;
   font-style: normal;
   font-display: swap;
 }
@@ -46,37 +25,38 @@
    Tokens (sobrescritos por JS desde theme.ts)
    ------------------------------------------------------------------ */
 :root {
-  --color-bg: #f6f2ec;
-  --color-bg-elevated: #fcfaf7;
+  --color-bg: #f3f1ea;
+  --color-bg-elevated: #faf9f4;
   --color-surface: #ffffff;
-  --color-text: #1a1714;
-  --color-text-muted: #6b635b;
-  --color-text-faint: #a39a90;
-  --color-accent: #b4553f;
+  --color-text: #14141a;
+  --color-text-muted: #55545e;
+  --color-text-faint: #6e6c78;
+  --color-accent: #4f5d00;
   --color-accent-contrast: #ffffff;
-  --color-border: rgba(26, 23, 20, 0.1);
-  --color-border-strong: rgba(26, 23, 20, 0.22);
-  --color-overlay: rgba(20, 17, 14, 0.55);
-  --color-danger: #a33b2c;
-  --color-success: #3f7a4f;
-  --color-fog: #ece5db;
-  --color-frame: #fcfaf7;
-  --color-frame-border: #1a1714;
-  --color-cursor-client: #ff7a18;
-  --color-cursor-owner: #a855f7;
+  --color-border: rgba(20, 20, 26, 0.12);
+  --color-border-strong: rgba(20, 20, 26, 0.26);
+  --color-overlay: rgba(20, 20, 26, 0.5);
+  --color-danger: #a3341f;
+  --color-success: #2f6b3f;
+  --color-fog: #e7e3d8;
+  --color-frame: #fbfaf6;
+  --color-frame-border: #14141a;
 
-  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
-  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-meta: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-meta: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --tracking-title: -0.07em;
+  --tracking-body: -0.05em;
+  --tracking-label: 0.18em;
 
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 18px;
   --radius-pill: 999px;
 
-  --shadow-soft: 0 2px 8px rgba(20, 17, 14, 0.06);
-  --shadow-medium: 0 8px 24px rgba(20, 17, 14, 0.1);
-  --shadow-strong: 0 20px 60px rgba(20, 17, 14, 0.18);
+  --shadow-soft: 0 2px 8px rgba(16, 16, 20, 0.06);
+  --shadow-medium: 0 8px 24px rgba(16, 16, 20, 0.1);
+  --shadow-strong: 0 20px 60px rgba(16, 16, 20, 0.18);
 
   --duration: 0.6s;
   --bar-gap: clamp(0.75rem, 2vw, 1.25rem);
@@ -116,6 +96,7 @@ body {
   font-weight: 400;
   font-size: 1rem;
   line-height: 1.55;
+  letter-spacing: var(--tracking-body);
   color: var(--color-text);
   background: var(--color-bg);
   overflow: hidden;
@@ -160,8 +141,9 @@ h1,
 h2,
 h3,
 h4 {
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.15;
+  letter-spacing: var(--tracking-title);
   text-wrap: balance;
 }
 
@@ -304,9 +286,9 @@ p {
 
 .loader__name {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 600;
   font-size: clamp(28px, 6vw, 64px);
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-title);
   line-height: 1;
   color: var(--color-text);
   margin: 0;
@@ -315,9 +297,11 @@ p {
 .loader__role {
   margin: 16px 0 0;
   font-family: var(--font-meta);
-  font-size: clamp(12px, 1.6vw, 17px);
+  font-weight: 700;
+  font-size: clamp(11px, 1.4vw, 14px);
   color: var(--color-text-muted);
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
 }
 
 .loader__progress {
@@ -447,23 +431,25 @@ p {
 
 .hud__name {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 600;
   font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
-  letter-spacing: 0.01em;
+  letter-spacing: var(--tracking-title);
 }
 
 .hud__role {
   font-family: var(--font-meta);
-  font-size: clamp(0.7rem, 0.65rem + 0.2vw, 0.8rem);
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  font-size: clamp(0.68rem, 0.63rem + 0.2vw, 0.76rem);
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
 
 .hud__meta {
   font-family: var(--font-meta);
-  font-size: clamp(0.7rem, 0.65rem + 0.2vw, 0.8rem);
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  font-size: clamp(0.68rem, 0.63rem + 0.2vw, 0.76rem);
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--color-text-muted);
   text-align: right;
@@ -563,9 +549,9 @@ p {
 
 .bar__locale {
   font-family: var(--font-meta);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
 }
 
 .bar__nav {
@@ -653,6 +639,15 @@ p {
    ------------------------------------------------------------------ */
 body.has-modal {
   overflow: hidden;
+}
+
+/* Con un modal abierto, HUD y barra estorban (y quedarían por encima) */
+body.has-modal .hud,
+body.has-modal .bar {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 
 .modal {
@@ -792,7 +787,7 @@ body.has-modal {
 
 .detail {
   position: relative;
-  width: min(880px, 100%);
+  width: min(1180px, 100%);
   height: 100dvh;
   max-height: 100dvh;
   overflow-y: auto;
@@ -806,6 +801,14 @@ body.has-modal {
   border-left: 1px solid var(--color-border);
   box-shadow: var(--shadow-strong);
   animation: slide-in-right 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.detail__body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  align-content: start;
 }
 
 @keyframes slide-in-right {
@@ -837,6 +840,27 @@ body.has-modal {
       opacity: 1;
       transform: none;
     }
+  }
+}
+
+/* Escritorio: media a la izquierda, información a la derecha */
+@media (min-width: 901px) {
+  .detail {
+    overflow: hidden;
+  }
+  .detail__body {
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    align-content: stretch;
+  }
+  .detail__stage {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 0;
+  }
+  .detail__info {
+    align-content: start;
+    overflow-y: auto;
+    padding-right: 0.35rem;
   }
 }
 
@@ -977,8 +1001,9 @@ body.has-modal {
 
 .detail__kicker {
   font-family: var(--font-meta);
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--color-accent);
 }
@@ -986,7 +1011,8 @@ body.has-modal {
 .detail__title {
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 1.4rem + 2vw, 2.8rem);
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: var(--tracking-title);
   line-height: 1.05;
 }
 
@@ -1013,8 +1039,9 @@ body.has-modal {
 
 .detail__metarow dt {
   font-family: var(--font-meta);
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--color-text-faint);
 }
@@ -1025,8 +1052,9 @@ body.has-modal {
 
 .detail__subtitle {
   font-family: var(--font-meta);
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--color-text-faint);
   margin-top: 0.5rem;
@@ -1106,8 +1134,9 @@ body.has-modal {
 
 .panel__kicker {
   font-family: var(--font-meta);
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--color-accent);
 }
@@ -1115,7 +1144,8 @@ body.has-modal {
 .panel__title {
   font-family: var(--font-display);
   font-size: clamp(2rem, 1.4rem + 3vw, 3.5rem);
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: var(--tracking-title);
   line-height: 1.02;
 }
 
@@ -1220,8 +1250,9 @@ body.has-modal {
 
 .card__location {
   font-family: var(--font-meta);
-  font-size: 0.76rem;
-  letter-spacing: 0.05em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--color-text-faint);
 }
@@ -1284,8 +1315,9 @@ body.has-modal {
 
 .card__title {
   font-family: var(--font-meta);
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--color-text-faint);
   margin-bottom: 1rem;
@@ -1423,8 +1455,9 @@ body.has-modal {
 
 .field__label {
   font-family: var(--font-meta);
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
@@ -1576,8 +1609,9 @@ body.has-modal {
 
 .fallback__meta {
   font-family: var(--font-meta);
-  font-size: 0.74rem;
-  letter-spacing: 0.05em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--color-accent);
 }
@@ -1605,7 +1639,7 @@ body.has-modal {
 }
 
 /* ------------------------------------------------------------------
-   Cursores (visitante + propietaria)
+   Cursor del visitante
    ------------------------------------------------------------------ */
 .cursor {
   position: fixed;
@@ -1616,6 +1650,7 @@ body.has-modal {
   height: 0;
   pointer-events: none !important;
   user-select: none;
+  color: var(--color-accent);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.25s ease, visibility 0.25s ease;
@@ -1625,14 +1660,6 @@ body.has-modal {
 .cursor.is-visible {
   opacity: 1;
   visibility: visible;
-}
-
-.cursor--client {
-  color: var(--color-cursor-client);
-}
-
-.cursor--owner {
-  color: var(--color-cursor-owner);
 }
 
 .cursor__arrow {
@@ -1657,14 +1684,16 @@ body.has-modal {
   left: 16px;
   padding: 5px 10px;
   border-radius: var(--radius-sm);
-  background: currentColor;
+  background: var(--color-accent);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
   white-space: nowrap;
   font-family: var(--font-meta);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.2;
-  color: #ffffff;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-accent-contrast);
 }
 
 .cursor.label-left .cursor__label {
