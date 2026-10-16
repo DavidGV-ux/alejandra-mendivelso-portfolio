@@ -1,6 +1,6 @@
 [
-  { "label": "Años de experiencia", "label_en": "Years of experience", "value": "5+" },
-  { "label": "Proyectos diseñados", "label_en": "Projects designed", "value": "60+" },
-  { "label": "Prototipos interactivos", "label_en": "Interactive prototypes", "value": "40+" },
-  { "label": "Clientes satisfechos", "label_en": "Happy clients", "value": "25+" }
+  { "label": "Ubicación", "label_en": "Location", "value": "Sogamoso, Boyacá" },
+  { "label": "Formación", "label_en": "Education", "value": "En curso" },
+  { "label": "Universidad", "label_en": "University", "value": "Universidad de Boyacá" },
+  { "label": "Intereses", "label_en": "Interests", "value": "Diseño y tecnología" }
 ]

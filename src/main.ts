@@ -13,6 +13,7 @@ import { createBottomBar } from '@/ui/bottomBar';
 import { createHud } from '@/ui/hud';
 import { createDetailView } from '@/ui/detailView';
 import { createHelpCard } from '@/ui/helpCard';
+import { createHeroPanel } from '@/ui/heroPanel';
 import { createLoadingScreen } from '@/ui/loadingScreen';
 import { createCursor } from '@/ui/cursor';
 import { createPiano } from '@/audio/piano';
@@ -68,6 +69,7 @@ const store = createStore({
   targetIndex: 0,
   detailProjectId: null,
   helpOpen: false,
+  heroOpen: false,
   introDone: false,
   loadingProgress: 0,
   ready: false,
@@ -132,6 +134,12 @@ const actions: UIActions = {
     store.set({ helpOpen: true });
   },
   closeHelp: () => closeHelpUI(),
+  dismissHero: () => closeHeroUI(),
+  openCv() {
+    closeHeroUI();
+    setSection('contact');
+    requestAnimationFrame(() => contactPanel.scrollToCv());
+  },
 };
 
 const uiContext: UIContext = {
@@ -152,6 +160,7 @@ const helpCard = createHelpCard(uiContext, caps.isTouch);
 const detailView = createDetailView(uiContext);
 const aboutPanel = createAboutPanel(uiContext);
 const contactPanel = createContactPanel(uiContext);
+const heroPanel = createHeroPanel(uiContext);
 const fallbackList = createFallbackList(uiContext);
 const bottomBar = createBottomBar(uiContext);
 const hud = createHud(uiContext);
@@ -159,7 +168,7 @@ const loadingScreen = createLoadingScreen(dict, content.profile);
 const cursor = createCursor(window.matchMedia('(pointer: fine)').matches, dict.cursor.client);
 
 uiRoot.append(bottomBar.el, hud.el);
-overlayRoot.append(detailView.el, aboutPanel.el, contactPanel.el, fallbackList.el);
+overlayRoot.append(detailView.el, aboutPanel.el, contactPanel.el, heroPanel.el, fallbackList.el);
 document.body.append(cursor.el, helpCard.el, loadingScreen.el);
 
 /* ------------------------------------------------------------------ */
@@ -189,6 +198,33 @@ function closeHelpUI(): void {
   store.set({ helpOpen: false });
 }
 
+/* ------------------------------------------------------------------ */
+/* Portada (hero)                                                     */
+/* ------------------------------------------------------------------ */
+let heroDismissed = false;
+let bootComplete = false;
+
+function showHeroUI(): void {
+  if (heroDismissed || store.get().heroOpen) return;
+  heroPanel.show();
+  store.set({ heroOpen: true });
+}
+
+function closeHeroUI(): void {
+  heroDismissed = true;
+  heroPanel.hide();
+  if (store.get().heroOpen) store.set({ heroOpen: false });
+}
+
+function maybeShowHero(): void {
+  const state = store.get();
+  if (!bootComplete || heroDismissed || state.heroOpen) return;
+  if (!state.introDone || state.section !== 'works' || state.detailProjectId || state.helpOpen) {
+    return;
+  }
+  showHeroUI();
+}
+
 function setSection(section: Section, fromRoute = false): void {
   store.set({ section });
   if (!fromRoute) router.push(section, null);
@@ -197,7 +233,11 @@ function setSection(section: Section, fromRoute = false): void {
 function updateInteractive(): void {
   const state = store.get();
   const worksActive =
-    state.section === 'works' && !state.detailProjectId && !state.helpOpen && state.introDone;
+    state.section === 'works' &&
+    !state.detailProjectId &&
+    !state.helpOpen &&
+    !state.heroOpen &&
+    state.introDone;
   scene3d?.setInteractive(worksActive);
 }
 
@@ -237,10 +277,13 @@ store.subscribe((state, prev) => {
     if (state.section === 'about') aboutPanel.show();
     if (state.section === 'contact') contactPanel.show();
   }
+  if (state.introDone !== prev.introDone) maybeShowHero();
+  if (state.heroOpen && (state.section !== 'works' || state.detailProjectId)) closeHeroUI();
   if (
     state.section !== prev.section ||
     state.detailProjectId !== prev.detailProjectId ||
     state.helpOpen !== prev.helpOpen ||
+    state.heroOpen !== prev.heroOpen ||
     state.introDone !== prev.introDone
   ) {
     updateInteractive();
@@ -282,6 +325,8 @@ if (use3D) {
 }
 
 router.start();
+bootComplete = true;
+maybeShowHero();
 
 /* ------------------------------------------------------------------ */
 /* 3D (carga diferida)                                                */
@@ -397,6 +442,9 @@ window.addEventListener('keydown', (event) => {
     } else if (state.detailProjectId) {
       event.preventDefault();
       actions.closeDetail();
+    } else if (state.heroOpen) {
+      event.preventDefault();
+      closeHeroUI();
     } else if (state.section === 'works' && scene3d?.isSelected()) {
       event.preventDefault();
       scene3d.releaseSelection();

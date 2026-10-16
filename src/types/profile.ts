@@ -3,24 +3,44 @@ export interface Stat {
   value: string;
 }
 
+export interface ExperiencePoint {
+  text: string;
+}
+
 export interface ExperienceItem {
   period: string;
   title: string;
   org: string;
   description?: string;
+  /** Logros o aportes concretos del rol */
+  points: ExperiencePoint[];
 }
 
-export interface Skill {
-  name: string;
-  /** 0–100 opcional para mostrar barra */
-  level?: number;
+export interface SkillGroup {
+  title: string;
+  items: string[];
 }
 
 export interface SocialLink {
   label: string;
   url: string;
   /** Nombre de icono soportado por el renderer de UI */
-  icon: 'instagram' | 'linkedin' | 'behance' | 'whatsapp' | 'mail' | 'dribbble' | 'x';
+  icon:
+    | 'instagram'
+    | 'linkedin'
+    | 'behance'
+    | 'whatsapp'
+    | 'github'
+    | 'mail'
+    | 'dribbble'
+    | 'x';
+}
+
+export interface CvFile {
+  title: string;
+  description: string;
+  /** Ruta pública del PDF, p. ej. /cv/alejandra-mendivelso-cv-desarrollo.pdf */
+  file: string;
 }
 
 export type AboutCardType =
@@ -42,6 +62,8 @@ export interface AboutCard {
 
 export interface Profile {
   name: string;
+  /** Nombre completo para documentos o metadatos */
+  fullName?: string;
   role: string;
   location: string;
   tagline: string;
@@ -52,7 +74,9 @@ export interface Profile {
   socials: SocialLink[];
   stats: Stat[];
   experience: ExperienceItem[];
-  skills: Skill[];
+  skills: SkillGroup[];
+  /** Hojas de vida disponibles para ver o descargar */
+  cv: CvFile[];
   aboutCards: AboutCard[];
   /** Embed opcional de Cal.com, p. ej. "alejandra/30min" */
   calcom?: string;

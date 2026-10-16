@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-label="AR Experience">
+  <defs>
+    <linearGradient id="g00" gradientTransform="rotate(0 0.5 0.5)">
+      <stop offset="0" stop-color="#f6f2ec"/>
+      <stop offset="0.55" stop-color="#ece5db"/>
+      <stop offset="1" stop-color="#e0d6c8"/>
+    </linearGradient>
+    <radialGradient id="g00b" cx="0.2" cy="0.15" r="0.9">
+      <stop offset="0" stop-color="#5b4a8a" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#5b4a8a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1100" fill="url(#g00)"/>
+  <rect width="1600" height="1100" fill="url(#g00b)"/>
+  <circle cx="0.0" cy="0.0" r="18" fill="#5b4a8a" opacity="0.030"/>
+  <circle cx="137.5" cy="89.3" r="25" fill="#5b4a8a" opacity="0.042"/>
+  <circle cx="275.0" cy="178.6" r="32" fill="#5b4a8a" opacity="0.054"/>
+  <circle cx="412.5" cy="267.9" r="39" fill="#5b4a8a" opacity="0.066"/>
+  <circle cx="550.0" cy="357.2" r="46" fill="#5b4a8a" opacity="0.078"/>
+  <circle cx="687.5" cy="446.5" r="53" fill="#5b4a8a" opacity="0.030"/>
+  <circle cx="825.0" cy="535.8" r="60" fill="#5b4a8a" opacity="0.042"/>
+  <circle cx="962.5" cy="625.1" r="67" fill="#5b4a8a" opacity="0.054"/>
+  <circle cx="1100.0" cy="714.4" r="74" fill="#5b4a8a" opacity="0.066"/>
+  <circle cx="1237.5" cy="803.7" r="81" fill="#5b4a8a" opacity="0.078"/>
+  <circle cx="1375.0" cy="893.0" r="88" fill="#5b4a8a" opacity="0.030"/>
+  <circle cx="1512.5" cy="982.3" r="95" fill="#5b4a8a" opacity="0.042"/>
+  <circle cx="50.0" cy="1071.6" r="102" fill="#5b4a8a" opacity="0.054"/>
+  <circle cx="187.5" cy="60.9" r="19" fill="#5b4a8a" opacity="0.066"/>
+  <circle cx="325.0" cy="150.2" r="26" fill="#5b4a8a" opacity="0.078"/>
+  <circle cx="462.5" cy="239.5" r="33" fill="#5b4a8a" opacity="0.030"/>
+  <circle cx="600.0" cy="328.8" r="40" fill="#5b4a8a" opacity="0.042"/>
+  <circle cx="737.5" cy="418.1" r="47" fill="#5b4a8a" opacity="0.054"/>
+  <circle cx="875.0" cy="507.4" r="54" fill="#5b4a8a" opacity="0.066"/>
+  <circle cx="1012.5" cy="596.7" r="61" fill="#5b4a8a" opacity="0.078"/>
+  <circle cx="1150.0" cy="686.0" r="68" fill="#5b4a8a" opacity="0.030"/>
+  <circle cx="1287.5" cy="775.3" r="75" fill="#5b4a8a" opacity="0.042"/>
+  <circle cx="1425.0" cy="864.6" r="82" fill="#5b4a8a" opacity="0.054"/>
+  <circle cx="1562.5" cy="953.9" r="89" fill="#5b4a8a" opacity="0.066"/>
+  <circle cx="100.0" cy="1043.2" r="96" fill="#5b4a8a" opacity="0.078"/>
+  <circle cx="237.5" cy="32.5" r="103" fill="#5b4a8a" opacity="0.030"/>
+  <circle cx="375.0" cy="121.8" r="20" fill="#5b4a8a" opacity="0.042"/>
+  <circle cx="512.5" cy="211.1" r="27" fill="#5b4a8a" opacity="0.054"/>
+  <circle cx="650.0" cy="300.4" r="34" fill="#5b4a8a" opacity="0.066"/>
+  <circle cx="787.5" cy="389.7" r="41" fill="#5b4a8a" opacity="0.078"/>
+  <circle cx="925.0" cy="479.0" r="48" fill="#5b4a8a" opacity="0.030"/>
+  <circle cx="1062.5" cy="568.3" r="55" fill="#5b4a8a" opacity="0.042"/>
+  <circle cx="1200.0" cy="657.6" r="62" fill="#5b4a8a" opacity="0.054"/>
+  <circle cx="1337.5" cy="746.9" r="69" fill="#5b4a8a" opacity="0.066"/>
+  <circle cx="1475.0" cy="836.2" r="76" fill="#5b4a8a" opacity="0.078"/>
+  <circle cx="12.5" cy="925.5" r="83" fill="#5b4a8a" opacity="0.030"/>
+  <circle cx="150.0" cy="1014.8" r="90" fill="#5b4a8a" opacity="0.042"/>
+  <circle cx="287.5" cy="4.1" r="97" fill="#5b4a8a" opacity="0.054"/>
+  <circle cx="425.0" cy="93.4" r="104" fill="#5b4a8a" opacity="0.066"/>
+  <circle cx="562.5" cy="182.7" r="21" fill="#5b4a8a" opacity="0.078"/>
+  <circle cx="700.0" cy="272.0" r="28" fill="#5b4a8a" opacity="0.030"/>
+  <circle cx="837.5" cy="361.3" r="35" fill="#5b4a8a" opacity="0.042"/>
+  <g fill="none" stroke="#5b4a8a" stroke-width="1.5" opacity="0.35">
+    <rect x="70" y="70" width="1460" height="960" rx="18"/>
+  </g>
+  <text x="120" y="950" font-family="Georgia, 'Times New Roman', serif" font-size="86" fill="#1a1714" font-weight="500">AR Experience</text>
+  <text x="122" y="1000" font-family="Helvetica, Arial, sans-serif" font-size="30" letter-spacing="4" fill="#6b635b">REALIDAD AUMENTADA</text>
+  <text x="1480" y="150" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="28" letter-spacing="3" fill="#6b635b">01</text>
+</svg>

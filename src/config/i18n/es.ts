@@ -1,7 +1,7 @@
 export const es = {
   lang: 'es',
   nav: {
-    works: 'Trabajos',
+    works: 'Proyectos',
     about: 'Sobre mí',
     contact: 'Contacto',
     prev: 'Anterior',
@@ -26,6 +26,16 @@ export const es = {
   cursor: {
     client: 'Cliente',
   },
+  hero: {
+    label: 'Desarrollo · Diseño · Experiencias digitales',
+    title: 'Código, diseño y experiencias que conectan.',
+    lead: 'Soy Alejandra Mendivelso, ingeniera multimedia en formación. Combino desarrollo de software, diseño UX/UI y realidad aumentada para crear experiencias digitales funcionales y visuales.',
+    where: 'Desde Sogamoso, Colombia',
+    explore: 'Explorar proyectos',
+    cv: 'Ver hoja de vida',
+    contact: 'Hablemos',
+    close: 'Cerrar bienvenida',
+  },
   intro: {
     skip: 'Omitir intro',
     hint: 'Pulsa cualquier tecla para saltar',
@@ -46,7 +56,7 @@ export const es = {
     footer: 'Pulsa ? o el botón de ayuda para volver a ver estas instrucciones.',
   },
   works: {
-    title: 'Trabajos',
+    title: 'Proyectos',
     counter: 'Proyecto',
     of: 'de',
     view: 'Ver proyecto',
@@ -77,16 +87,18 @@ export const es = {
     label: '01 / Conóceme',
     headline: 'Un poco sobre mí.',
     leadStart: 'Hola, soy ',
-    leadAfter: '. Me apasiona transformar ideas en propuestas visuales ',
-    leadHl: 'memorables',
+    leadAfter: '. Combino código, diseño e interacción para transformar ideas en ',
+    leadHl: 'experiencias digitales con propósito',
     leadEnd: '.',
     experience: 'Experiencia y formación',
     skills: 'Habilidades',
     present: 'Actualidad',
   },
   contact: {
-    title: 'Contacto',
-    intro: '¿Quieres trabajar juntos? Escríbeme un mensaje o agenda una llamada.',
+    title: '¿Tienes una idea? Construyámosla.',
+    label: '03 / Hablemos',
+    intro:
+      'Si buscas colaborar en un proyecto de desarrollo, diseño UX/UI o experiencias interactivas, me encantará conocer tu propuesta. También puedes contactarme para conversar sobre oportunidades profesionales.',
     name: 'Nombre',
     email: 'Correo',
     message: 'Mensaje',
@@ -101,8 +113,22 @@ export const es = {
     invalidEmail: 'Ingresa un correo electrónico válido',
     tooShort: 'Escribe un poco más de información',
     schedule: 'Agendar una llamada',
-    socials: 'Redes sociales',
+    socials: 'Enlaces',
+    emailCta: 'Escríbeme un correo',
+    emailSubject: 'Hablemos de un proyecto',
     directEmail: 'O escríbeme directamente a',
+    details: 'Datos de contacto',
+    location: 'Ubicación',
+    phone: 'Teléfono',
+    cvTitle: 'Conoce mi perfil',
+    cvIntro:
+      'Consulta mi hoja de vida según el enfoque que te interese. Puedes verla en el navegador o descargarla.',
+    cvView: 'Ver PDF',
+    cvDownload: 'Descargar',
+  },
+  footer: {
+    label: 'Pie de página',
+    note: 'Código, diseño y experiencias digitales.',
   },
   errors: {
     webgl: 'Tu dispositivo no soporta WebGL. Se muestra la versión en lista.',
@@ -111,7 +137,7 @@ export const es = {
     content: 'Error al cargar el contenido',
   },
   fallback: {
-    title: 'Trabajos',
+    title: 'Proyectos',
     note: 'Vista en lista (modo de compatibilidad)',
   },
 };

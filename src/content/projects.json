@@ -1,160 +1,105 @@
 [
   {
-    "id": "aurora",
-    "title": "Aurora",
-    "category": "Identidad visual",
-    "category_en": "Visual identity",
-    "year": 2026,
-    "client": "Aurora Studio",
-    "role": "Dirección de arte & diseño",
-    "role_en": "Art direction & design",
-    "description": "Sistema de identidad visual para un estudio de cerámica contemporánea. La marca parte de un logotipo tipográfico flexible y un sistema cromático cálido inspirado en esmaltes y arcillas. Se definió una retícula editorial para catálogos y una familia de patrones generativos que dan textura a la papelería.",
-    "description_en": "Visual identity system for a contemporary ceramics studio. The brand is built on a flexible typographic logo and a warm color system inspired by glazes and clays. An editorial grid was defined for catalogs, along with a family of generative patterns that give texture to the stationery.",
-    "tools": [
-      "Illustrator",
-      "InDesign",
-      "Figma",
-      "Blender"
-    ],
-    "cover": "/media/aurora/cover.svg",
+    "id": "ar-experience",
+    "title": "AR Experience",
+    "category": "Realidad aumentada",
+    "category_en": "Augmented reality",
+    "year": 2023,
+    "role": "Desarrollo y diseño de la experiencia",
+    "role_en": "Development & experience design",
+    "description": "Aplicación Android de realidad aumentada: tarjetas físicas que activan objetos 3D, botones interactivos y reproducción automática de video. Desarrollada en C# con Unity y Vuforia, aplicando arquitectura orientada a objetos.",
+    "description_en": "Android augmented reality app: physical cards that trigger 3D objects, interactive buttons and automatic video playback. Built in C# with Unity and Vuforia, applying object-oriented architecture.",
+    "tools": ["Unity", "Vuforia", "C#"],
+    "cover": "/media/ar-experience/cover.svg",
     "media": [
       {
         "kind": "image",
-        "src": "/media/aurora/01.svg",
-        "alt": "Logotipo y retícula",
-        "alt_en": "Logo and grid",
+        "src": "/media/ar-experience/01.svg",
+        "alt": "Vista provisional — pendiente de recursos reales",
+        "alt_en": "Provisional view — real assets pending",
         "width": 1600,
         "height": 1100
       },
       {
         "kind": "image",
-        "src": "/media/aurora/02.svg",
-        "alt": "Sistema cromático",
-        "alt_en": "Color system",
-        "width": 1600,
-        "height": 1100
-      },
-      {
-        "kind": "image",
-        "src": "/media/aurora/03.svg",
-        "alt": "Aplicaciones de papelería",
-        "alt_en": "Stationery applications",
+        "src": "/media/ar-experience/02.svg",
+        "alt": "Vista provisional — pendiente de recursos reales",
+        "alt_en": "Provisional view — real assets pending",
         "width": 1600,
         "height": 1100
       }
     ],
-    "links": [
-      {
-        "label": "Ver caso completo",
-        "label_en": "View full case",
-        "url": "https://example.com/aurora"
-      }
-    ],
+    "links": [],
     "order": 1,
-    "accent": "#b4553f"
+    "accent": "#5b4a8a"
   },
   {
-    "id": "trama",
-    "title": "Trama",
-    "category": "Dirección de arte",
-    "category_en": "Art direction",
-    "year": 2025,
-    "client": "Festival Trama",
-    "role": "Dirección de arte",
-    "role_en": "Art direction",
-    "description": "Dirección de arte para un festival de música experimental. Construimos un lenguaje gráfico basado en la interferencia y el ruido, con capas de tramas superpuestas que cambian de escala. El sistema se adaptó a cartelería, señalética y contenido digital animado.",
-    "description_en": "Art direction for an experimental music festival. We built a graphic language based on interference and noise, with layered patterns that shift in scale. The system was adapted to posters, signage and animated digital content.",
-    "tools": [
-      "Photoshop",
-      "After Effects",
-      "Cinema 4D"
-    ],
-    "cover": "/media/trama/cover.svg",
+    "id": "plataforma-domicilios",
+    "title": "Plataforma web de domicilios",
+    "category": "Diseño UX/UI",
+    "category_en": "UX/UI design",
+    "year": 2024,
+    "role": "Investigación y diseño de interfaz",
+    "role_en": "Research & interface design",
+    "description": "Rediseño de la interfaz de una plataforma de domicilios: investigación de usuarios, wireframes y prototipado para lograr una experiencia más ágil y accesible en móviles.",
+    "description_en": "Interface redesign for a food delivery platform: user research, wireframes and prototyping to achieve a faster, more accessible mobile experience.",
+    "tools": ["UX Research", "Wireframes", "Prototipado"],
+    "cover": "/media/plataforma-domicilios/cover.svg",
     "media": [
       {
         "kind": "image",
-        "src": "/media/trama/01.svg",
-        "alt": "Cartel principal",
-        "alt_en": "Main poster",
+        "src": "/media/plataforma-domicilios/01.svg",
+        "alt": "Vista provisional — pendiente de recursos reales",
+        "alt_en": "Provisional view — real assets pending",
         "width": 1600,
         "height": 1100
       },
       {
         "kind": "image",
-        "src": "/media/trama/02.svg",
-        "alt": "Sistema de tramas",
-        "alt_en": "Pattern system",
-        "width": 1600,
-        "height": 1100
-      },
-      {
-        "kind": "image",
-        "src": "/media/trama/03.svg",
-        "alt": "Señalética",
-        "alt_en": "Signage",
+        "src": "/media/plataforma-domicilios/02.svg",
+        "alt": "Vista provisional — pendiente de recursos reales",
+        "alt_en": "Provisional view — real assets pending",
         "width": 1600,
         "height": 1100
       }
     ],
-    "links": [
-      {
-        "label": "Behance",
-        "url": "https://example.com/trama"
-      }
-    ],
+    "links": [],
     "order": 2,
-    "accent": "#5b6f6a"
+    "accent": "#2f6b7a"
   },
   {
-    "id": "umbra",
-    "title": "Umbra",
-    "category": "Editorial",
-    "category_en": "Editorial",
-    "year": 2025,
-    "client": "Ediciones Umbra",
-    "role": "Diseño editorial",
-    "role_en": "Editorial design",
-    "description": "Diseño de una colección de libros de ensayo. El proyecto explora el contraste entre tipografías serif de alto contraste y grandes espacios en blanco. Se cuidó la mancha tipográfica, la jerarquía de notas y la legibilidad en distintos formatos y acabados.",
-    "description_en": "Design of an essay book collection. The project explores the contrast between high-contrast serif typefaces and generous white space. Careful attention was paid to the typographic block, the hierarchy of footnotes and legibility across formats and finishes.",
-    "tools": [
-      "InDesign",
-      "Illustrator"
-    ],
-    "cover": "/media/umbra/cover.svg",
+    "id": "app-movil-consulta",
+    "title": "Aplicación móvil de consulta",
+    "category": "Desarrollo móvil & UX/UI",
+    "category_en": "Mobile development & UX/UI",
+    "year": 2024,
+    "role": "Arquitectura de información y desarrollo",
+    "role_en": "Information architecture & development",
+    "description": "App híbrida construida con Angular e Ionic: arquitectura de información, componentes reutilizables, sistema de favoritos y navegación jerárquica.",
+    "description_en": "Hybrid app built with Angular and Ionic: information architecture, reusable components, favorites system and hierarchical navigation.",
+    "tools": ["Ionic", "Angular"],
+    "cover": "/media/app-movil-consulta/cover.svg",
     "media": [
       {
         "kind": "image",
-        "src": "/media/umbra/01.svg",
-        "alt": "Cubiertas",
-        "alt_en": "Covers",
+        "src": "/media/app-movil-consulta/01.svg",
+        "alt": "Vista provisional — pendiente de recursos reales",
+        "alt_en": "Provisional view — real assets pending",
         "width": 1600,
         "height": 1100
       },
       {
         "kind": "image",
-        "src": "/media/umbra/02.svg",
-        "alt": "Doble página",
-        "alt_en": "Spread",
-        "width": 1600,
-        "height": 1100
-      },
-      {
-        "kind": "image",
-        "src": "/media/umbra/03.svg",
-        "alt": "Detalle tipográfico",
-        "alt_en": "Typographic detail",
+        "src": "/media/app-movil-consulta/02.svg",
+        "alt": "Vista provisional — pendiente de recursos reales",
+        "alt_en": "Provisional view — real assets pending",
         "width": 1600,
         "height": 1100
       }
     ],
-    "links": [
-      {
-        "label": "Editorial",
-        "url": "https://example.com/umbra"
-      }
-    ],
+    "links": [],
     "order": 3,
-    "accent": "#3f4a5a"
+    "accent": "#8a5b3f"
   },
   {
     "id": "salvando-patitas",
@@ -168,11 +113,7 @@
     "role_en": "Product design & motion",
     "description": "Animación de producto para la app de adopción y donación de Salvando Patitas Boyacá. Cinco escenas que recorren la experiencia: adopción con confianza, donación segura, apadrinamiento, hogar de paso y transparencia. Piezas pensadas para presentar la app en web y redes.",
     "description_en": "Product animation for the Salvando Patitas Boyacá adoption and donation app. Five scenes that walk through the experience: trusted adoption, secure donations, sponsoring, foster homes and transparency. Pieces designed to present the app on web and social media.",
-    "tools": [
-      "After Effects",
-      "Figma",
-      "Lottie"
-    ],
+    "tools": ["After Effects", "Figma", "Lottie"],
     "cover": "/media/salvando-patitas/poster.jpg",
     "coverVideo": "/media/salvando-patitas/preview.mp4",
     "media": [
@@ -218,121 +159,8 @@
         "height": 962
       }
     ],
-    "links": [
-      {
-        "label": "Ver animación",
-        "label_en": "View animation",
-        "url": "https://example.com/salvando-patitas"
-      }
-    ],
+    "links": [],
     "order": 4,
     "accent": "#2F7A5B"
-  },
-  {
-    "id": "vitrina",
-    "title": "Vitrina",
-    "category": "Branding",
-    "category_en": "Branding",
-    "year": 2024,
-    "client": "Vitrina Café",
-    "role": "Branding & packaging",
-    "role_en": "Branding & packaging",
-    "description": "Creación de marca y empaque para una tostadora de café de especialidad. El naming, el logotipo y el sistema de etiquetas por origen construyen una experiencia coherente desde el grano hasta la barra. Papelería, vasos y bolsas con acabados mate.",
-    "description_en": "Brand and packaging creation for a specialty coffee roaster. The naming, logo and origin-based label system build a coherent experience from bean to bar. Stationery, cups and bags with matte finishes.",
-    "tools": [
-      "Illustrator",
-      "Photoshop",
-      "Figma"
-    ],
-    "cover": "/media/vitrina/cover.svg",
-    "media": [
-      {
-        "kind": "image",
-        "src": "/media/vitrina/01.svg",
-        "alt": "Logotipo",
-        "alt_en": "Logo",
-        "width": 1600,
-        "height": 1100
-      },
-      {
-        "kind": "image",
-        "src": "/media/vitrina/02.svg",
-        "alt": "Etiquetas por origen",
-        "alt_en": "Origin labels",
-        "width": 1600,
-        "height": 1100
-      },
-      {
-        "kind": "image",
-        "src": "/media/vitrina/03.svg",
-        "alt": "Empaque",
-        "alt_en": "Packaging",
-        "width": 1600,
-        "height": 1100
-      }
-    ],
-    "links": [
-      {
-        "label": "Caso de estudio",
-        "label_en": "Case study",
-        "url": "https://example.com/vitrina"
-      }
-    ],
-    "order": 5,
-    "accent": "#8a6a3f"
-  },
-  {
-    "id": "niebla",
-    "title": "Niebla",
-    "category": "Fotografía",
-    "category_en": "Photography",
-    "year": 2023,
-    "client": "Proyecto personal",
-    "client_en": "Personal project",
-    "role": "Fotografía & edición",
-    "role_en": "Photography & editing",
-    "description": "Serie fotográfica sobre paisajes en la niebla. Un ejercicio de reducción: menos color, menos detalle, más atmósfera. Las imágenes se editaron buscando una escala de grises cálida y una composición que respire, pensada para exposición impresa en gran formato.",
-    "description_en": "A photographic series about foggy landscapes. An exercise in reduction: less color, less detail, more atmosphere. The images were edited seeking a warm grayscale and a composition that breathes, intended for large-format print exhibition.",
-    "tools": [
-      "Capture One",
-      "Lightroom",
-      "Photoshop"
-    ],
-    "cover": "/media/niebla/cover.svg",
-    "media": [
-      {
-        "kind": "image",
-        "src": "/media/niebla/01.svg",
-        "alt": "Paisaje en la niebla I",
-        "alt_en": "Landscape in fog I",
-        "width": 1600,
-        "height": 1100
-      },
-      {
-        "kind": "image",
-        "src": "/media/niebla/02.svg",
-        "alt": "Paisaje en la niebla II",
-        "alt_en": "Landscape in fog II",
-        "width": 1600,
-        "height": 1100
-      },
-      {
-        "kind": "image",
-        "src": "/media/niebla/03.svg",
-        "alt": "Paisaje en la niebla III",
-        "alt_en": "Landscape in fog III",
-        "width": 1600,
-        "height": 1100
-      }
-    ],
-    "links": [
-      {
-        "label": "Serie completa",
-        "label_en": "Full series",
-        "url": "https://example.com/niebla"
-      }
-    ],
-    "order": 6,
-    "accent": "#6b6f78"
   }
 ]

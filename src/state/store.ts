@@ -8,6 +8,8 @@ export interface AppState {
   targetIndex: number;
   detailProjectId: string | null;
   helpOpen: boolean;
+  /** Portada visible tras la intro */
+  heroOpen: boolean;
   introDone: boolean;
   loadingProgress: number;
   ready: boolean;

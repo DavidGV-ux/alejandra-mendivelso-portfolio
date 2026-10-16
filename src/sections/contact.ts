@@ -6,6 +6,7 @@ export interface ContactPanel extends UIComponent {
   show: () => void;
   hide: () => void;
   isVisible: () => boolean;
+  scrollToCv: () => void;
 }
 
 interface FieldRefs {
@@ -150,39 +151,152 @@ export function createContactPanel(ctx: UIContext): ContactPanel {
     );
   }
 
+  const details = el('dl', { class: 'contact__details' });
+  details.append(
+    el('div', { class: 'contact__detail' }, {
+      children: [
+        el('dt', { class: 'contact__detail-label', text: t.location }),
+        el('dd', { class: 'contact__detail-value', text: profile.location }),
+      ],
+    }),
+  );
+  if (profile.phone) {
+    const tel = profile.phone.replace(/[^\d+]/g, '');
+    details.append(
+      el('div', { class: 'contact__detail' }, {
+        children: [
+          el('dt', { class: 'contact__detail-label', text: t.phone }),
+          el('dd', { class: 'contact__detail-value' }, {
+            children: [
+              el('a', { class: 'link', text: profile.phone, attrs: { href: `tel:${tel}` } }),
+            ],
+          }),
+        ],
+      }),
+    );
+  }
+  details.append(
+    el('div', { class: 'contact__detail' }, {
+      children: [
+        el('dt', { class: 'contact__detail-label', text: t.email }),
+        el('dd', { class: 'contact__detail-value' }, {
+          children: [
+            el('a', {
+              class: 'link',
+              text: profile.email,
+              attrs: { href: `mailto:${profile.email}` },
+            }),
+          ],
+        }),
+      ],
+    }),
+  );
+
   const aside = el('div', { class: 'contact__aside' });
   aside.append(
     el('h3', { class: 'card__title', text: t.socials }),
     socials,
+    el('h3', { class: 'card__title', text: t.details }),
+    details,
+  );
+
+  const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(t.emailSubject)}`;
+  const cta = el('div', { class: 'contact__cta' });
+  cta.append(
+    el('a', {
+      class: 'btn btn--primary',
+      text: t.emailCta,
+      attrs: { href: mailto },
+    }),
     el('p', { class: 'contact__direct' }, {
       children: [
-        el('span', { text: t.directEmail + ': ' }),
+        el('span', { text: `${t.directEmail}: ` }),
         el('a', { class: 'link', text: profile.email, attrs: { href: `mailto:${profile.email}` } }),
       ],
     }),
   );
 
-  if (profile.calcom) {
-    const iframe = el('iframe', {
-      class: 'contact__cal',
-      attrs: {
-        src: `https://cal.com/${profile.calcom}?embed=true`,
-        title: t.schedule,
-        loading: 'lazy',
-      },
-    });
-    aside.append(el('h3', { class: 'card__title', text: t.schedule }), iframe);
+  const cvGrid = el('div', { class: 'cv__grid' });
+  for (const cv of profile.cv) {
+    if (!cv.file) continue;
+    const actions = el('div', { class: 'cv-card__actions' });
+    actions.append(
+      el('a', {
+        class: 'btn',
+        text: t.cvView,
+        attrs: {
+          href: cv.file,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          'aria-label': `${t.cvView}: ${cv.title}`,
+        },
+      }),
+      el('a', {
+        class: 'btn',
+        text: t.cvDownload,
+        attrs: { href: cv.file, download: '', 'aria-label': `${t.cvDownload}: ${cv.title}` },
+      }),
+    );
+    cvGrid.append(
+      el('article', { class: 'cv-card' }, {
+        children: [
+          el('h4', { class: 'cv-card__title', text: cv.title }),
+          el('p', { class: 'cv-card__desc', text: cv.description }),
+          actions,
+        ],
+      }),
+    );
   }
+
+  const cvSection = el('section', { class: 'cv' });
+  cvSection.append(
+    el('h3', { class: 'cv__title', text: t.cvTitle }),
+    el('p', { class: 'cv__intro', text: t.cvIntro }),
+    cvGrid,
+  );
+
+  const footerLinks = el('ul', { class: 'site-footer__links' });
+  for (const social of profile.socials) {
+    footerLinks.append(
+      el('li', {}, {
+        children: [
+          el('a', {
+            class: 'link',
+            text: social.label,
+            attrs: {
+              href: social.url,
+              target: social.url.startsWith('mailto:') ? '_self' : '_blank',
+              rel: 'noopener noreferrer',
+            },
+          }),
+        ],
+      }),
+    );
+  }
+
+  const year = new Date().getFullYear();
+  const footer = el('footer', {
+    class: 'site-footer',
+    attrs: { 'aria-label': dict.footer.label },
+  });
+  footer.append(
+    el('p', { class: 'site-footer__copy', text: `© ${year} ${profile.name} — ${dict.footer.note}` }),
+    footerLinks,
+  );
 
   const inner = el('div', { class: 'panel__inner panel__inner--contact' });
   inner.append(
     el('div', { class: 'contact__intro' }, {
       children: [
+        el('p', { class: 'panel__kicker', text: t.label }),
         el('h2', { class: 'panel__title', id: 'contact-title', text: t.title }),
         el('p', { class: 'panel__intro', text: t.intro }),
+        cta,
       ],
     }),
     el('div', { class: 'contact__grid' }, { children: [form, aside] }),
+    cvSection,
+    footer,
   );
 
   const panel = el('section', {
@@ -207,6 +321,10 @@ export function createContactPanel(ctx: UIContext): ContactPanel {
       panel.hidden = true;
     },
     isVisible: () => !panel.hidden,
+    scrollToCv: () => {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      cvSection.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    },
     dispose: disposeSubmit,
   };
 }

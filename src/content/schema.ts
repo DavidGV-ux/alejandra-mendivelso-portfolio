@@ -60,6 +60,10 @@ const statSchema = z.object({
   label_en: z.string().min(1).optional(),
   value: z.string().min(1),
 });
+const experiencePointSchema = z.object({
+  text: z.string().min(1),
+  text_en: z.string().min(1).optional(),
+});
 const experienceSchema = z.object({
   period: z.string().min(1),
   period_en: z.string().min(1).optional(),
@@ -69,17 +73,34 @@ const experienceSchema = z.object({
   org_en: z.string().min(1).optional(),
   description: z.string().optional(),
   description_en: z.string().optional(),
+  points: z.array(experiencePointSchema).default([]),
 });
-const skillSchema = z.object({
-  name: z.string().min(1),
-  name_en: z.string().min(1).optional(),
-  level: z.number().min(0).max(100).optional(),
+const skillGroupSchema = z.object({
+  title: z.string().min(1),
+  title_en: z.string().min(1).optional(),
+  items: z.array(z.string().min(1)).default([]),
 });
 const socialSchema = z.object({
   label: z.string().min(1),
   label_en: z.string().min(1).optional(),
   url: z.string().min(1),
-  icon: z.enum(['instagram', 'linkedin', 'behance', 'whatsapp', 'mail', 'dribbble', 'x']),
+  icon: z.enum([
+    'instagram',
+    'linkedin',
+    'behance',
+    'whatsapp',
+    'github',
+    'mail',
+    'dribbble',
+    'x',
+  ]),
+});
+const cvFileSchema = z.object({
+  title: z.string().min(1),
+  title_en: z.string().min(1).optional(),
+  description: z.string().min(1),
+  description_en: z.string().min(1).optional(),
+  file: z.string().min(1),
 });
 const aboutCardSchema = z.object({
   type: z.enum(['profile', 'bio', 'stats', 'experience', 'skills', 'text']),
@@ -92,6 +113,7 @@ const aboutCardSchema = z.object({
 
 export const profileCoreSchema = z.object({
   name: z.string().min(1),
+  fullName: z.string().min(1).optional(),
   role: z.string().min(1),
   role_en: z.string().min(1).optional(),
   location: z.string().min(1),
@@ -105,7 +127,8 @@ export const profileCoreSchema = z.object({
   phone: z.string().optional(),
   calcom: z.string().optional(),
   socials: z.array(socialSchema).default([]),
-  skills: z.array(skillSchema).default([]),
+  skills: z.array(skillGroupSchema).default([]),
+  cv: z.array(cvFileSchema).default([]),
   aboutCards: z.array(aboutCardSchema).default([]),
 });
 

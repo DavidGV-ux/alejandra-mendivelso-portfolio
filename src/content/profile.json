@@ -1,38 +1,130 @@
 {
-  "name": "Liseth Alejandra Rairan Mendivelso",
-  "role": "Ingeniera Multimedia | UI/UX | Diseño",
-  "role_en": "Multimedia Engineer | UI/UX | Design",
+  "name": "Alejandra Mendivelso",
+  "fullName": "Liseth Alejandra Rairán Mendivelso",
+  "role": "Desarrollo de software · UX/UI · Realidad aumentada",
+  "role_en": "Software development · UX/UI · Augmented reality",
   "location": "Sogamoso, Boyacá, Colombia",
   "location_en": "Sogamoso, Boyacá, Colombia",
-  "tagline": "Diseño experiencias digitales funcionales, accesibles y con identidad propia.",
-  "tagline_en": "I design digital experiences that are functional, accessible and full of character.",
-  "bio": "Ingeniera Multimedia con sólidos conocimientos en UI/UX, diseño gráfico y desarrollo front-end. Me apasiona crear interfaces claras, atractivas y centradas en el usuario, combinando estética, usabilidad y rendimiento para dar vida a productos digitales coherentes y memorables.",
-  "bio_en": "Multimedia Engineer with solid knowledge of UI/UX, graphic design and front-end development. I love creating clear, engaging, user-centered interfaces, combining aesthetics, usability and performance to bring coherent, memorable digital products to life.",
+  "tagline": "Código, diseño y experiencias que conectan.",
+  "tagline_en": "Code, design and experiences that connect.",
+  "bio": "Soy ingeniera multimedia en formación, con interés en el desarrollo de software, el diseño UX/UI, la realidad aumentada y la producción audiovisual. Disfruto transformar ideas en productos digitales claros, funcionales y bien cuidados.\n\nActualmente curso Ingeniería Multimedia en la Universidad de Boyacá, donde he explorado herramientas como JavaScript, C#, Angular, Ionic, Unity y Vuforia. En 2025 realicé un intercambio académico en la Universidad Autónoma de Tlaxcala (México), una experiencia que amplió mi forma de entender el diseño y la tecnología.",
+  "bio_en": "I'm a multimedia engineering student interested in software development, UX/UI design, augmented reality and audiovisual production. I enjoy turning ideas into clear, functional and well-crafted digital products.\n\nI'm currently studying Multimedia Engineering at Universidad de Boyacá, where I have explored tools such as JavaScript, C#, Angular, Ionic, Unity and Vuforia. In 2025 I did an academic exchange at Universidad Autónoma de Tlaxcala (Mexico), an experience that broadened the way I understand design and technology.",
   "photo": "/media/profile/alejandra.svg",
-  "email": "larairan@uniboyaca.edu.co",
+  "email": "alejandramendivelso33@gmail.com",
   "phone": "+57 302 744 9084",
-  "calcom": "",
   "socials": [
-    { "label": "LinkedIn", "url": "https://www.linkedin.com/in/", "icon": "linkedin" },
-    { "label": "Behance", "url": "https://www.behance.net/", "icon": "behance" },
-    { "label": "Instagram", "url": "https://instagram.com/", "icon": "instagram" },
-    { "label": "WhatsApp", "url": "https://wa.me/573027449084", "icon": "whatsapp" },
-    { "label": "Correo", "label_en": "Email", "url": "mailto:larairan@uniboyaca.edu.co", "icon": "mail" }
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/alejandra-mendivelso-37bb7736a/",
+      "icon": "linkedin"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/AlejandraMendivels",
+      "icon": "github"
+    },
+    {
+      "label": "Behance",
+      "url": "https://www.behance.net/AlejandraMendivelso",
+      "icon": "behance"
+    },
+    {
+      "label": "Correo",
+      "label_en": "Email",
+      "url": "mailto:alejandramendivelso33@gmail.com",
+      "icon": "mail"
+    }
   ],
   "skills": [
-    { "name": "UI/UX Design", "level": 95 },
-    { "name": "Diseño Gráfico", "name_en": "Graphic Design", "level": 95 },
-    { "name": "Ingeniería Multimedia", "name_en": "Multimedia Engineering", "level": 90 },
-    { "name": "Prototipado (Figma)", "name_en": "Prototyping (Figma)", "level": 95 },
-    { "name": "Desarrollo Front-end", "name_en": "Front-end Development", "level": 85 },
-    { "name": "Motion & 3D", "level": 80 }
+    {
+      "title": "Desarrollo web y móvil",
+      "title_en": "Web & mobile development",
+      "items": ["HTML5", "CSS3", "JavaScript", "Node.js", "Angular", "Vue.js", "React", "Ionic"]
+    },
+    {
+      "title": "Programación y datos",
+      "title_en": "Programming & data",
+      "items": ["C#", "Python", "SQL", "Git y GitHub"]
+    },
+    {
+      "title": "Experiencias interactivas",
+      "title_en": "Interactive experiences",
+      "items": ["Unity", "Vuforia", "Realidad aumentada", "Blender y rigging"]
+    },
+    {
+      "title": "Diseño UX/UI",
+      "title_en": "UX/UI design",
+      "items": [
+        "Investigación de usuario",
+        "Arquitectura de información",
+        "Wireframes",
+        "Prototipado"
+      ]
+    },
+    {
+      "title": "Producción visual",
+      "title_en": "Visual production",
+      "items": ["Photoshop", "Premiere Pro", "Lightroom", "CapCut", "Canva"]
+    },
+    {
+      "title": "Complementarias",
+      "title_en": "Complementary skills",
+      "items": ["Excel", "Power BI", "IA generativa", "Prompt engineering", "Claude", "GitHub Copilot"]
+    },
+    {
+      "title": "Metodologías",
+      "title_en": "Methodologies",
+      "items": ["Scrum", "Ciclo de vida del software", "Gestión de proyectos"]
+    }
+  ],
+  "cv": [
+    {
+      "title": "Desarrollo de software",
+      "title_en": "Software development",
+      "description": "Mi perfil técnico: desarrollo full-stack, arquitectura, datos e IA.",
+      "description_en": "My technical profile: full-stack development, architecture, data and AI.",
+      "file": "/cv/alejandra-mendivelso-cv-desarrollo.pdf"
+    },
+    {
+      "title": "Versión ATS",
+      "title_en": "ATS version",
+      "description": "Formato optimizado para sistemas de selección de personal.",
+      "description_en": "Format optimized for applicant tracking systems.",
+      "file": "/cv/alejandra-mendivelso-cv-ats.pdf"
+    },
+    {
+      "title": "Diseño y producción multimedia",
+      "title_en": "Design & multimedia production",
+      "description": "Mi perfil creativo: UX/UI, producción audiovisual y marketing digital.",
+      "description_en": "My creative profile: UX/UI, audiovisual production and digital marketing.",
+      "file": "/cv/alejandra-mendivelso-cv-diseno-multimedia.pdf"
+    }
   ],
   "aboutCards": [
     { "type": "profile", "span": 1 },
     { "type": "bio", "span": 2 },
     { "type": "stats", "span": 3 },
-    { "type": "experience", "title": "Experiencia y formación", "title_en": "Experience & education", "span": 2 },
-    { "type": "skills", "title": "Habilidades", "title_en": "Skills", "span": 1 },
-    { "type": "text", "title": "Cómo trabajo", "title_en": "How I work", "span": 3, "body": "Parto desde la investigación y las necesidades del usuario para definir flujos claros. Creo sistemas de diseño reutilizables, priorizo legibilidad, contraste y accesibilidad (WCAG), y cuido cada detalle visual para lograr experiencias limpias, funcionales y profesionales.", "body_en": "I start from research and user needs to define clear flows. I build reusable design systems, prioritize legibility, contrast and accessibility (WCAG), and take care of every visual detail to achieve clean, functional, professional experiences." }
+    {
+      "type": "experience",
+      "title": "Experiencia y formación",
+      "title_en": "Experience & education",
+      "span": 2
+    },
+    {
+      "type": "text",
+      "title": "Idiomas",
+      "title_en": "Languages",
+      "span": 1,
+      "body": "Español (nativo) · Inglés (B2, intermedio)",
+      "body_en": "Spanish (native) · English (B2, intermediate)"
+    },
+    {
+      "type": "skills",
+      "title": "Herramientas que conectan mis ideas",
+      "title_en": "Tools that connect my ideas",
+      "span": 3,
+      "body": "Combino herramientas de desarrollo y diseño según las necesidades de cada proyecto.",
+      "body_en": "I combine development and design tools according to the needs of each project."
+    }
   ]
 }

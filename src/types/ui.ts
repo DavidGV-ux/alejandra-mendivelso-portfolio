@@ -20,6 +20,10 @@ export interface UIActions {
   toggleLocale: () => void;
   openHelp: () => void;
   closeHelp: () => void;
+  /** Cierra la portada y deja la galería en primer plano */
+  dismissHero: () => void;
+  /** Abre la sección de contacto desplazándose al bloque de hojas de vida */
+  openCv: () => void;
 }
 
 export interface UIMusic {

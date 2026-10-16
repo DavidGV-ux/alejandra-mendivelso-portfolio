@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-label="Plataforma web de domicilios">
+  <defs>
+    <linearGradient id="g11" gradientTransform="rotate(114 0.5 0.5)">
+      <stop offset="0" stop-color="#f6f2ec"/>
+      <stop offset="0.55" stop-color="#ece5db"/>
+      <stop offset="1" stop-color="#e0d6c8"/>
+    </linearGradient>
+    <radialGradient id="g11b" cx="0.2" cy="0.15" r="0.9">
+      <stop offset="0" stop-color="#2f6b7a" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#2f6b7a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1100" fill="url(#g11)"/>
+  <rect width="1600" height="1100" fill="url(#g11b)"/>
+  <circle cx="150.0" cy="92.0" r="29" fill="#2f6b7a" opacity="0.030"/>
+  <circle cx="287.5" cy="181.3" r="36" fill="#2f6b7a" opacity="0.042"/>
+  <circle cx="425.0" cy="270.6" r="43" fill="#2f6b7a" opacity="0.054"/>
+  <circle cx="562.5" cy="359.9" r="50" fill="#2f6b7a" opacity="0.066"/>
+  <circle cx="700.0" cy="449.2" r="57" fill="#2f6b7a" opacity="0.078"/>
+  <circle cx="837.5" cy="538.5" r="64" fill="#2f6b7a" opacity="0.030"/>
+  <circle cx="975.0" cy="627.8" r="71" fill="#2f6b7a" opacity="0.042"/>
+  <circle cx="1112.5" cy="717.1" r="78" fill="#2f6b7a" opacity="0.054"/>
+  <circle cx="1250.0" cy="806.4" r="85" fill="#2f6b7a" opacity="0.066"/>
+  <circle cx="1387.5" cy="895.7" r="92" fill="#2f6b7a" opacity="0.078"/>
+  <circle cx="1525.0" cy="985.0" r="99" fill="#2f6b7a" opacity="0.030"/>
+  <circle cx="62.5" cy="1074.3" r="106" fill="#2f6b7a" opacity="0.042"/>
+  <circle cx="200.0" cy="63.6" r="23" fill="#2f6b7a" opacity="0.054"/>
+  <circle cx="337.5" cy="152.9" r="30" fill="#2f6b7a" opacity="0.066"/>
+  <circle cx="475.0" cy="242.2" r="37" fill="#2f6b7a" opacity="0.078"/>
+  <circle cx="612.5" cy="331.5" r="44" fill="#2f6b7a" opacity="0.030"/>
+  <circle cx="750.0" cy="420.8" r="51" fill="#2f6b7a" opacity="0.042"/>
+  <circle cx="887.5" cy="510.1" r="58" fill="#2f6b7a" opacity="0.054"/>
+  <circle cx="1025.0" cy="599.4" r="65" fill="#2f6b7a" opacity="0.066"/>
+  <circle cx="1162.5" cy="688.7" r="72" fill="#2f6b7a" opacity="0.078"/>
+  <circle cx="1300.0" cy="778.0" r="79" fill="#2f6b7a" opacity="0.030"/>
+  <circle cx="1437.5" cy="867.3" r="86" fill="#2f6b7a" opacity="0.042"/>
+  <circle cx="1575.0" cy="956.6" r="93" fill="#2f6b7a" opacity="0.054"/>
+  <circle cx="112.5" cy="1045.9" r="100" fill="#2f6b7a" opacity="0.066"/>
+  <circle cx="250.0" cy="35.2" r="107" fill="#2f6b7a" opacity="0.078"/>
+  <circle cx="387.5" cy="124.5" r="24" fill="#2f6b7a" opacity="0.030"/>
+  <circle cx="525.0" cy="213.8" r="31" fill="#2f6b7a" opacity="0.042"/>
+  <circle cx="662.5" cy="303.1" r="38" fill="#2f6b7a" opacity="0.054"/>
+  <circle cx="800.0" cy="392.4" r="45" fill="#2f6b7a" opacity="0.066"/>
+  <circle cx="937.5" cy="481.7" r="52" fill="#2f6b7a" opacity="0.078"/>
+  <circle cx="1075.0" cy="571.0" r="59" fill="#2f6b7a" opacity="0.030"/>
+  <circle cx="1212.5" cy="660.3" r="66" fill="#2f6b7a" opacity="0.042"/>
+  <circle cx="1350.0" cy="749.6" r="73" fill="#2f6b7a" opacity="0.054"/>
+  <circle cx="1487.5" cy="838.9" r="80" fill="#2f6b7a" opacity="0.066"/>
+  <circle cx="25.0" cy="928.2" r="87" fill="#2f6b7a" opacity="0.078"/>
+  <circle cx="162.5" cy="1017.5" r="94" fill="#2f6b7a" opacity="0.030"/>
+  <circle cx="300.0" cy="6.8" r="101" fill="#2f6b7a" opacity="0.042"/>
+  <circle cx="437.5" cy="96.1" r="18" fill="#2f6b7a" opacity="0.054"/>
+  <circle cx="575.0" cy="185.4" r="25" fill="#2f6b7a" opacity="0.066"/>
+  <circle cx="712.5" cy="274.7" r="32" fill="#2f6b7a" opacity="0.078"/>
+  <circle cx="850.0" cy="364.0" r="39" fill="#2f6b7a" opacity="0.030"/>
+  <circle cx="987.5" cy="453.3" r="46" fill="#2f6b7a" opacity="0.042"/>
+  <g fill="none" stroke="#2f6b7a" stroke-width="1.5" opacity="0.35">
+    <rect x="70" y="70" width="1460" height="960" rx="18"/>
+  </g>
+  <text x="120" y="950" font-family="Georgia, 'Times New Roman', serif" font-size="86" fill="#1a1714" font-weight="500">Plataforma web de domicilios</text>
+  <text x="122" y="1000" font-family="Helvetica, Arial, sans-serif" font-size="30" letter-spacing="4" fill="#6b635b">DISEÑO UX/UI · 1</text>
+  <text x="1480" y="150" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="28" letter-spacing="3" fill="#6b635b">02</text>
+</svg>

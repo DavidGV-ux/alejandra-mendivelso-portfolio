@@ -88,8 +88,10 @@ function normalizeProfile(core, stats, experience) {
     stats,
     experience,
     skills: core.skills,
+    cv: core.cv,
     aboutCards: core.aboutCards,
   };
+  if (core.fullName !== undefined) profile.fullName = core.fullName;
   if (core.phone !== undefined) profile.phone = core.phone;
   if (core.calcom !== undefined) profile.calcom = core.calcom;
   return profile;

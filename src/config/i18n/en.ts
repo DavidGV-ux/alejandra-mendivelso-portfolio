@@ -3,7 +3,7 @@ import type { Dictionary } from './es';
 export const en: Dictionary = {
   lang: 'en',
   nav: {
-    works: 'Works',
+    works: 'Projects',
     about: 'About',
     contact: 'Contact',
     prev: 'Previous',
@@ -28,6 +28,16 @@ export const en: Dictionary = {
   cursor: {
     client: 'Visitor',
   },
+  hero: {
+    label: 'Development · Design · Digital experiences',
+    title: 'Code, design and experiences that connect.',
+    lead: "I'm Alejandra Mendivelso, a multimedia engineering student. I combine software development, UX/UI design and augmented reality to create functional and visual digital experiences.",
+    where: 'From Sogamoso, Colombia',
+    explore: 'Explore projects',
+    cv: 'View résumé',
+    contact: "Let's talk",
+    close: 'Close welcome',
+  },
   intro: {
     skip: 'Skip intro',
     hint: 'Press any key to skip',
@@ -48,7 +58,7 @@ export const en: Dictionary = {
     footer: 'You can see this help again from the bottom bar.',
   },
   works: {
-    title: 'Works',
+    title: 'Projects',
     counter: 'Project',
     of: 'of',
     view: 'View project',
@@ -79,16 +89,18 @@ export const en: Dictionary = {
     label: '01 / Get to know me',
     headline: 'A little about me.',
     leadStart: "Hi, I'm ",
-    leadAfter: '. I love turning ideas into ',
-    leadHl: 'memorable',
-    leadEnd: ' visual proposals.',
+    leadAfter: '. I combine code, design and interaction to turn ideas into ',
+    leadHl: 'digital experiences with purpose',
+    leadEnd: '.',
     experience: 'Experience & education',
     skills: 'Skills',
     present: 'Present',
   },
   contact: {
-    title: 'Contact',
-    intro: "Let's work together? Write me or book a call.",
+    title: "Got an idea? Let's build it.",
+    label: "03 / Let's talk",
+    intro:
+      "If you'd like to collaborate on a software development, UX/UI design or interactive experience project, I'd love to hear your proposal. You can also reach out to talk about professional opportunities.",
     name: 'Name',
     email: 'Email',
     message: 'Message',
@@ -103,8 +115,22 @@ export const en: Dictionary = {
     invalidEmail: 'Enter a valid email',
     tooShort: 'Write a bit more',
     schedule: 'Book a call',
-    socials: 'Social',
+    socials: 'Links',
+    emailCta: 'Send me an email',
+    emailSubject: "Let's talk about a project",
     directEmail: 'Or email me directly',
+    details: 'Contact details',
+    location: 'Location',
+    phone: 'Phone',
+    cvTitle: 'Get to know my profile',
+    cvIntro:
+      'Check my résumé depending on the focus you are interested in. You can view it in the browser or download it.',
+    cvView: 'View PDF',
+    cvDownload: 'Download',
+  },
+  footer: {
+    label: 'Footer',
+    note: 'Code, design and digital experiences.',
   },
   errors: {
     webgl: 'Your device does not support WebGL. Showing the list view instead.',
@@ -113,7 +139,7 @@ export const en: Dictionary = {
     content: 'Content error',
   },
   fallback: {
-    title: 'Works',
+    title: 'Projects',
     note: 'List view (compatibility mode)',
   },
 };

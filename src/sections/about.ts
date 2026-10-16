@@ -35,10 +35,10 @@ function buildProfileCard(profile: Profile): HTMLElement {
 
 function buildBioCard(profile: Profile): HTMLElement {
   const card = el('article', { class: 'card card--bio' });
-  card.append(
-    el('p', { class: 'card__tagline', text: profile.tagline }),
-    el('p', { class: 'card__bio', text: profile.bio }),
-  );
+  card.append(el('p', { class: 'card__tagline', text: profile.tagline }));
+  for (const paragraph of profile.bio.split('\n\n')) {
+    card.append(el('p', { class: 'card__bio', text: paragraph }));
+  }
   return card;
 }
 
@@ -60,20 +60,22 @@ function buildStatsCard(profile: Profile): HTMLElement {
 function buildExperienceCard(profile: Profile, title: string): HTMLElement {
   const list = el('ol', { class: 'timeline' });
   for (const item of profile.experience) {
+    const body = el('div', { class: 'timeline__body' });
+    body.append(
+      el('h4', { class: 'timeline__title', text: item.title }),
+      el('p', { class: 'timeline__org', text: item.org }),
+    );
+    if (item.description) body.append(el('p', { class: 'timeline__desc', text: item.description }));
+    if (item.points.length > 0) {
+      const points = el('ul', { class: 'timeline__points' });
+      for (const point of item.points) {
+        points.append(el('li', { class: 'timeline__point', text: point.text }));
+      }
+      body.append(points);
+    }
     list.append(
       el('li', { class: 'timeline__item' }, {
-        children: [
-          el('span', { class: 'timeline__period', text: item.period }),
-          el('div', { class: 'timeline__body' }, {
-            children: [
-              el('h4', { class: 'timeline__title', text: item.title }),
-              el('p', { class: 'timeline__org', text: item.org }),
-              item.description
-                ? el('p', { class: 'timeline__desc', text: item.description })
-                : el('span'),
-            ],
-          }),
-        ],
+        children: [el('span', { class: 'timeline__period', text: item.period }), body],
       }),
     );
   }
@@ -82,30 +84,22 @@ function buildExperienceCard(profile: Profile, title: string): HTMLElement {
   });
 }
 
-function buildSkillsCard(profile: Profile, title: string): HTMLElement {
-  const list = el('ul', { class: 'skills' });
-  for (const skill of profile.skills) {
-    const level = skill.level ?? 0;
-    list.append(
-      el('li', { class: 'skill' }, {
-        children: [
-          el('div', { class: 'skill__head' }, {
-            children: [
-              el('span', { class: 'skill__name', text: skill.name }),
-              skill.level !== undefined
-                ? el('span', { class: 'skill__level', text: `${level}` })
-                : el('span'),
-            ],
-          }),
-          skill.level !== undefined
-            ? el('div', { class: 'skill__track', children: [el('div', { class: 'skill__fill', style: { width: `${level}%` } })] })
-            : el('span'),
-        ],
+function buildSkillsCard(card: AboutCard, profile: Profile, title: string): HTMLElement {
+  const content = el('div', { class: 'skills' });
+  if (card.body) content.append(el('p', { class: 'skills__intro', text: card.body }));
+  for (const group of profile.skills) {
+    const items = el('ul', { class: 'skill-group__items' });
+    for (const item of group.items) {
+      items.append(el('li', { class: 'skill-chip', text: item }));
+    }
+    content.append(
+      el('div', { class: 'skill-group' }, {
+        children: [el('h4', { class: 'skill-group__title', text: group.title }), items],
       }),
     );
   }
   return el('article', { class: 'card card--skills' }, {
-    children: [el('h3', { class: 'card__title', text: title }), list],
+    children: [el('h3', { class: 'card__title', text: title }), content],
   });
 }
 
@@ -129,7 +123,7 @@ function buildCard(card: AboutCard, profile: Profile, fallbackTitle: string): HT
     case 'experience':
       return buildExperienceCard(profile, card.title ?? fallbackTitle);
     case 'skills':
-      return buildSkillsCard(profile, card.title ?? fallbackTitle);
+      return buildSkillsCard(card, profile, card.title ?? fallbackTitle);
     case 'text':
       return buildTextCard(card);
   }

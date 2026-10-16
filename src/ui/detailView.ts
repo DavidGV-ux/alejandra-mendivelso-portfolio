@@ -110,6 +110,8 @@ export function createDetailView(ctx: UIContext): DetailView {
   clientRow.append(el('dt', { text: dict.detail.client }), metaClient);
 
   const linksList = el('ul', { class: 'detail__links' });
+  const linksBlock = el('div', { class: 'detail__linksblock' });
+  linksBlock.append(el('h3', { class: 'detail__subtitle', text: dict.detail.links }), linksList);
 
   const meta = el('dl', { class: 'detail__meta' });
   meta.append(
@@ -120,14 +122,7 @@ export function createDetailView(ctx: UIContext): DetailView {
   );
 
   const info = el('div', { class: 'detail__info' });
-  info.append(
-    kicker,
-    title,
-    description,
-    meta,
-    el('h3', { class: 'detail__subtitle', text: dict.detail.links }),
-    linksList,
-  );
+  info.append(kicker, title, description, meta, linksBlock);
 
   const body = el('div', { class: 'detail__body' });
   body.append(stage, info);
@@ -268,23 +263,20 @@ export function createDetailView(ctx: UIContext): DetailView {
     clientRow.hidden = !next.client;
 
     clearElement(linksList);
-    if (next.links.length === 0) {
-      linksList.append(el('li', { class: 'detail__nolink', text: '—' }));
-    } else {
-      next.links.forEach((link) => {
-        linksList.append(
-          el('li', {
-            children: [
-              el('a', {
-                class: 'detail__link',
-                text: link.label,
-                attrs: { href: link.url, target: '_blank', rel: 'noopener noreferrer' },
-              }),
-            ],
-          }),
-        );
-      });
-    }
+    linksBlock.hidden = next.links.length === 0;
+    next.links.forEach((link) => {
+      linksList.append(
+        el('li', {
+          children: [
+            el('a', {
+              class: 'detail__link',
+              text: link.label,
+              attrs: { href: link.url, target: '_blank', rel: 'noopener noreferrer' },
+            }),
+          ],
+        }),
+      );
+    });
 
     prevBtn.querySelector('span')!.textContent = dict.detail.prevProject;
     nextBtn.querySelector('span')!.textContent = dict.detail.nextProject;

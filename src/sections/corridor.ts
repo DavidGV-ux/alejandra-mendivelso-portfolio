@@ -343,7 +343,8 @@ export function createCorridorController(deps: Deps): CorridorController {
   }
 
   function loadEndScreen(): void {
-    const project = projects.find((p) => p.id === 'umbra') ?? projects[0];
+    const project =
+      projects.find((p) => p.id === 'salvando-patitas') ?? projects[projects.length - 1];
     if (!project) return;
     loader
       .loadTexture(project.cover, quality.textureMax, quality.anisotropy)

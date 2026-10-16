@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-label="Aplicación móvil de consulta">
+  <defs>
+    <linearGradient id="g20" gradientTransform="rotate(180 0.5 0.5)">
+      <stop offset="0" stop-color="#f6f2ec"/>
+      <stop offset="0.55" stop-color="#ece5db"/>
+      <stop offset="1" stop-color="#e0d6c8"/>
+    </linearGradient>
+    <radialGradient id="g20b" cx="0.2" cy="0.15" r="0.9">
+      <stop offset="0" stop-color="#8a5b3f" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#8a5b3f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1100" fill="url(#g20)"/>
+  <rect width="1600" height="1100" fill="url(#g20b)"/>
+  <circle cx="194.0" cy="122.0" r="18" fill="#8a5b3f" opacity="0.030"/>
+  <circle cx="331.5" cy="211.3" r="25" fill="#8a5b3f" opacity="0.042"/>
+  <circle cx="469.0" cy="300.6" r="32" fill="#8a5b3f" opacity="0.054"/>
+  <circle cx="606.5" cy="389.9" r="39" fill="#8a5b3f" opacity="0.066"/>
+  <circle cx="744.0" cy="479.2" r="46" fill="#8a5b3f" opacity="0.078"/>
+  <circle cx="881.5" cy="568.5" r="53" fill="#8a5b3f" opacity="0.030"/>
+  <circle cx="1019.0" cy="657.8" r="60" fill="#8a5b3f" opacity="0.042"/>
+  <circle cx="1156.5" cy="747.1" r="67" fill="#8a5b3f" opacity="0.054"/>
+  <circle cx="1294.0" cy="836.4" r="74" fill="#8a5b3f" opacity="0.066"/>
+  <circle cx="1431.5" cy="925.7" r="81" fill="#8a5b3f" opacity="0.078"/>
+  <circle cx="1569.0" cy="1015.0" r="88" fill="#8a5b3f" opacity="0.030"/>
+  <circle cx="106.5" cy="4.3" r="95" fill="#8a5b3f" opacity="0.042"/>
+  <circle cx="244.0" cy="93.6" r="102" fill="#8a5b3f" opacity="0.054"/>
+  <circle cx="381.5" cy="182.9" r="19" fill="#8a5b3f" opacity="0.066"/>
+  <circle cx="519.0" cy="272.2" r="26" fill="#8a5b3f" opacity="0.078"/>
+  <circle cx="656.5" cy="361.5" r="33" fill="#8a5b3f" opacity="0.030"/>
+  <circle cx="794.0" cy="450.8" r="40" fill="#8a5b3f" opacity="0.042"/>
+  <circle cx="931.5" cy="540.1" r="47" fill="#8a5b3f" opacity="0.054"/>
+  <circle cx="1069.0" cy="629.4" r="54" fill="#8a5b3f" opacity="0.066"/>
+  <circle cx="1206.5" cy="718.7" r="61" fill="#8a5b3f" opacity="0.078"/>
+  <circle cx="1344.0" cy="808.0" r="68" fill="#8a5b3f" opacity="0.030"/>
+  <circle cx="1481.5" cy="897.3" r="75" fill="#8a5b3f" opacity="0.042"/>
+  <circle cx="19.0" cy="986.6" r="82" fill="#8a5b3f" opacity="0.054"/>
+  <circle cx="156.5" cy="1075.9" r="89" fill="#8a5b3f" opacity="0.066"/>
+  <circle cx="294.0" cy="65.2" r="96" fill="#8a5b3f" opacity="0.078"/>
+  <circle cx="431.5" cy="154.5" r="103" fill="#8a5b3f" opacity="0.030"/>
+  <circle cx="569.0" cy="243.8" r="20" fill="#8a5b3f" opacity="0.042"/>
+  <circle cx="706.5" cy="333.1" r="27" fill="#8a5b3f" opacity="0.054"/>
+  <circle cx="844.0" cy="422.4" r="34" fill="#8a5b3f" opacity="0.066"/>
+  <circle cx="981.5" cy="511.7" r="41" fill="#8a5b3f" opacity="0.078"/>
+  <circle cx="1119.0" cy="601.0" r="48" fill="#8a5b3f" opacity="0.030"/>
+  <circle cx="1256.5" cy="690.3" r="55" fill="#8a5b3f" opacity="0.042"/>
+  <circle cx="1394.0" cy="779.6" r="62" fill="#8a5b3f" opacity="0.054"/>
+  <circle cx="1531.5" cy="868.9" r="69" fill="#8a5b3f" opacity="0.066"/>
+  <circle cx="69.0" cy="958.2" r="76" fill="#8a5b3f" opacity="0.078"/>
+  <circle cx="206.5" cy="1047.5" r="83" fill="#8a5b3f" opacity="0.030"/>
+  <circle cx="344.0" cy="36.8" r="90" fill="#8a5b3f" opacity="0.042"/>
+  <circle cx="481.5" cy="126.1" r="97" fill="#8a5b3f" opacity="0.054"/>
+  <circle cx="619.0" cy="215.4" r="104" fill="#8a5b3f" opacity="0.066"/>
+  <circle cx="756.5" cy="304.7" r="21" fill="#8a5b3f" opacity="0.078"/>
+  <circle cx="894.0" cy="394.0" r="28" fill="#8a5b3f" opacity="0.030"/>
+  <circle cx="1031.5" cy="483.3" r="35" fill="#8a5b3f" opacity="0.042"/>
+  <g fill="none" stroke="#8a5b3f" stroke-width="1.5" opacity="0.35">
+    <rect x="70" y="70" width="1460" height="960" rx="18"/>
+  </g>
+  <text x="120" y="950" font-family="Georgia, 'Times New Roman', serif" font-size="86" fill="#1a1714" font-weight="500">Aplicación móvil de consulta</text>
+  <text x="122" y="1000" font-family="Helvetica, Arial, sans-serif" font-size="30" letter-spacing="4" fill="#6b635b">DESARROLLO MÓVIL &amp; UX/UI</text>
+  <text x="1480" y="150" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="28" letter-spacing="3" fill="#6b635b">01</text>
+</svg>

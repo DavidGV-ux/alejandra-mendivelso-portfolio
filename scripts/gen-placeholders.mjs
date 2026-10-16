@@ -62,6 +62,8 @@ async function main() {
 
   for (let p = 0; p < data.length; p++) {
     const project = data[p];
+    // Solo se generan placeholders para proyectos sin medios reales (cover SVG).
+    if (!project.cover.endsWith('.svg')) continue;
     const dir = resolve(root, 'public/media', project.id);
     await mkdir(dir, { recursive: true });
     const accent = palette(project.accent).accent;

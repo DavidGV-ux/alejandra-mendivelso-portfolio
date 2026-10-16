@@ -47,7 +47,7 @@ function clientIp(req: ApiRequest): string {
 
 async function sendWithResend(apiKey: string, data: z.infer<typeof payloadSchema>): Promise<boolean> {
   const from = process.env.CONTACT_FROM ?? 'Portafolio <onboarding@resend.dev>';
-  const to = process.env.CONTACT_TO ?? 'hola@alejandramendivelso.com';
+  const to = process.env.CONTACT_TO ?? 'alejandramendivelso33@gmail.com';
 
   try {
     const response = await fetch('https://api.resend.com/emails', {
@@ -107,12 +107,9 @@ export default async function handler(req: ApiRequest, res: ApiResponse): Promis
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    // Sin proveedor configurado: no fallamos al usuario en desarrollo.
-    console.info('[contact] Mensaje recibido (sin RESEND_API_KEY):', {
-      name: parsed.data.name,
-      email: parsed.data.email,
-    });
-    res.status(200).json({ ok: true });
+    // Sin proveedor configurado no hay entrega real: nunca simulamos éxito.
+    console.error('[contact] RESEND_API_KEY no configurada; el mensaje no se entregó');
+    res.status(503).json({ ok: false, error: 'not_configured' });
     return;
   }
 

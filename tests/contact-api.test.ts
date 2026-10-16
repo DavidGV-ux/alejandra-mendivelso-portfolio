@@ -75,14 +75,13 @@ describe('api/contact', () => {
     expect(state.status).toBe(400);
   });
 
-  it('acepta un mensaje válido sin proveedor configurado (dev)', async () => {
+  it('responde 503 sin proveedor configurado (no simula un envío exitoso)', async () => {
     vi.stubEnv('RESEND_API_KEY', '');
-    const info = vi.spyOn(console, 'info').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     const { res, state } = createRes();
     await handler(request({ headers: { 'x-forwarded-for': '10.0.0.2' } }), res);
-    expect(state.status).toBe(200);
-    expect(state.body).toEqual({ ok: true });
-    expect(info).toHaveBeenCalled();
+    expect(state.status).toBe(503);
+    expect(state.body).toEqual({ ok: false, error: 'not_configured' });
   });
 
   it('envía con Resend y responde 200', async () => {
@@ -110,7 +109,7 @@ describe('api/contact', () => {
 
   it('limita a 5 envíos por minuto y IP', async () => {
     vi.stubEnv('RESEND_API_KEY', '');
-    vi.spyOn(console, 'info').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     const headers = { 'x-forwarded-for': '10.9.9.9' };
     let last = 0;
     for (let i = 0; i < 6; i++) {

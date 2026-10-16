@@ -1,39 +1,76 @@
 [
   {
-    "period": "2023 — Actualidad",
-    "period_en": "2023 — Present",
-    "title": "Diseñadora UI/UX",
-    "title_en": "UI/UX Designer",
-    "org": "Proyectos Freelance",
-    "org_en": "Freelance Projects",
-    "description": "Diseño de interfaces, sistemas de diseño, wireframes, prototipado y diseño centrado en el usuario para productos web y móviles.",
-    "description_en": "Interface design, design systems, wireframes, prototyping and user-centered design for web and mobile products."
+    "period": "Enero 2024 — Actualidad",
+    "period_en": "January 2024 — Present",
+    "title": "Desarrollo de software y experiencias digitales",
+    "title_en": "Software development & digital experiences",
+    "org": "Freelance",
+    "org_en": "Freelance",
+    "description": "Desarrollo de software, diseño UX/UI y experiencias interactivas para proyectos propios y de clientes.",
+    "description_en": "Software development, UX/UI design and interactive experiences for my own projects and client work.",
+    "points": [
+      {
+        "text": "Desarrollo de software interactivo en C# para experiencias de realidad aumentada con Unity y Vuforia.",
+        "text_en": "Interactive software development in C# for augmented reality experiences with Unity and Vuforia."
+      },
+      {
+        "text": "Diseño y prototipado de interfaces (UX/UI) para aplicaciones y sitios web.",
+        "text_en": "Design and prototyping of interfaces (UX/UI) for apps and websites."
+      },
+      {
+        "text": "Aplicación del ciclo de vida del software (análisis, desarrollo, pruebas y entrega) y gestión de proyectos con Scrum.",
+        "text_en": "Applied the software life cycle (analysis, development, testing and delivery) and managed projects with Scrum."
+      },
+      {
+        "text": "Gestión de proyectos y comunicación directa con clientes.",
+        "text_en": "Project management and direct communication with clients."
+      }
+    ]
   },
   {
-    "period": "2021 — 2023",
-    "title": "Diseñadora Gráfica",
-    "title_en": "Graphic Designer",
-    "org": "Estudios Creativos",
-    "org_en": "Creative Studios",
-    "description": "Branding, identidad visual, piezas para redes sociales y material corporativo con enfoque estratégico.",
-    "description_en": "Branding, visual identity, social media assets and corporate material with a strategic approach."
+    "period": "Junio — Agosto 2023",
+    "period_en": "June — August 2023",
+    "title": "Producción audiovisual y marketing digital",
+    "title_en": "Audiovisual production & digital marketing",
+    "org": "Pollos El Dorado",
+    "org_en": "Pollos El Dorado",
+    "description": "Producción de contenido fotográfico y audiovisual para la campaña de los 50 años de la marca.",
+    "description_en": "Photo and video content production for the brand's 50th anniversary campaign.",
+    "points": [
+      {
+        "text": "Edición de contenido fotográfico y audiovisual con Adobe Premiere y Lightroom.",
+        "text_en": "Photo and video editing with Adobe Premiere and Lightroom."
+      },
+      {
+        "text": "Diseño de la narrativa de un video conmemorativo, con música ambiental y transiciones.",
+        "text_en": "Narrative design for an anniversary video, with ambient music and transitions."
+      },
+      {
+        "text": "Análisis de métricas de alcance en redes sociales para optimizar formato y distribución.",
+        "text_en": "Analysis of social media reach metrics to optimize format and distribution."
+      }
+    ]
   },
   {
-    "period": "2019 — 2023",
+    "period": "Febrero 2022 — Actualidad",
+    "period_en": "February 2022 — Present",
     "title": "Ingeniería Multimedia",
     "title_en": "Multimedia Engineering",
-    "org": "Universidad de Boyacá",
-    "org_en": "Universidad de Boyacá",
-    "description": "Formación con énfasis en diseño interactivo, UI/UX, animación y desarrollo web.",
-    "description_en": "Degree focused on interactive design, UI/UX, animation and web development."
+    "org": "Universidad de Boyacá · Tunja",
+    "org_en": "Universidad de Boyacá · Tunja",
+    "description": "En formación. Desarrollo de software, experiencias digitales y UX/UI.",
+    "description_en": "In progress. Software development, digital experiences and UX/UI.",
+    "points": []
   },
   {
-    "period": "2022",
-    "title": "Especialización en Diseño UX/UI",
-    "title_en": "UX/UI Design Specialization",
-    "org": "Formación Complementaria",
-    "org_en": "Continuing Education",
-    "description": "Profundización en investigación de usuarios, arquitectura de información, diseño de componentes y accesibilidad.",
-    "description_en": "In-depth training in user research, information architecture, component design and accessibility."
+    "period": "Enero — Junio 2025",
+    "period_en": "January — June 2025",
+    "title": "Intercambio académico",
+    "title_en": "Academic exchange",
+    "org": "Universidad Autónoma de Tlaxcala · México",
+    "org_en": "Universidad Autónoma de Tlaxcala · Mexico",
+    "description": "Semestre de intercambio académico en México.",
+    "description_en": "Academic exchange semester in Mexico.",
+    "points": []
   }
 ]
