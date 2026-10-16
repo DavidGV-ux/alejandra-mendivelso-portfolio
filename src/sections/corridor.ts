@@ -1,4 +1,5 @@
 import type { PerspectiveCamera } from 'three';
+import { Raycaster, Vector2 } from 'three';
 import { createCorridor, endScreenZ, type Corridor } from '@/scene/corridor';
 import { createEndScreen } from '@/scene/endScreen';
 import { createCoverVideo, type CoverVideoHandle } from '@/scene/coverVideo';
@@ -63,6 +64,17 @@ interface Deps {
   onHoverChange: (hovering: boolean) => void;
   /** Despierta el loop de render bajo demanda. */
   invalidate: () => void;
+  /** Tarjeta final: texto e imagen de cierre. */
+  endCard: { title: string; subtitle: string; photo: string };
+  /** Al pulsar la pantalla final se navega a Acerca de mí. */
+  onOpenAbout: () => void;
+}
+
+function coverVideoUrl(project: Project, mode: 'light' | 'dark'): string | null {
+  const cv = project.coverVideo;
+  if (!cv) return null;
+  if (typeof cv === 'string') return cv;
+  return mode === 'light' ? cv.light ?? cv.dark ?? null : cv.dark ?? cv.light ?? null;
 }
 
 export function createCorridorController(deps: Deps): CorridorController {
@@ -76,6 +88,10 @@ export function createCorridorController(deps: Deps): CorridorController {
   endScreen.group.position.set(0, 0, endScreenZ(total, corridor.layout));
   corridor.group.add(endScreen.group);
   let picker: ReturnType<typeof createPicker> | null = null;
+  const endRaycaster = new Raycaster();
+  const endPointer = new Vector2();
+
+  let currentTheme: 'light' | 'dark' = deps.theme;
 
   let progress = 0;
   let target = 0;
@@ -91,7 +107,14 @@ export function createCorridorController(deps: Deps): CorridorController {
 
   const loaded = new Set<string>();
   const loading = new Set<string>();
+  /** Videos de cover por proyecto y tema (`${id}:${mode}`). */
   const coverVideos = new Map<string, CoverVideoHandle>();
+  const videoLoading = new Set<string>();
+  let endCardPhoto: import('three').Texture | null = null;
+
+  function videoKey(id: string, mode: 'light' | 'dark'): string {
+    return `${id}:${mode}`;
+  }
 
   function clampTarget(v: number): number {
     if (total <= 0) return 0;
@@ -106,7 +129,6 @@ export function createCorridorController(deps: Deps): CorridorController {
     const center = ((total - 1) / 2) * corridor.layout.spacing;
     return index * corridor.layout.spacing - center;
   }
-
   function loadAround(index: number): void {
     const w = [index - 2, index - 1, index, index + 1, index + 2];
     for (const i of w) {
@@ -114,13 +136,23 @@ export function createCorridorController(deps: Deps): CorridorController {
       const p = projects[i];
       const f = corridor.frames[i];
       if (!p || !f) continue;
-      if (loaded.has(p.id) || loading.has(p.id) || coverVideos.has(p.id)) continue;
 
-      if (p.coverVideo && !reducedMotion) {
+      const videoUrl = coverVideoUrl(p, currentTheme);
+      if (videoUrl && !reducedMotion) {
+        const key = videoKey(p.id, currentTheme);
+        const existing = coverVideos.get(key);
+        if (existing) {
+          if (existing.isReady()) {
+            f.setImage(existing.texture);
+            deps.invalidate();
+          }
+          continue;
+        }
+        if (videoLoading.has(key)) continue;
+        videoLoading.add(key);
         // Póster inmediato y video en bucle en cuanto tenga datos.
-        const video = createCoverVideo(p.coverVideo, () => deps.invalidate());
-        coverVideos.set(p.id, video);
-        loading.add(p.id);
+        const video = createCoverVideo(videoUrl, () => deps.invalidate());
+        coverVideos.set(key, video);
         loader
           .loadTexture(p.cover, quality.textureMax, quality.anisotropy)
           .then((t) => {
@@ -129,19 +161,18 @@ export function createCorridorController(deps: Deps): CorridorController {
               deps.invalidate();
             }
           })
-          .catch(() => {})
-          .finally(() => loading.delete(p.id));
+          .catch(() => {});
         video.ready
           .then(() => {
             f.setImage(video.texture);
-            loaded.add(p.id);
             deps.invalidate();
           })
-          .catch(() => {
-            loaded.add(p.id);
-          });
+          .catch(() => {})
+          .finally(() => videoLoading.delete(key));
         continue;
       }
+
+      if (loaded.has(p.id) || loading.has(p.id)) continue;
 
       loading.add(p.id);
       loader
@@ -307,7 +338,18 @@ export function createCorridorController(deps: Deps): CorridorController {
         onTap: (event: PointerEvent) => {
           if (!interactive || !picker || store.get().detailProjectId) return;
           const hit = picker.pick(event.clientX, event.clientY, corridor.frames);
-          if (hit) doSelect(hit.index);
+          if (hit) {
+            doSelect(hit.index);
+            return;
+          }
+          // ¿Pulsó la pantalla final?
+          const rect = dom.getBoundingClientRect();
+          endPointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+          endPointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+          endRaycaster.setFromCamera(endPointer, deps.camera);
+          if (endRaycaster.intersectObject(endScreen.hitMesh).length > 0) {
+            deps.onOpenAbout();
+          }
         },
       }),
     );
@@ -343,16 +385,24 @@ export function createCorridorController(deps: Deps): CorridorController {
   }
 
   function loadEndScreen(): void {
-    const project =
-      projects.find((p) => p.id === 'salvando-patitas') ?? projects[projects.length - 1];
-    if (!project) return;
-    loader
-      .loadTexture(project.cover, quality.textureMax, quality.anisotropy)
-      .then((t) => {
-        endScreen.setImage(t);
-        deps.invalidate();
-      })
-      .catch(() => {});
+    const render = (photo: import('three').Texture | null) => {
+      endScreen.renderCard(photo, deps.endCard.title, deps.endCard.subtitle, currentTheme);
+      deps.invalidate();
+    };
+    if (!endCardPhoto) {
+      const url = deps.endCard.photo;
+      if (url) {
+        loader
+          .loadTexture(url, 1024, quality.anisotropy)
+          .then((t) => {
+            endCardPhoto = t;
+            render(t);
+          })
+          .catch(() => render(null));
+        return;
+      }
+    }
+    render(endCardPhoto);
   }
 
   return {
@@ -371,7 +421,25 @@ export function createCorridorController(deps: Deps): CorridorController {
     setInteractive: (e) => (interactive = e),
     setCursor: (v) => deps.onHoverChange(v),
     setTheme: (mode) => {
+      if (mode === currentTheme) {
+        corridor.frames.forEach((frame) => frame.setTheme(mode));
+        deps.invalidate();
+        return;
+      }
+      currentTheme = mode;
       corridor.frames.forEach((frame) => frame.setTheme(mode));
+      // Descarta los videos del tema anterior y recarga con el tema nuevo.
+      for (const [key, handle] of coverVideos) {
+        const [id, themeMode] = key.split(':');
+        if (themeMode !== mode && id) {
+          handle.dispose();
+          coverVideos.delete(key);
+          const project = projects.find((p) => p.id === id);
+          if (project) loaded.delete(project.id);
+        }
+      }
+      loadEndScreen();
+      loadAround(activeIndex());
       deps.invalidate();
     },
     isSettled: () =>
@@ -391,6 +459,7 @@ export function createCorridorController(deps: Deps): CorridorController {
       cameraRig.dispose();
       coverVideos.forEach((v) => v.dispose());
       coverVideos.clear();
+      endCardPhoto?.dispose();
       endScreen.dispose();
       corridor.dispose();
     },

@@ -38,6 +38,11 @@ export const en: Dictionary = {
     contact: "Let's talk",
     close: 'Close welcome',
   },
+  endcard: {
+    title: "I'm Alejandra",
+    subtitle: 'and this is my work',
+    hint: 'Click to learn more about me',
+  },
   intro: {
     skip: 'Skip intro',
     hint: 'Press any key to skip',

@@ -34,8 +34,20 @@ export const projectSchema = z.object({
   description_en: z.string().min(1).optional(),
   tools: z.array(z.string()).default([]),
   cover: z.string().min(1),
-  /** Video en bucle que reemplaza al cover en el marco 3D (el póster queda en `cover`) */
-  coverVideo: z.string().min(1).optional(),
+  /** Video en bucle que reemplaza al cover en el marco 3D (el póster queda en `cover`).
+   *  Puede ser una ruta única o un objeto con variantes `light`/`dark` según el tema. */
+  coverVideo: z
+    .union([
+      z.string().min(1),
+      z.object({
+        light: z.string().min(1).optional(),
+        dark: z.string().min(1).optional(),
+      }),
+    ])
+    .refine((v) => typeof v === 'string' || !!v.light || !!v.dark, {
+      message: 'coverVideo debe ser una ruta o tener al menos light o dark',
+    })
+    .optional(),
   media: z.array(mediaItemSchema).default([]),
   links: z
     .array(

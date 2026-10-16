@@ -115,7 +115,10 @@
     "description_en": "Product animation for the Salvando Patitas Boyacá adoption and donation app. Five scenes that walk through the experience: trusted adoption, secure donations, sponsoring, foster homes and transparency. Pieces designed to present the app on web and social media.",
     "tools": ["After Effects", "Figma", "Lottie"],
     "cover": "/media/salvando-patitas/poster.jpg",
-    "coverVideo": "/media/salvando-patitas/preview.mp4",
+    "coverVideo": {
+      "light": "/media/salvando-patitas/preview-dia.mp4",
+      "dark": "/media/salvando-patitas/preview-noche.mp4"
+    },
     "media": [
       {
         "kind": "video",

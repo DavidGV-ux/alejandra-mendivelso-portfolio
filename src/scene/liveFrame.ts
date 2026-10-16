@@ -42,9 +42,13 @@ const MAT_FRAGMENT = /* glsl */ `
     vec3 color;
     float pulse;
     if (uMode > 0.5) {
-      // Modo día: paspartú blanco puro, sin líneas ni ondas.
-      color = uWhite;
-      pulse = 1.0;
+      // Modo día: azul brillante con la misma fluidez del modo noche.
+      float angle = atan(vUv.y - 0.5, vUv.x - 0.5);
+      float waveA = 0.5 + 0.5 * sin(angle + uTime * 0.6);
+      float waveB = 0.5 + 0.5 * sin(angle * 2.0 - uTime * 0.4 + 2.1);
+      color = mix(uBlueSoft, uBlueDeep, waveA * 0.72);
+      color = mix(color, uCream, waveB * 0.26);
+      pulse = 0.88 + 0.12 * sin(uTime * 1.1);
     } else {
       // Modo noche: la paleta del video fluye alrededor del marco.
       float angle = atan(vUv.y - 0.5, vUv.x - 0.5);
@@ -83,7 +87,7 @@ const HALO_FRAGMENT = /* glsl */ `
     float strength;
     if (uMode > 0.5) {
       color = mix(uBlueGlow, uBlueSoft, wave * 0.5);
-      strength = 0.0;
+      strength = 0.2 + 0.18 * (0.5 + 0.5 * sin(uTime * 1.1 + 1.2));
     } else {
       color = mix(uGreen, uOrange, wave * 0.6);
       strength = 0.2 + 0.18 * (0.5 + 0.5 * sin(uTime * 1.1 + 1.2));

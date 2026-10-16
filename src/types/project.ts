@@ -27,8 +27,9 @@ export interface Project {
   role: string;
   tools: string[];
   cover: string;
-  /** Video en bucle para el marco 3D; `cover` actúa como póster */
-  coverVideo?: string;
+  /** Video en bucle para el marco 3D; `cover` actúa como póster.
+   *  Ruta única o variantes `light`/`dark` según el tema activo. */
+  coverVideo?: string | { light?: string; dark?: string };
   media: MediaItem[];
   links: ProjectLink[];
   order: number;

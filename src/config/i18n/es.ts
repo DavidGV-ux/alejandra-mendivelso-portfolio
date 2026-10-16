@@ -36,6 +36,11 @@ export const es = {
     contact: 'Hablemos',
     close: 'Cerrar bienvenida',
   },
+  endcard: {
+    title: 'Soy Alejandra',
+    subtitle: 'y este es mi trabajo',
+    hint: 'Haz clic para conocer más sobre mí',
+  },
   intro: {
     skip: 'Omitir intro',
     hint: 'Pulsa cualquier tecla para saltar',

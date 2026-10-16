@@ -50,6 +50,10 @@ export interface Scene3DDeps {
   onCloseDetail: () => void;
   onHoverChange: (hovering: boolean) => void;
   onIntroEnd: () => void;
+  /** Tarjeta final del pasillo (foto + texto). */
+  endCard: { title: string; subtitle: string; photo: string };
+  /** Al pulsar la pantalla final se navega a Acerca de mí. */
+  onOpenAbout: () => void;
 }
 
 /**
@@ -101,6 +105,8 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
     onCloseDetail: deps.onCloseDetail,
     onHoverChange: deps.onHoverChange,
     invalidate: () => loop?.invalidate(),
+    endCard: deps.endCard,
+    onOpenAbout: deps.onOpenAbout,
   });
 
   const guide = createGuideLine(projects.length, works.corridor.layout, deps.theme);
