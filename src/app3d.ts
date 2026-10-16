@@ -15,6 +15,7 @@ import { bindResize } from '@/core/resize';
 import { buildCorridorLayout } from '@/scene/corridor';
 import { createClouds } from '@/scene/clouds';
 import { createGuideLine } from '@/scene/guideRing';
+import { createSelectionOverlay } from '@/ui/selectionOverlay';
 import { createCorridorController } from '@/sections/corridor';
 import type { Store } from '@/state/store';
 import { getPalette } from '@/config/theme';
@@ -43,6 +44,7 @@ export interface Scene3DDeps {
   projects: Project[];
   store: Store;
   theme: 'light' | 'dark';
+  dict?: any;
   onProgress: (loaded: number, total: number) => void;
   onPreloaded: () => void;
   onOpenDetail: (id: string) => void;
@@ -107,7 +109,17 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
     invalidate: () => loop?.invalidate(),
   });
 
-  const guide = createGuideLine(projects.length, works.corridor.layout, deps.theme);
+  const overlay = createSelectionOverlay(
+    {
+      dict: deps.dict,
+      projects: deps.projects,
+      store: deps.store,
+      actions: { openDetail: deps.onOpenDetail },
+    } as any,
+    canvas,
+  );
+  document.body.append(overlay.el);
+const guide = createGuideLine(projects.length, works.corridor.layout, deps.theme);
   scene.add(works.corridor.group, guide.line);
 
   works.attach(canvas);
@@ -131,6 +143,7 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
     clouds.update(camera);
     rendererHandle.renderer.render(scene, camera);
     if (debugEl) debugEl.textContent = `FPS ~${dt > 0 ? (1 / dt).toFixed(0) : '–'} | calls ${rendererHandle.renderer.info.render.calls}`;
+    overlay.update(works.corridor.frames, camera, works.selectedIndex(), works.hoverIndex());
 
     const now = performance.now();
     if (lastFrameTime > 0) {
