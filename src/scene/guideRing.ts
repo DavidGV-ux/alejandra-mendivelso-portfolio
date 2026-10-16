@@ -21,7 +21,7 @@ export function createGuideLine(
   const center = ((pairCount - 1) / 2) * spacing;
   // El pasillo termina justo después del último par de marcos para evitar vacío.
   const startZ = -center - spacing;
-  const endZ = (pairCount - 1) * spacing - center + spacing * 0.35;
+  const endZ = (pairCount - 1) * spacing - center + spacing * 0.5;
   const halfW = layout.wallOffset;
   const halfH = 2.2;
 

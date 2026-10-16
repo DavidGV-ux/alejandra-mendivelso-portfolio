@@ -73,15 +73,8 @@ export function createCorridor(
     const frame = createFrame(project, index);
     const wrapper = new Group();
     framePositionCorridor(index, projects.length, layout, tmp);
-    if (index === projects.length - 1) {
-      // Último proyecto centrado al fondo para cerrar la perspectiva.
-      tmp.set(0, 0, layout.spacing * 2);
-      wrapper.position.copy(tmp);
-      wrapper.rotation.y = Math.PI;
-    } else {
-      wrapper.position.copy(tmp);
-      wrapper.lookAt(0, tmp.y, tmp.z);
-    }
+    wrapper.position.copy(tmp);
+    wrapper.lookAt(0, tmp.y, tmp.z);
     wrapper.add(frame.group);
     frame.group.userData.wrapper = wrapper;
     group.add(wrapper);
