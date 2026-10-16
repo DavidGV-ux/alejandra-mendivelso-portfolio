@@ -119,7 +119,7 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
       if (next) {
         if (document.hidden) return;
         if ('requestVideoFrameCallback' in video && typeof (video as any).requestVideoFrameCallback === 'function') {
-          const rvfcLoop = (now: number, meta: any) => {
+          const rvfcLoop = (_now: number, _meta: any) => {
             if (!playing || document.hidden) return;
             ctx.drawImage(video, 0, 0, PREVIEW_W, PREVIEW_H);
             texture.needsUpdate = true;
