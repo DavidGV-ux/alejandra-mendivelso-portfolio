@@ -5,6 +5,7 @@ import {
   Mesh,
   MeshBasicMaterial,
   PlaneGeometry,
+  RepeatWrapping,
   Texture,
   Vector3,
 } from 'three';
@@ -171,6 +172,21 @@ export function createFrame(
           image.scale.set(state.imageAspect / frameAspect, 1, 1);
         }
       }
+
+      // Corrección de espejo/inversión para Apple y KpExperience.
+      const isMirror = project.id === 'apple' || project.id === 'kpexperience';
+      if (isMirror) {
+        texture.wrapS = RepeatWrapping;
+        texture.repeat.x = -1;
+        texture.offset.x = 1;
+        texture.flipY = false;
+      } else {
+        // Para los demás proyectos, aseguramos que flipY esté en true para los SVGs/proyectos originales.
+        texture.repeat.x = 1;
+        texture.offset.x = 0;
+        texture.flipY = true;
+      }
+
       imageMat.map = texture;
       imageMat.color.setRGB(1, 1, 1);
       imageMat.needsUpdate = true;

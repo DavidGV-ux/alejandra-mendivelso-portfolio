@@ -70,18 +70,8 @@ export function createLoader(): LoaderHandle {
         const texture = new Texture(image);
         texture.colorSpace = SRGBColorSpace;
 
-        // Si es Apple o Kp, aplicamos flip horizontal y vertical para corregir el espejo.
-        const isMirror = resolved.includes('apple') || resolved.includes('kpexperience');
-        
-        if (isMirror) {
-          texture.wrapS = RepeatWrapping;
-          texture.repeat.x = -1;
-          texture.offset.x = 1;
-          texture.flipY = false;
-        } else {
-          texture.flipY = !(image instanceof ImageBitmap);
-        }
-
+        // La lógica de flipY se maneja ahora en frame.ts de forma selectiva
+        // para evitar conflictos entre ImageBitmap y HTMLImageElement.
         texture.anisotropy = anisotropy;
         texture.needsUpdate = true;
         texture.generateMipmaps = true;
