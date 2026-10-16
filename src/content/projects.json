@@ -150,7 +150,7 @@
     "description": "Nuevo proyecto con video personalizado.",
     "description_en": "New project with custom video.",
     "tools": [],
-    "cover": "/media/apple/cover.svg",
+    "cover": "/media/apple/cover.jpg",
     "coverVideo": "/media/apple/preview.mp4",
     "media": [
       {
