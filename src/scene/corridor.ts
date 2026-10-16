@@ -73,13 +73,11 @@ export function createCorridor(
     const frame = createFrame(project, index);
     const wrapper = new Group();
     framePositionCorridor(index, projects.length, layout, tmp);
-    if (index >= projects.length - 2) {
-      // Últimos dos marcos cierran el pasillo con un ángulo suave (semicírculo).
-      const baseX = (index % 2 === 0 ? -1 : 1) * layout.wallOffset * 0.65;
-      const baseZ = tmp.z + layout.spacing * 0.9;
-      tmp.set(baseX, tmp.y, baseZ);
+    if (index === projects.length - 1) {
+      // Último proyecto centrado al fondo para cerrar la perspectiva.
+      tmp.set(0, 0, layout.spacing * 2);
       wrapper.position.copy(tmp);
-      wrapper.lookAt(0, tmp.y, tmp.z + layout.spacing * 0.6);
+      wrapper.rotation.y = Math.PI;
     } else {
       wrapper.position.copy(tmp);
       wrapper.lookAt(0, tmp.y, tmp.z);
