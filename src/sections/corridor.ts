@@ -16,6 +16,7 @@ import { attachWheel } from '@/interactions/wheel';
 import { attachGestures } from '@/interactions/gestures';
 import { sceneConfig } from '@/config/scene.config';
 import type { FrameHandle } from '@/scene/frame';
+import type { Texture } from 'three';
 import type { Project } from '@/types/project';
 import type { Capabilities, ThemeMode } from '@/types/theme';
 import type { LoaderHandle } from '@/core/loader';
@@ -102,12 +103,15 @@ export function createCorridorController(deps: Deps): CorridorController {
   let attached = false;
   let lastActiveIdx = -1;
   let hovered: FrameHandle | null = null;
+  let hoverSerial = 0;
   let dragStartLook = { yaw: 0, pitch: 0 };
   let dragStartFov = 0;
   const cleanups: Array<() => void> = [];
 
   const loaded = new Set<string>();
   const loading = new Set<string>();
+  /** Texturas estáticas (covers/pósters), incluido Salvando Patitas, para volver a ellas. */
+  const posterTextures = new Map<string, Texture>();
   /** Videos de cover por proyecto y tema (`${id}:${mode}`). */
   const coverVideos = new Map<string, CoverVideoHandle>();
   const videoLoading = new Set<string>();
@@ -154,47 +158,13 @@ export function createCorridorController(deps: Deps): CorridorController {
       const f = corridor.frames[i];
       if (!p || !f) continue;
 
-      const videoUrl = coverVideoUrl(p, currentTheme);
-      if (videoUrl && !reducedMotion) {
-        const key = videoKey(p.id, currentTheme);
-        const existing = coverVideos.get(key);
-        if (existing) {
-          if (existing.isReady()) {
-            f.setImage(existing.texture);
-            deps.invalidate();
-          }
-          continue;
-        }
-        if (videoLoading.has(key)) continue;
-        videoLoading.add(key);
-        // Póster inmediato y video en bucle en cuanto tenga datos.
-        const video = createCoverVideo(videoUrl, () => deps.invalidate());
-        coverVideos.set(key, video);
-        loader
-          .loadTexture(p.cover, quality.textureMax, quality.anisotropy)
-          .then((t) => {
-            if (!video.isReady()) {
-              f.setImage(t);
-              deps.invalidate();
-            }
-          })
-          .catch(() => {});
-        video.ready
-          .then(() => {
-            f.setImage(video.texture);
-            deps.invalidate();
-          })
-          .catch(() => {})
-          .finally(() => videoLoading.delete(key));
-        continue;
-      }
-
       if (loaded.has(p.id) || loading.has(p.id)) continue;
 
       loading.add(p.id);
       loader
         .loadTexture(p.cover, quality.textureMax, quality.anisotropy)
         .then((t) => {
+          posterTextures.set(p.id, t);
           f.setImage(t);
           loaded.add(p.id);
           deps.invalidate();
@@ -316,16 +286,49 @@ export function createCorridorController(deps: Deps): CorridorController {
         onEnter: (f) => {
           hovered = f;
           f.setHover(true);
-          // Vista previa solo si el cursor realmente se detiene sobre el video.
+          const serial = ++hoverSerial;
+          const project = projects[f.index];
+          const videoUrl = project ? coverVideoUrl(project, currentTheme) : null;
+          // Dwell de 200 ms antes de cargar/reproducir el video (evita trabajo al pasar de lado).
           window.setTimeout(() => {
-            if (hovered === f) updateVideoPlayback();
+            if (!videoUrl || serial !== hoverSerial || hovered !== f || !project) return;
+            const key = videoKey(project.id, currentTheme);
+            let video = coverVideos.get(key);
+            if (!video) {
+              if (videoLoading.has(key)) return;
+              videoLoading.add(key);
+              video = createCoverVideo(videoUrl, () => deps.invalidate());
+              coverVideos.set(key, video);
+              void video.ready
+                .then(() => {
+                  if (hovered !== f) return; // Si salió antes, no cambiamos a video.
+                  f.setImage(video!.texture);
+                  video!.setPlaying(true);
+                  deps.invalidate();
+                })
+                .catch(() => {})
+                .finally(() => videoLoading.delete(key));
+            } else if (video.isReady()) {
+              f.setImage(video.texture);
+              updateVideoPlayback();
+              deps.invalidate();
+            }
           }, 200);
           deps.invalidate();
           deps.onHoverChange(true);
         },
 onLeave: (f) => {
-          f.setHover(false);
           if (hovered === f) hovered = null;
+          hoverSerial++; // cancela cualquier carga pendiente por dwell
+          f.setHover(false);
+          const project = projects[f.index];
+          if (project) {
+            const key = videoKey(project.id, currentTheme);
+            const video = coverVideos.get(key);
+            if (video) video.setPlaying(false);
+            const poster = posterTextures.get(project.id);
+            if (poster) f.setImage(poster);
+          }
           updateVideoPlayback();
           deps.invalidate();
           deps.onHoverChange(false);
