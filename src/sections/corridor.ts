@@ -99,6 +99,7 @@ export function createCorridorController(deps: Deps): CorridorController {
   let attached = false;
   let lastActiveIdx = -1;
   let hovered: FrameHandle | null = null;
+  let hoveredIndex: number | null = null;
   let hoverSerial = 0;
   let dragStartLook = { yaw: 0, pitch: 0 };
   let dragStartFov = 0;
@@ -193,6 +194,16 @@ if (
     ) {
       if (!chosen.includes(selectedIndex)) chosen.push(selectedIndex);
     }
+
+    if (
+      hoveredIndex !== null &&
+      hoveredIndex >= 0 &&
+      hoveredIndex < total &&
+      projects[hoveredIndex] !== undefined &&
+      coverVideoUrl(projects[hoveredIndex] as any, currentTheme)
+    ) {
+      if (!chosen.includes(hoveredIndex)) chosen.push(hoveredIndex);
+    }
     activeVideoIndices.clear();
     chosen.forEach((i) => activeVideoIndices.add(i));
     for (const i of chosen) requestPreview(i);
@@ -242,7 +253,7 @@ if (
   function travelZFor(index: number): number {
     const pairCount = Math.ceil(total / 2);
     const center = ((pairCount - 1) / 2) * corridor.layout.spacing;
-    return Math.floor(index / 2) * corridor.layout.spacing - center - corridor.layout.spacing;
+    return Math.floor(index / 2) * corridor.layout.spacing - center - corridor.layout.spacing * 2;
   }
   function loadAround(index: number): void {
     // Si hay pocos proyectos, los cargamos todos de golpe para evitar marcos negros al fondo.
@@ -318,7 +329,6 @@ if (
     const stillHovered = hovered !== null && (hovered as { index: number }).index === idx;
     if (!stillHovered) {
       if (previewIndex === idx) previewIndex = null;
-      restorePreview(idx);
       updateVideoPlayback();
     }
     cameraRig.release();
@@ -349,10 +359,6 @@ if (
   function doSelect(i: number): void {
     const p = projects[i];
     if (!p) return;
-    for (let k = 0; k < projects.length; k++) {
-      if (k !== i) restorePreview(k);
-    }
-    if (previewIndex !== null && previewIndex !== i) restorePreview(previewIndex);
     target = clampTarget(i);
     if (reducedMotion) progress = target;
     cameraRig.focusOn(i, total, corridor.layout, {
@@ -375,9 +381,6 @@ if (
   function doOpen(i: number): void {
     const p = projects[i];
     if (!p) return;
-    for (let k = 0; k < projects.length; k++) {
-      if (k !== i) restorePreview(k);
-    }
     const keepFrontal = selectedIndex !== null;
     cameraRig.focusOn(i, total, corridor.layout, {
       duration: reducedMotion ? 0 : 0.62,
@@ -407,11 +410,8 @@ if (
   }
 
   function closeDetail(immediate = false): void {
-    if (previewIndex !== null) {
-      restorePreview(previewIndex);
-      previewIndex = null;
-      updateVideoPlayback();
-    }
+    previewIndex = null;
+    updateVideoPlayback();
     applyFocusOpacity(null);
     cameraRig.release();
     selectedIndex = null;
@@ -454,7 +454,9 @@ if (
         pick: (x, y) => picker?.pick(x, y, corridor.frames) ?? null,
         onEnter: (f) => {
           hovered = f;
+          hoveredIndex = f.index;
           f.setHover(true);
+          computeActiveVideos();
           const serial = ++hoverSerial;
           const project = projects[f.index];
           const videoUrl = project ? coverVideoUrl(project, currentTheme) : null;
@@ -468,13 +470,16 @@ if (
           deps.onHoverChange(true);
         },
         onLeave: (f) => {
-          if (hovered === f) hovered = null;
+          if (hovered === f) {
+            hovered = null;
+            hoveredIndex = null;
+            computeActiveVideos();
+          }
           hoverSerial++; // cancela cualquier carga pendiente por dwell
           f.setHover(false);
           // Si el marco quedó fijado por selección (toque), conserva su vista previa.
           if (selectedIndex !== f.index) {
             if (previewIndex === f.index) previewIndex = null;
-            restorePreview(f.index);
           }
           updateVideoPlayback();
           deps.invalidate();

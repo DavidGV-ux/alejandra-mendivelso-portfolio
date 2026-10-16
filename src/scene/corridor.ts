@@ -16,7 +16,7 @@ export function buildCorridorLayout(caps: Capabilities): CorridorLayout {
   const compact = Math.min(window.innerWidth, window.innerHeight) < 560 || caps.tier === 'low';
   const scale = compact ? 0.82 : 1;
   return {
-    spacing: 3.2 * scale,
+    spacing: 4.0 * scale,
     width: 24 * scale,
     height: 4.5 * scale,
     depth: 60 * scale,
