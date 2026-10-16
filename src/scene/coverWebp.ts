@@ -19,7 +19,6 @@ export function createCoverWebp(url: string, onFrame: () => void): CoverWebpHand
   texture.flipY = true;
 
   let running = true;
-  let raf = 0;
   const ready = new Promise<void>((resolve) => {
     const img = new Image();
     img.onload = () => {
@@ -34,7 +33,6 @@ export function createCoverWebp(url: string, onFrame: () => void): CoverWebpHand
     img.src = url;
   });
 
-  // Animated path (Chromium): decode individual frames.
   if ('ImageDecoder' in window) {
     (async () => {
       try {
@@ -78,11 +76,7 @@ export function createCoverWebp(url: string, onFrame: () => void): CoverWebpHand
     ready,
     dispose() {
       running = false;
-      cancelAnimationFrame(raf);
-      try { (window as any).ImageDecoder && null; } catch {}
       texture.dispose();
     },
   };
 }
-" path">
-src/scene/coverWebp.ts
