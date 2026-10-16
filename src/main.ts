@@ -199,18 +199,10 @@ function closeHelpUI(): void {
 /* ------------------------------------------------------------------ */
 /* Portada (hero)                                                     */
 /* ------------------------------------------------------------------ */
-let heroDismissed = false;
 let tipShown = false;
 let bootComplete = false;
 
-function showHeroUI(): void {
-  if (heroDismissed || store.get().heroOpen) return;
-  heroPanel.show();
-  store.set({ heroOpen: true });
-}
-
 function closeHeroUI(): void {
-  heroDismissed = true;
   heroPanel.hide();
   if (store.get().heroOpen) store.set({ heroOpen: false });
 }
