@@ -12,7 +12,12 @@ export function getDictionary(locale: Locale): Dictionary {
 const STORAGE_KEY = siteConfig.storageKeys.locale;
 
 export function detectLocale(): Locale {
-  // Cada carga nueva inicia en inglés, ignorando preferencias/bastidores previos.
+  // Intenta recuperar el idioma guardado en localStorage
+  if typeof window !== 'undefined') {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored && (stored === 'es' || stored === 'en')) return stored as Locale;
+  }
+  // Fallback: inglés por defecto
   return 'en';
 }
 

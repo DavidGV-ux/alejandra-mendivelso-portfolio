@@ -31,6 +31,14 @@ const canvas = qs<HTMLCanvasElement>('#scene')!;
 const overlayRoot = qs<HTMLElement>('#overlay-root')!;
 const uiRoot = qs<HTMLElement>('#ui-root')!;
 
+/** Nonce para satisfacer la Política de Seguridad de Contenidos */
+function generateNonce(): string {
+  const array = new Uint8Array(16);
+  crypto.getRandomValues(array);
+  return btoa(String.fromCharCode(...array)).replace(/[+/=]/, '');
+}
+const scriptNonce = generateNonce();
+
 const searchParams = new URLSearchParams(location.search);
 const caps = detectCapabilities();
 
@@ -124,7 +132,11 @@ const actions: UIActions = {
   toggleLocale() {
     locale = locale === 'es' ? 'en' : 'es';
     persistLocale(locale);
+    // Guardar la sección actual antes de recargar
+    const currentSection = store.get().section;
     window.location.reload();
+    // Note: after reload, the section will be restored from URL path
+    // by the router. The dict will be updated on new load.
   },
   openHelp() {
     helpCard.open();
@@ -494,6 +506,11 @@ window.addEventListener('keydown', (event) => {
 /* ------------------------------------------------------------------ */
 /* SEO / JSON-LD                                                      */
 /* ------------------------------------------------------------------ */
+/** Genera un nonce único por petición para satisfacer la CSP */
+let scriptNonce: string | null = null;
+function setScriptNonce(nonce: string): void {
+  scriptNonce = nonce;
+}
 function renderMeta(): void {
   const title = locale === 'en' ? siteConfig.titleEn : siteConfig.title;
   const description = locale === 'en' ? siteConfig.descriptionEn : siteConfig.description;
@@ -515,7 +532,10 @@ function renderMeta(): void {
       .map((s) => s.url)
       .filter((url) => url.startsWith('http')),
   };
-  const script = el('script', { attrs: { type: 'application/ld+json' } });
+  const script = el('script', {
+    attrs: { type: 'application/ld+json' },
+    nonce: scriptNonce,
+  });
   script.textContent = JSON.stringify(jsonLd);
   document.head.append(script);
 }
