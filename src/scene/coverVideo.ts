@@ -26,7 +26,7 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
   video.src = url;
   video.load();
 
-  const PREVIEW_W = 320;
+  const PREVIEW_W = 640;
   const ASPECT = 1400 / 962;
   const PREVIEW_H = Math.round(PREVIEW_W / ASPECT);
   const canvas = document.createElement('canvas');
@@ -63,7 +63,7 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
   let rafId = 0;
   let lastTime = -1;
   let lastUpdate = 0;
-  const FRAME_INTERVAL = 120; // ~8 fps: vista previa ligera
+  const FRAME_INTERVAL = 90; // ~11 fps: algo más suave, aún ligero
 
   const pump = (): void => {
     rafId = 0;
