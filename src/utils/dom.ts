@@ -7,6 +7,7 @@ type ElementAttrs = {
   dataset?: Record<string, string>;
   style?: Partial<CSSStyleDeclaration>;
   children?: Array<Node | string>;
+  nonce?: string;
 };
 
 /** Crea un elemento tipado con atributos e hijos. Acepta opciones en 2.º o 3.er argumento. */
