@@ -12,6 +12,7 @@ import { theme } from '@/config/theme';
 import { damp } from '@/utils/math';
 import type { Project } from '@/types/project';
 import { createLabel, type LabelHandle } from './label';
+import { createLiveFrameFx } from './liveFrame';
 
 const { width: W, height: H } = sceneConfig.frame;
 const BORDER = 0.03;
@@ -34,11 +35,13 @@ export interface FrameHandle {
   dispose: () => void;
 }
 
-export function createFrame(project: Project, index: number): FrameHandle {
+export function createFrame(project: Project, index: number, reducedMotion = false): FrameHandle {
   const accent = project.accent ?? theme.colors.accent;
 
   const group = new Group();
   group.userData.index = index;
+
+  const live = project.coverVideo ? createLiveFrameFx(W, H, BORDER, MAT) : null;
 
   const borderMat = new MeshStandardMaterial({
     color: theme.colors.frameBorder,
@@ -46,12 +49,14 @@ export function createFrame(project: Project, index: number): FrameHandle {
     metalness: 0,
     transparent: true,
   });
-  const matMat = new MeshStandardMaterial({
-    color: theme.colors.frame,
-    roughness: 0.95,
-    metalness: 0,
-    transparent: true,
-  });
+  const matMat = live
+    ? null
+    : new MeshStandardMaterial({
+        color: theme.colors.frame,
+        roughness: 0.95,
+        metalness: 0,
+        transparent: true,
+      });
   const imageMat = new MeshBasicMaterial({
     color: theme.colors.textFaint,
     transparent: true,
@@ -62,7 +67,7 @@ export function createFrame(project: Project, index: number): FrameHandle {
   const border = new Mesh(new PlaneGeometry(W + 2 * MAT + 2 * BORDER, H + 2 * MAT + 2 * BORDER), borderMat);
   border.position.z = 0;
 
-  const mat = new Mesh(new PlaneGeometry(W + 2 * MAT, H + 2 * MAT), matMat);
+  const mat = new Mesh(new PlaneGeometry(W + 2 * MAT, H + 2 * MAT), live ? live.matMaterial : matMat!);
   mat.position.z = 0.012;
 
   const imageGeometry = new PlaneGeometry(W, H);
@@ -98,6 +103,7 @@ export function createFrame(project: Project, index: number): FrameHandle {
   titleLabel.sprite.position.set(0, H / 2 + MAT + 0.68, 0.03);
 
   group.add(border, mat, image, line, metaLabel.sprite, titleLabel.sprite);
+  if (live) group.add(live.group);
 
   // La hitbox coincide con el marco completo para facilitar el clic.
   const hitGeometry = new PlaneGeometry(W + 2 * MAT, H + 2 * MAT + 0.9);
@@ -134,6 +140,8 @@ export function createFrame(project: Project, index: number): FrameHandle {
     };
   }
 
+  let time = 0;
+
   function update(dt: number): void {
     const { scale: targetScale, lift: targetLift, opacity: targetOpacity, title: titleTarget } =
       targets();
@@ -146,9 +154,14 @@ export function createFrame(project: Project, index: number): FrameHandle {
     const opacity = imageMat.opacity;
     const next = damp(opacity, targetOpacity, 10, dt);
     borderMat.opacity = next;
-    matMat.opacity = next;
     imageMat.opacity = next;
     lineMat.opacity = next;
+    if (live) {
+      if (!reducedMotion) time += dt;
+      live.update(time, next);
+    } else {
+      matMat!.opacity = next;
+    }
 
     const metaTarget = state.focused ? 0 : next;
     const titleOpacity = damp(titleLabel.sprite.material.opacity, titleTarget, 10, dt);
@@ -217,7 +230,8 @@ export function createFrame(project: Project, index: number): FrameHandle {
       line.geometry.dispose();
       hitGeometry.dispose();
       borderMat.dispose();
-      matMat.dispose();
+      matMat?.dispose();
+      live?.dispose();
       imageMat.dispose();
       lineMat.dispose();
       hitMat.dispose();

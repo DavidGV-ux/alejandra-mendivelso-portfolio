@@ -54,7 +54,7 @@ export function createCorridor(projects: Project[], caps: Capabilities): Corrido
   const tmp = new Vector3();
 
   projects.forEach((project, index) => {
-    const frame = createFrame(project, index);
+    const frame = createFrame(project, index, caps.prefersReducedMotion);
     const wrapper = new Group();
     framePositionCorridor(index, projects.length, layout, tmp);
     wrapper.position.copy(tmp);
