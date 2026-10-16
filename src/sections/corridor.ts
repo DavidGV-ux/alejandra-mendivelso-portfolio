@@ -273,7 +273,14 @@ export function createCorridorController(deps: Deps): CorridorController {
     }
     corridor.setActiveIndex(idx);
     corridor.update(dt);
-    if (endScreen.update(dt)) deps.invalidate();
+
+    // Solo actualizamos la tarjeta final si estamos cerca del final del pasillo
+    // para ahorrar CPU durante la intro y el recorrido inicial.
+    const distToEnd = Math.abs(camera.position.z - endScreen.group.position.z);
+    if (distToEnd < 20 && endScreen.update(dt)) {
+      deps.invalidate();
+    }
+
     loadAround(idx);
     if (store.get().activeIndex !== idx) store.set({ activeIndex: idx });
   }

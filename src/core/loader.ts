@@ -16,20 +16,23 @@ async function decodeImage(url: string, maxSize: number): Promise<TexImageSource
   const blob = await response.blob();
 
   if (typeof createImageBitmap === 'function' && !url.endsWith('.svg')) {
-    const bitmap = await createImageBitmap(blob);
-    if (bitmap.width <= maxSize) return bitmap;
-    const scale = maxSize / bitmap.width;
-    const resized = await createImageBitmap(bitmap, {
-      resizeWidth: Math.round(bitmap.width * scale),
-      resizeHeight: Math.round(bitmap.height * scale),
-      resizeQuality: 'high',
-    });
-    bitmap.close();
-    return resized;
+    try {
+      const bitmap = await createImageBitmap(blob);
+      if (bitmap.width <= maxSize) return bitmap;
+      const scale = maxSize / bitmap.width;
+      const resized = await createImageBitmap(bitmap, {
+        resizeWidth: Math.round(bitmap.width * scale),
+        resizeHeight: Math.round(bitmap.height * scale),
+        resizeQuality: 'high',
+      });
+      bitmap.close();
+      return resized;
+    } catch (e) {
+      console.warn(`createImageBitmap falló para ${url}, usando fallback Image`, e);
+    }
   }
 
-  // SVG y entornos sin createImageBitmap: se decodifica vía blob URL para
-  // no depender de la caché del DOM y liberar memoria al terminar.
+  // Fallback para SVG, entornos sin createImageBitmap o errores de decodificación.
   const objectUrl = URL.createObjectURL(blob);
   try {
     return await new Promise<TexImageSource>((resolve, reject) => {
@@ -62,7 +65,8 @@ export function createLoader(): LoaderHandle {
         const image = await decodeImage(resolved, maxSize);
         const texture = new Texture(image);
         texture.colorSpace = SRGBColorSpace;
-        texture.flipY = image instanceof ImageBitmap ? false : true;
+        // Siempre usamos flipY=true porque decodeImage devuelve una imagen Y-down (estándar DOM).
+        texture.flipY = true;
         texture.anisotropy = anisotropy;
         texture.needsUpdate = true;
         texture.generateMipmaps = true;

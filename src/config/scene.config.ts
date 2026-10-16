@@ -6,7 +6,7 @@ import { theme } from './theme';
  */
 export const sceneConfig = {
   camera: {
-    fov: 42,
+    fov: 48,
     near: 0.1,
     far: 200,
     /** Radio de la cámara respecto al eje de la hélice */

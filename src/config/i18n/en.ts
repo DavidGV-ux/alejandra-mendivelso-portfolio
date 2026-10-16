@@ -47,6 +47,14 @@ export const en: Dictionary = {
     skip: 'Skip intro',
     hint: 'Press any key to skip',
   },
+  tip: {
+    title: 'How to explore',
+    items: [
+      'Drag or use the arrow keys to look and move',
+      'Use the mouse wheel to move between projects',
+      'Double-click a project to open it',
+    ],
+  },
   help: {
     title: 'How to move',
     intro:

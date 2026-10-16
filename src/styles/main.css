@@ -930,8 +930,16 @@ body.has-modal .bar {
 .detail__video {
   width: 100%;
   height: 100%;
-  object-fit: contain;
   background: transparent;
+}
+
+.detail__image {
+  object-fit: contain;
+}
+
+/* El video llena todo el marco del visor; se recorta si cambia de proporción. */
+.detail__video {
+  object-fit: cover;
 }
 
 .detail__slide picture {
@@ -1647,6 +1655,108 @@ body.has-modal .bar {
 @media (prefers-reduced-motion: reduce) {
   .hero__card {
     animation: none;
+  }
+}
+
+/* Aviso ligero de bienvenida: cómo moverse y abrir proyectos */
+.tip {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--safe-bottom) + clamp(4.6rem, 11vh, 5.6rem));
+  z-index: 35;
+  width: min(28rem, calc(100vw - 2.5rem));
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.15rem 0.5rem;
+  padding: 0.85rem 0.85rem 0.95rem 1.1rem;
+  background: color-mix(in srgb, var(--color-bg-elevated) 86%, transparent);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-medium);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(12px) scale(0.96);
+  transform-origin: 50% 100%;
+  transition:
+    opacity 0.38s ease,
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.38s ease;
+}
+
+.tip[hidden] {
+  display: none;
+}
+
+.tip.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.tip__title {
+  grid-column: 1;
+  font-family: var(--font-meta);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.tip__close {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: start;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.tip__close:hover {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+
+.tip__list {
+  grid-column: 1;
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tip__item {
+  position: relative;
+  padding-left: 1rem;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+
+.tip__item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.52em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tip {
+    transition-duration: 0.001s;
   }
 }
 

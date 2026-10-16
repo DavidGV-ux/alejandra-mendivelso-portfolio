@@ -45,6 +45,14 @@ export const es = {
     skip: 'Omitir intro',
     hint: 'Pulsa cualquier tecla para saltar',
   },
+  tip: {
+    title: 'Cómo recorrerlo',
+    items: [
+      'Arrastra o usa las flechas para mirar y avanzar',
+      'Rueda del ratón para moverte entre proyectos',
+      'Doble clic en un proyecto para abrirlo',
+    ],
+  },
   help: {
     title: 'Cómo navegar',
     intro:

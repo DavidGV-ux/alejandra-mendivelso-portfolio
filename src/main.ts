@@ -14,6 +14,7 @@ import { createHud } from '@/ui/hud';
 import { createDetailView } from '@/ui/detailView';
 import { createHelpCard } from '@/ui/helpCard';
 import { createHeroPanel } from '@/ui/heroPanel';
+import { createIntroTip } from '@/ui/introTip';
 import { createLoadingScreen } from '@/ui/loadingScreen';
 import { createCursor } from '@/ui/cursor';
 import { createPiano } from '@/audio/piano';
@@ -157,13 +158,14 @@ const detailView = createDetailView(uiContext);
 const aboutPanel = createAboutPanel(uiContext);
 const contactPanel = createContactPanel(uiContext);
 const heroPanel = createHeroPanel(uiContext);
+const introTip = createIntroTip(uiContext);
 const fallbackList = createFallbackList(uiContext);
 const bottomBar = createBottomBar(uiContext);
 const hud = createHud(uiContext);
 const loadingScreen = createLoadingScreen(dict, content.profile);
 const cursor = createCursor(window.matchMedia('(pointer: fine)').matches, dict.cursor.client);
 
-uiRoot.append(bottomBar.el, hud.el);
+uiRoot.append(bottomBar.el, hud.el, introTip.el);
 overlayRoot.append(detailView.el, aboutPanel.el, contactPanel.el, heroPanel.el, fallbackList.el);
 document.body.append(cursor.el, helpCard.el, loadingScreen.el);
 
@@ -198,6 +200,7 @@ function closeHelpUI(): void {
 /* Portada (hero)                                                     */
 /* ------------------------------------------------------------------ */
 let heroDismissed = false;
+let tipShown = false;
 let bootComplete = false;
 
 function showHeroUI(): void {
@@ -219,6 +222,18 @@ function maybeShowHero(): void {
     return;
   }
   showHeroUI();
+}
+
+/** Muestra una sola vez el aviso ligero de controles al empezar a explorar. */
+function maybeShowTip(): void {
+  if (tipShown || !use3D) return;
+  const state = store.get();
+  if (!bootComplete || !state.introDone) return;
+  if (state.section !== 'works' || state.detailProjectId || state.helpOpen || state.heroOpen) {
+    return;
+  }
+  tipShown = true;
+  introTip.show();
 }
 
 function setSection(section: Section, fromRoute = false): void {
@@ -275,6 +290,10 @@ store.subscribe((state, prev) => {
   }
   if (state.introDone !== prev.introDone) maybeShowHero();
   if (state.heroOpen && (state.section !== 'works' || state.detailProjectId)) closeHeroUI();
+  if (state.introDone !== prev.introDone || state.heroOpen !== prev.heroOpen) maybeShowTip();
+  if (introTip.isVisible() && (state.section !== 'works' || state.detailProjectId || state.helpOpen)) {
+    introTip.hide();
+  }
   if (
     state.section !== prev.section ||
     state.detailProjectId !== prev.detailProjectId ||
