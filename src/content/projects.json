@@ -9,7 +9,11 @@
     "role_en": "Development & experience design",
     "description": "Aplicación Android de realidad aumentada: tarjetas físicas que activan objetos 3D, botones interactivos y reproducción automática de video. Desarrollada en C# con Unity y Vuforia, aplicando arquitectura orientada a objetos.",
     "description_en": "Android augmented reality app: physical cards that trigger 3D objects, interactive buttons and automatic video playback. Built in C# with Unity and Vuforia, applying object-oriented architecture.",
-    "tools": ["Unity", "Vuforia", "C#"],
+    "tools": [
+      "Unity",
+      "Vuforia",
+      "C#"
+    ],
     "cover": "/media/ar-experience/cover.svg",
     "media": [
       {
@@ -35,37 +39,39 @@
   },
   {
     "id": "plataforma-domicilios",
-    "title": "Plataforma web de domicilios",
+    "title": "WinAI Finance – Rediseño UX/UI",
     "category": "Diseño UX/UI",
     "category_en": "UX/UI design",
-    "year": 2024,
-    "role": "Investigación y diseño de interfaz",
-    "role_en": "Research & interface design",
-    "description": "Rediseño de la interfaz de una plataforma de domicilios: investigación de usuarios, wireframes y prototipado para lograr una experiencia más ágil y accesible en móviles.",
-    "description_en": "Interface redesign for a food delivery platform: user research, wireframes and prototyping to achieve a faster, more accessible mobile experience.",
-    "tools": ["UX Research", "Wireframes", "Prototipado"],
+    "year": 2026,
+    "role": "Diseño de producto y UX/UI",
+    "role_en": "Product design & UX/UI",
+    "description": "Rediseño UX/UI de una app de finanzas personales con IA: jerarquía clara, un único acento esmeralda y componentes reutilizables. Flujo de registro, metas y asistente Win con respuestas basadas en datos.",
+    "description_en": "UX/UI redesign of a personal finance app with AI: clear hierarchy, a single emerald accent and reusable components. Logging flow, goals and a Win assistant with data-driven answers.",
+    "tools": [
+      "Figma",
+      "UX research",
+      "Prototipado"
+    ],
     "cover": "/media/plataforma-domicilios/cover.svg",
     "media": [
       {
-        "kind": "image",
-        "src": "/media/plataforma-domicilios/01.svg",
-        "alt": "Vista provisional — pendiente de recursos reales",
-        "alt_en": "Provisional view — real assets pending",
-        "width": 1600,
-        "height": 1100
-      },
-      {
-        "kind": "image",
-        "src": "/media/plataforma-domicilios/02.svg",
-        "alt": "Vista provisional — pendiente de recursos reales",
-        "alt_en": "Provisional view — real assets pending",
-        "width": 1600,
-        "height": 1100
+        "kind": "video",
+        "src": "/media/winai-finance/preview-dia.mp4",
+        "poster": "/media/plataforma-domicilios/cover.svg",
+        "alt": "Recorrido de la app WinAI Finance",
+        "alt_en": "WinAI Finance app walkthrough",
+        "width": 1080,
+        "height": 1080
       }
     ],
     "links": [],
     "order": 2,
-    "accent": "#2f6b7a"
+    "accent": "#10B981",
+    "title_en": "WinAI Finance – UX/UI Redesign",
+    "coverVideo": {
+      "light": "/media/winai-finance/preview-dia.mp4",
+      "dark": "/media/winai-finance/preview-noche.mp4"
+    }
   },
   {
     "id": "app-movil-consulta",
@@ -77,7 +83,10 @@
     "role_en": "Information architecture & development",
     "description": "App híbrida construida con Angular e Ionic: arquitectura de información, componentes reutilizables, sistema de favoritos y navegación jerárquica.",
     "description_en": "Hybrid app built with Angular and Ionic: information architecture, reusable components, favorites system and hierarchical navigation.",
-    "tools": ["Ionic", "Angular"],
+    "tools": [
+      "Ionic",
+      "Angular"
+    ],
     "cover": "/media/app-movil-consulta/cover.svg",
     "media": [
       {
@@ -113,7 +122,11 @@
     "role_en": "Product design & motion",
     "description": "Animación de producto para la app de adopción y donación de Salvando Patitas Boyacá. Cinco escenas que recorren la experiencia: adopción con confianza, donación segura, apadrinamiento, hogar de paso y transparencia. Piezas pensadas para presentar la app en web y redes.",
     "description_en": "Product animation for the Salvando Patitas Boyacá adoption and donation app. Five scenes that walk through the experience: trusted adoption, secure donations, sponsoring, foster homes and transparency. Pieces designed to present the app on web and social media.",
-    "tools": ["After Effects", "Figma", "Lottie"],
+    "tools": [
+      "After Effects",
+      "Figma",
+      "Lottie"
+    ],
     "cover": "/media/salvando-patitas/poster.jpg",
     "coverVideo": {
       "light": "/media/salvando-patitas/preview-dia.mp4",
