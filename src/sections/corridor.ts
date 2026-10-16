@@ -119,10 +119,12 @@ export function createCorridorController(deps: Deps): CorridorController {
 
   /** Solo el video del marco centrado se reproduce; el resto se pausa. */
   function updateVideoPlayback(activeIdx: number): void {
+    const hoveredIdx = hovered ? (hovered as { index: number }).index : -1;
+    const targetIdx = hoveredIdx >= 0 ? hoveredIdx : activeIdx;
     for (const [key, handle] of coverVideos) {
       const [id] = key.split(':');
       const frameIdx = projects.findIndex((p) => p.id === id);
-      handle.setPlaying(frameIdx === activeIdx);
+      handle.setPlaying(frameIdx === targetIdx);
     }
   }
 
@@ -309,12 +311,14 @@ export function createCorridorController(deps: Deps): CorridorController {
         onEnter: (f) => {
           hovered = f;
           f.setHover(true);
+          updateVideoPlayback(activeIndex());
           deps.invalidate();
           deps.onHoverChange(true);
         },
         onLeave: (f) => {
           f.setHover(false);
           if (hovered === f) hovered = null;
+          updateVideoPlayback(activeIndex());
           deps.invalidate();
           deps.onHoverChange(false);
         },

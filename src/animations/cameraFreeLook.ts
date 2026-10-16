@@ -36,7 +36,7 @@ const LOOK_AHEAD = 9;
 export const YAW_SENSITIVITY = 0.0032;
 export const PITCH_SENSITIVITY = 0.0026;
 /** Rango frontal de la vista libre: nunca permite mirar hacia atrás. */
-const MAX_YAW = 1.05;
+const MAX_YAW = 0.85;
 const MAX_PITCH = Math.PI / 5;
 const MIN_FOV = 26;
 const MAX_FOV = 62;
