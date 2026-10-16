@@ -19,9 +19,9 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
   const video = document.createElement('video');
   video.muted = true;
   video.loop = true;
-  video.autoplay = true;
+  video.autoplay = false;
   video.playsInline = true;
-  video.preload = 'auto';
+  video.preload = 'none';
   video.setAttribute('aria-hidden', 'true');
   video.src = url;
 

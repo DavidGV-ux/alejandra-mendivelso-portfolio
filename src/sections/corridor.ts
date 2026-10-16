@@ -117,14 +117,19 @@ export function createCorridorController(deps: Deps): CorridorController {
     return `${id}:${mode}`;
   }
 
-  /** Solo el video del marco centrado se reproduce; el resto se pausa. */
-  function updateVideoPlayback(activeIdx: number): void {
-    const hoveredIdx = hovered ? (hovered as { index: number }).index : -1;
-    const targetIdx = hoveredIdx >= 0 ? hoveredIdx : activeIdx;
-    for (const [key, handle] of coverVideos) {
-      const [id] = key.split(':');
-      const frameIdx = projects.findIndex((p) => p.id === id);
-      handle.setPlaying(frameIdx === targetIdx);
+  /** Solo el video del Marco centrado se reproduce; el resto se pausa. */
+  function updateVideoPlayback(): void {
+    if (hovered) {
+      const hoveredIdx = (hovered as { index: number }).index;
+      for (const [key, handle] of coverVideos) {
+        const [id] = key.split(':');
+        const frameIdx = projects.findIndex((p) => p.id === id);
+        handle.setPlaying(frameIdx === hoveredIdx);
+      }
+    } else {
+      for (const handle of coverVideos.values()) {
+        handle.setPlaying(false);
+      }
     }
   }
 
@@ -292,7 +297,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     const idx = activeIndex();
     if (idx !== lastActiveIdx) {
       lastActiveIdx = idx;
-      updateVideoPlayback(idx);
+      updateVideoPlayback();
     }
     corridor.setActiveIndex(idx);
     corridor.update(dt);
@@ -311,14 +316,18 @@ export function createCorridorController(deps: Deps): CorridorController {
         onEnter: (f) => {
           hovered = f;
           f.setHover(true);
-          updateVideoPlayback(activeIndex());
+          setTimeout(() => {
+            updateVideoPlayback();
+          }, 300);
           deps.invalidate();
           deps.onHoverChange(true);
         },
-        onLeave: (f) => {
+onLeave: (f) => {
           f.setHover(false);
-          if (hovered === f) hovered = null;
-          updateVideoPlayback(activeIndex());
+          if (hovered === f) {
+            hovered = null;
+          }
+          updateVideoPlayback();
           deps.invalidate();
           deps.onHoverChange(false);
         },
@@ -474,7 +483,7 @@ export function createCorridorController(deps: Deps): CorridorController {
       corridor.frames.every((frame) => frame.isSettled()),
     preload: () => {
       loadAround(activeIndex());
-      updateVideoPlayback(activeIndex());
+      updateVideoPlayback();
       loadEndScreen();
     },
     attach,
