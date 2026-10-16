@@ -38,8 +38,8 @@ export const PITCH_SENSITIVITY = 0.0026;
 /** Rango frontal de la vista libre: nunca permite mirar hacia atrás. */
 const MAX_YAW = 0.85;
 const MAX_PITCH = Math.PI / 5;
-const MIN_FOV = 26;
-const MAX_FOV = 62;
+const MIN_FOV = 30;
+const MAX_FOV = 80;
 const FOCUS_DURATION = 0.62;
 
 export function createCameraFreeLook(camera: PerspectiveCamera): CameraFreeLook {

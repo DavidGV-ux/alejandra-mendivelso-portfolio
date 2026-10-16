@@ -70,14 +70,9 @@ export function createLoader(): LoaderHandle {
         const texture = new Texture(image);
         texture.colorSpace = SRGBColorSpace;
 
-        // Forzamos flipY=false para los covers JPG que están saliendo invertidos.
-        // El estándar suele ser true, pero en este caso parece que el origen o la
-        // decodificación los entrega ya orientados para WebGL.
-        if (resolved.toLowerCase().includes('cover.jpg')) {
-          texture.flipY = false;
-        } else {
-          texture.flipY = !(image instanceof ImageBitmap);
-        }
+        // Forzamos flipY=false para todas las portadas. En este proyecto,
+        // las imágenes parecen venir ya orientadas para el sistema de coordenadas de la GPU.
+        texture.flipY = false;
 
         texture.anisotropy = anisotropy;
         texture.needsUpdate = true;

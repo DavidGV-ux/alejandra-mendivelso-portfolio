@@ -20,7 +20,7 @@ export function buildCorridorLayout(caps: Capabilities): CorridorLayout {
     width: 24 * scale,
     height: 4.5 * scale,
     depth: 60 * scale,
-    wallOffset: 4.25 * scale,
+    wallOffset: 5.2 * scale,
     compact,
   };
 }
