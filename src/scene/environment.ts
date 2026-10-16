@@ -32,8 +32,7 @@ const fragmentShader = /* glsl */ `
   void main() {
     float h = normalize(vWorldPosition + offset).y;
     float t = smoothstep(-0.35, 0.65, h);
-    gl_FragColor = vec4(mix(bottomColor, topColor, t), 1.0);
-  }
+    gl_FragColor = vec4(bottomColor, 1.0);  }
 `;
 
 export function createEnvironment(
@@ -65,7 +64,7 @@ export function createEnvironment(
 
   function setMode(next: Exclude<ThemeMode, 'auto'>): void {
     const palette = next === 'dark'
-      ? { top: '#1b1b24', bottom: '#101014', fog: '#101014' }
+      ? { top: '#101014', bottom: '#101014', fog: '#101014' }
       : { top: '#ffffff', bottom: '#ffffff', fog: '#ffffff' };
     top.set(palette.top);
     bottom.set(palette.bottom);
