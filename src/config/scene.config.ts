@@ -27,7 +27,7 @@ export const sceneConfig = {
     /** Desplazamiento vertical al pasar el cursor */
     hoverLift: 0.18,
     /** Opacidad de marcos no activos */
-    inactiveOpacity: 0.42,
+    inactiveOpacity: 1,
   },
   controls: {
     /** Factor de amortiguación de inercia por frame (0–1) */
