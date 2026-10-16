@@ -117,15 +117,19 @@ export function createCorridorController(deps: Deps): CorridorController {
     return `${id}:${mode}`;
   }
 
-  /** Solo el video del Marco centrado se reproduce; si hay hover, ese frame pasa a primer plano. */
+  /** Vista previa ligera: el video solo se reproduce al hacer hover; al cerrar, se pausa. */
   function updateVideoPlayback(): void {
-    const idx = activeIndex();
-    const hoveredIdx = hovered ? (hovered as { index: number }).index : -1;
-    const targetIdx = hoveredIdx >= 0 ? hoveredIdx : idx;
-    for (const [key, handle] of coverVideos) {
-      const [id] = key.split(':');
-      const frameIdx = projects.findIndex((p) => p.id === id);
-      handle.setPlaying(frameIdx === targetIdx);
+    if (hovered) {
+      const hoveredIdx = (hovered as { index: number }).index;
+      for (const [key, handle] of coverVideos) {
+        const [id] = key.split(':');
+        const frameIdx = projects.findIndex((p) => p.id === id);
+        handle.setPlaying(frameIdx === hoveredIdx);
+      }
+    } else {
+      for (const handle of coverVideos.values()) {
+        handle.setPlaying(false);
+      }
     }
   }
 
