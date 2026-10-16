@@ -29,7 +29,8 @@
     "links": [],
     "order": 1,
     "accent": "#c084fc",
-    "title_en": "Gigi and Kiki – 3D Character Showcase"
+    "title_en": "Gigi and Kiki – 3D Character Showcase",
+    "coverVideo": "/media/gigi-y-kiki/preview-loop.webm"
   },
   {
     "id": "plataforma-domicilios",
@@ -144,8 +145,8 @@
     "description": "Nuevo proyecto con video personalizado.",
     "description_en": "New project with custom video.",
     "tools": [],
-    "cover": "/media/apple/cover.jpg",
-    "coverVideo": "/media/apple/preview.mp4",
+    "cover": "/media/apple/cover.svg",
+    "coverVideo": "/media/apple/preview-loop.webm",
     "media": [
       {
         "kind": "video",
@@ -175,8 +176,8 @@
       "Motion Graphics",
       "UI Design"
     ],
-    "cover": "/media/kpexperience/cover.jpg",
-    "coverVideo": "/media/kpexperience/preview.mp4",
+    "cover": "/media/kpexperience/cover.svg",
+    "coverVideo": "/media/kpexperience/preview-loop.webm",
     "media": [
       {
         "kind": "video",
