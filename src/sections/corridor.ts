@@ -212,35 +212,6 @@ if (
   }
 
   /** Devuelve el marco a su portada estática y pausa su video. */
-  function restorePreview(index: number): void {
-    const project = projects[index];
-    const frame = corridor.frames[index];
-    if (!project || !frame) return;
-    if (/\.webp$/i.test(project.cover)) {
-      const anim = webpAnims.get(project.id);
-      if (anim) frame.setImage(anim.texture);
-      deps.invalidate();
-      return;
-    }
-    const video = coverVideos.get(videoKey(project.id, currentTheme));
-    if (video) video.setPlaying(false);
-    const poster = posterTextures.get(project.id);
-    if (poster) {
-      frame.setImage(poster);
-      deps.invalidate();
-      return;
-    }
-    // La portada aún no se había terminado de cargar: se recupera.
-    loader
-      .loadTexture(project.cover, quality.textureMax, quality.anisotropy)
-      .then((t) => {
-        posterTextures.set(project.id, t);
-        frame.setImage(t);
-        deps.invalidate();
-      })
-      .catch(() => {});
-  }
-
   function clampTarget(v: number): number {
     if (total <= 0) return 0;
     return Math.max(0, Math.min(total - 1, v));
