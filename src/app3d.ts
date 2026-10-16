@@ -88,7 +88,7 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
 
   const scene = new Scene();
   const environment = createEnvironment(scene, deps.theme);
-  const clouds = createClouds(scene, deps.theme, quality.tier === 'high' ? 14 : quality.tier === 'medium' ? 10 : 6);
+  const clouds = createClouds(scene, deps.theme, quality.tier === 'high' ? 8 : quality.tier === 'medium' ? 5 : 0);
   scene.add(camera);
 
   const lights = createLights(deps.theme);

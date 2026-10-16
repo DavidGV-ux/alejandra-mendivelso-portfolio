@@ -119,8 +119,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     for (const [key, handle] of coverVideos) {
       const [id] = key.split(':');
       const frameIdx = projects.findIndex((p) => p.id === id);
-      const always = id !== undefined && id !== null && ['ar-experience','app-movil-consulta','plataforma-domicilios'].includes(id);
-      handle.setPlaying(frameIdx === previewIndex || always);
+      handle.setPlaying(frameIdx === previewIndex);
     }
   }
 
@@ -142,7 +141,6 @@ export function createCorridorController(deps: Deps): CorridorController {
       if (existing.isReady()) {
         frame.setImage(existing.texture);
         updateVideoPlayback();
-        deps.invalidate();
       }
       return;
     }
@@ -255,14 +253,16 @@ export function createCorridorController(deps: Deps): CorridorController {
         .finally(() => loading.delete(p.id));
     }
 
-    // Limpieza de videos lejanos para ahorrar memoria y CPU.
-    const videoRange = 2;
-    for (const [key, handle] of coverVideos) {
-      const [id] = key.split(':');
-      const idx = projects.findIndex((p) => p.id === id);
-      if (idx !== -1 && Math.abs(idx - index) > videoRange && idx !== previewIndex) {
-        handle.dispose();
-        coverVideos.delete(key);
+// Limpieza de videos lejanos para ahorrar memoria y CPU.
+    if (total >= 10) {
+      const videoRange = 2;
+      for (const [key, handle] of coverVideos) {
+        const [id] = key.split(':');
+        const idx = projects.findIndex((p) => p.id === id);
+        if (idx !== -1 && Math.abs(idx - index) > videoRange && idx !== previewIndex) {
+          handle.dispose();
+          coverVideos.delete(key);
+        }
       }
     }
   }
@@ -393,11 +393,11 @@ export function createCorridorController(deps: Deps): CorridorController {
     if (idx !== lastActiveIdx) {
       lastActiveIdx = idx;
       updateVideoPlayback();
+      loadAround(idx);
     }
     corridor.setActiveIndex(idx);
     corridor.update(dt);
 
-    loadAround(idx);
     if (store.get().activeIndex !== idx) store.set({ activeIndex: idx });
   }
 
