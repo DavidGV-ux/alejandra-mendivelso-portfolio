@@ -16,19 +16,20 @@ export function buildCorridorLayout(caps: Capabilities): CorridorLayout {
   const compact = Math.min(window.innerWidth, window.innerHeight) < 560 || caps.tier === 'low';
   const scale = compact ? 0.82 : 1;
   return {
-    spacing: 4.6 * scale,
+    spacing: 3.8 * scale,
     width: 24 * scale,
     height: 4.5 * scale,
     depth: 60 * scale,
-    wallOffset: 4.3 * scale,
+    wallOffset: 4.1 * scale,
     compact,
   };
 }
 
 /** Profundidad de la pantalla que cierra el pasillo, más allá del último marco. */
 export function endScreenZ(total: number, layout: CorridorLayout): number {
-  const center = ((total - 1) / 2) * layout.spacing;
-  return center + layout.spacing * 2.2;
+  const pairCount = Math.ceil(total / 2);
+  const center = ((pairCount - 1) / 2) * layout.spacing;
+  return Math.floor((total - 1) / 2) * layout.spacing - center + layout.spacing * 2.2;
 }
 
 export function framePositionCorridor(
@@ -37,10 +38,11 @@ export function framePositionCorridor(
   config: CorridorLayout,
   out: Vector3 = new Vector3(),
 ): Vector3 {
-  const center = ((total - 1) / 2) * config.spacing;
+  const pairCount = Math.ceil(total / 2);
+  const center = ((pairCount - 1) / 2) * config.spacing;
   const x = (index % 2 === 0 ? -config.wallOffset : config.wallOffset) * (config.compact ? 0.85 : 1);
   const y = 0;
-  const z = index * config.spacing - center;
+  const z = Math.floor(index / 2) * config.spacing - center;
   return out.set(x, y, z);
 }
 
