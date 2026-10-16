@@ -39,7 +39,7 @@ export const PITCH_SENSITIVITY = 0.0026;
 const MAX_YAW = 0.85;
 const MAX_PITCH = Math.PI / 5;
 const MIN_FOV = 30;
-const MAX_FOV = 80;
+const MAX_FOV = 90;
 const FOCUS_DURATION = 0.62;
 
 export function createCameraFreeLook(camera: PerspectiveCamera): CameraFreeLook {
@@ -134,7 +134,7 @@ export function createCameraFreeLook(camera: PerspectiveCamera): CameraFreeLook 
         // Vista frontal desde el eje del pasillo: el marco queda centrado y de cara.
         focusPos.set(0, CAM_HEIGHT, frame.z);
         focusLook.set(frame.x, 0.42, frame.z);
-        desiredFov = layout.compact ? 52 : 44;
+        desiredFov = layout.compact ? 64 : 54;
       } else {
         const inward = frame.x >= 0 ? -1 : 1;
         focusPos.set(
@@ -143,7 +143,7 @@ export function createCameraFreeLook(camera: PerspectiveCamera): CameraFreeLook 
           frame.z - layout.spacing * 0.15,
         );
         focusLook.copy(frame);
-        desiredFov = 42;
+        desiredFov = 50;
       }
       focusFromPos.copy(position);
       focusFromLook.copy(look);

@@ -70,9 +70,16 @@ export function createLoader(): LoaderHandle {
         const texture = new Texture(image);
         texture.colorSpace = SRGBColorSpace;
 
-        // Forzamos flipY=false para todas las portadas. En este proyecto,
-        // las imágenes parecen venir ya orientadas para el sistema de coordenadas de la GPU.
-        texture.flipY = false;
+        // Solo aplicamos flipY=false a los nuevos proyectos que vienen invertidos (JPGs).
+        // Las demás (SVGs y proyectos originales) necesitan flipY=true para verse bien.
+        const isProblematic = resolved.includes('apple') || resolved.includes('kpexperience');
+        
+        if (isProblematic) {
+          texture.flipY = false;
+        } else {
+          // Lógica original: ImageBitmap false, HTMLImageElement true.
+          texture.flipY = !(image instanceof ImageBitmap);
+        }
 
         texture.anisotropy = anisotropy;
         texture.needsUpdate = true;
