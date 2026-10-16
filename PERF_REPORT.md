@@ -207,10 +207,26 @@ Notas:
 - Probe CDP: `og:image` absoluto y dimensiones 1200×630; JSON-LD con `name`, `image` y 4 `sameAs`; `/og-image.png` responde 200 `image/png` (343 kB) y decodifica a 1200×630.
 - `typecheck`, `lint`, 9 tests y build en verde; `phase2-probe` en verde. `robots.txt`, `sitemap.xml` (home, about, contact y las 6 fichas) y `manifest.webmanifest` ya eran correctos.
 
+### Fase 9 — API de contacto
+
+**Hecho**
+- `api/contact.ts` (zod se queda aquí, en el servidor): un body de texto que no es JSON ya no revienta con 500 — se responde 400 `invalid_payload`.
+- `sendWithResend` con `AbortSignal.timeout(5000)` y `try/catch`: un Resend colgado o inalcanzable ya no mantiene viva la función ni provoca 500.
+- Con proveedor configurado y entrega fallida se responde 502 `delivery_failed` (el formulario ya muestra su estado de error); sin `RESEND_API_KEY` (desarrollo) se conserva el 200 con log, como antes.
+- Rate limit: la tabla de IPs se poda al alcanzar 1000 entradas (antes podía crecer sin límite en instancias longevas).
+- 7 tests nuevos del handler: método, JSON roto, schema/honeypot, dev sin proveedor, éxito con Resend simulado, 502 y rate limit.
+
+**Verificación**
+- `typecheck`, `lint` y 16 tests en verde (4 contenido + 5 media + 7 API).
+- Nota: sin `RESEND_API_KEY` no hay entrega real; el camino de éxito se verificó con `fetch` simulado.
+
 ## Descartado / no aplicado
 
 - `backdrop-filter` del modal de detalle (blur 6px) y de los paneles: se mantiene. Con el render bajo demanda (Fase 3), mientras el detalle o un panel están abiertos el canvas queda quieto (0 draw calls verificados), así que el blur se pinta una vez y el navegador lo cachea; solo se recalcularía durante la animación de cámara (~1 s) y en el área pequeña de la barra inferior. Restringirlo a móvil no mostró una mejora medible bajo swiftshader y alteraría la composición visual, fuera de alcance.
 
 ## Pendientes
 
-_(se completa al final)_
+- Checklist manual en dispositivo real: las verificaciones de este informe se hicieron con Chrome headless y WebGL software (swiftshader), que pesimiza los números absolutos. Falta probar con hardware real: loader/Omitir/intro, hover/clic/detalle, rueda/flechas (1 paso)/drag/pinch, Esc por capas, deep links, temas e idioma, `prefers-reduced-motion`, resize, pestaña oculta, `?2d`, Tab/foco y formulario.
+- Lighthouse de producción en un dispositivo/red reales para cerrar los números definitivos (las comparaciones de este informe son relativas y en la misma sesión).
+- Fotos reales: hoy `public/media` son 25 SVG placeholder; al añadir los originales raster hay que correr `npm run optimize:media` para generar las variantes AVIF/WebP que consume el pipeline `<picture>`/texturas.
+- Decisión final de despliegue: la rama `perf/optimizacion` no se ha empujado ni mergeado a `main`; el despliegue en Vercel queda a la espera de confirmación.
