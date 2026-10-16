@@ -151,8 +151,21 @@
     "description_en": "New project with custom video.",
     "tools": [],
     "cover": "/media/nuevo-proyecto/cover.svg",
-    "coverVideo": "/media/nuevo-proyecto/Grabación de pantalla 2026-10-16 a las 4.57.54 a.m..mov",
-    "media": [],
+    "coverVideo": {
+      "light": "/media/nuevo-proyecto/Grabación de pantalla 2026-10-16 a las 4.57.54 a.m..mov",
+      "dark": "/media/nuevo-proyecto/Grabación de pantalla 2026-10-16 a las 4.57.54 a.m..mov"
+    },
+    "media": [
+      {
+        "kind": "video",
+        "src": "/media/nuevo-proyecto/Grabación de pantalla 2026-10-16 a las 4.57.54 a.m..mov",
+        "poster": "/media/nuevo-proyecto/cover.svg",
+        "alt": "Video preview",
+        "alt_en": "Video preview",
+        "width": 1080,
+        "height": 1080
+      }
+    ],
     "links": [],
     "order": 5,
     "accent": "#ff0000"
