@@ -123,6 +123,7 @@ export function createFrame(
 
   function update(dt: number): void {
     const { scale: targetScale, lift: targetLift, opacity: targetOpacity } = targets();
+    glow.visible = state.active || state.hover;
 
     state.scale = damp(state.scale, targetScale, 8, dt);
     state.lift = damp(state.lift, targetLift, 8, dt);
@@ -152,6 +153,7 @@ export function createFrame(
     index,
     hitMesh,
     setImage(texture: Texture): void {
+      if (imageMat.map === texture) return;
       const source = texture.image as HTMLVideoElement | HTMLImageElement | ImageBitmap | undefined;
       let w: number | undefined;
       let h: number | undefined;
@@ -177,7 +179,6 @@ export function createFrame(
       imageMat.map = texture;
       imageMat.color.setRGB(1, 1, 1);
       imageMat.needsUpdate = true;
-      texture.needsUpdate = true;
 
       // Saltamos directamente a la opacidad objetivo para evitar que se vea negro.
       imageMat.opacity = targets().opacity;

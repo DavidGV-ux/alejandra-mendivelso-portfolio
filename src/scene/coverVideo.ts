@@ -26,7 +26,7 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
   video.src = url;
   video.load();
 
-  const PREVIEW_W = 640;
+  const PREVIEW_W = 480;
   const ASPECT = 1400 / 962;
   const PREVIEW_H = Math.round(PREVIEW_W / ASPECT);
   const canvas = document.createElement('canvas');
@@ -63,7 +63,7 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
   let rafId = 0;
   let lastTime = -1;
   let lastUpdate = 0;
-  const FRAME_INTERVAL = 90; // ~11 fps: algo más suave, aún ligero
+  const FRAME_INTERVAL = 100; // ~10 fps
 
   const pump = (): void => {
     rafId = 0;
@@ -113,11 +113,24 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
     ready: readyPromise,
     isReady: () => ready,
     setPlaying(next: boolean): void {
+      if (next === playing) return;
       playing = next;
       if (!ready) return;
       if (next) {
         if (document.hidden) return;
-        void video.play().then(startPump).catch(() => {});
+        if ('requestVideoFrameCallback' in video && typeof (video as any).requestVideoFrameCallback === 'function') {
+          const rvfcLoop = (now: number, meta: any) => {
+            if (!playing || document.hidden) return;
+            ctx.drawImage(video, 0, 0, PREVIEW_W, PREVIEW_H);
+            texture.needsUpdate = true;
+            onFrame();
+            (video as any).requestVideoFrameCallback(rvfcLoop);
+          };
+          (video as any).requestVideoFrameCallback(rvfcLoop);
+          void video.play().catch(() => {});
+        } else {
+          void video.play().then(startPump).catch(() => {});
+        }
       } else {
         video.pause();
         stopPump();
