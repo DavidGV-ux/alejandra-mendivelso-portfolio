@@ -1344,6 +1344,8 @@ body.has-modal .bar {
   object-fit: cover;
   border-radius: var(--radius-md);
   background: var(--color-bg);
+  max-height: 280px;
+  object-position: center;
 }
 
 .card__identity {
