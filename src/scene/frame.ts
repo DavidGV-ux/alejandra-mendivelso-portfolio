@@ -1,4 +1,5 @@
 import {
+  AdditiveBlending,
   Group,
   Mesh,
   MeshBasicMaterial,
@@ -37,6 +38,8 @@ export function createFrame(
   project: Project,
   index: number,
 ): FrameHandle {
+  const accent = project.accent ?? theme.colors.accent;
+
   const group = new Group();
   group.userData.index = index;
 
@@ -46,12 +49,25 @@ export function createFrame(
     toneMapped: true,
   });
 
+  const glowMat = new MeshBasicMaterial({
+    color: accent,
+    transparent: true,
+    opacity: 0.18,
+    blending: AdditiveBlending,
+    depthWrite: false,
+    toneMapped: false,
+  });
+
   const imageGeometry = new PlaneGeometry(W, H);
   const image = new Mesh(imageGeometry, imageMat);
   image.position.z = 0.024;
 
-  // Solo la imagen/video flota, sin marco ni títulos.
-  group.add(image);
+  const glowGeometry = new PlaneGeometry(W * 1.45, H * 1.45);
+  const glow = new Mesh(glowGeometry, glowMat);
+  glow.position.z = 0.012;
+
+  // Solo la imagen/video flota, con un brillo suave detrás.
+  group.add(glow, image);
 
   // La hitbox coincide con la imagen para facilitar el clic.
   const hitGeometry = new PlaneGeometry(W, H);
@@ -95,6 +111,7 @@ export function createFrame(
     const opacity = imageMat.opacity;
     const next = damp(opacity, targetOpacity, 10, dt);
     imageMat.opacity = next;
+    glowMat.opacity = next * 0.22;
 
     group.visible = next > 0.01;
   }
@@ -152,8 +169,10 @@ export function createFrame(
     getWorldPosition: (out) => group.getWorldPosition(out),
     dispose(): void {
       imageGeometry.dispose();
+      glowGeometry.dispose();
       hitGeometry.dispose();
       imageMat.dispose();
+      glowMat.dispose();
       hitMat.dispose();
       group.clear();
     },
