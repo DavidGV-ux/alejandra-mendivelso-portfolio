@@ -1,4 +1,4 @@
-import { LinearMipmapLinearFilter, LoadingManager, SRGBColorSpace, Texture } from 'three';
+import { LinearMipmapLinearFilter, LoadingManager, RepeatWrapping, SRGBColorSpace, Texture } from 'three';
 import { mediaVariant } from '@/utils/media';
 
 export interface LoaderHandle {
@@ -70,14 +70,15 @@ export function createLoader(): LoaderHandle {
         const texture = new Texture(image);
         texture.colorSpace = SRGBColorSpace;
 
-        // Solo aplicamos flipY=false a los nuevos proyectos que vienen invertidos (JPGs).
-        // Las demás (SVGs y proyectos originales) necesitan flipY=true para verse bien.
-        const isProblematic = resolved.includes('apple') || resolved.includes('kpexperience');
+        // Si es Apple o Kp, aplicamos flip horizontal y vertical para corregir el espejo.
+        const isMirror = resolved.includes('apple') || resolved.includes('kpexperience');
         
-        if (isProblematic) {
+        if (isMirror) {
+          texture.wrapS = RepeatWrapping;
+          texture.repeat.x = -1;
+          texture.offset.x = 1;
           texture.flipY = false;
         } else {
-          // Lógica original: ImageBitmap false, HTMLImageElement true.
           texture.flipY = !(image instanceof ImageBitmap);
         }
 
