@@ -138,5 +138,23 @@
     "order": 4,
     "accent": "#2F7A5B",
     "title_en": "Salvando Patitas"
+  },
+  {
+    "id": "nuevo-proyecto",
+    "title": "Grabación de pantalla 2026-10-16 a las 4.57.54 a.m..mov",
+    "category": "Video",
+    "category_en": "Video",
+    "year": 2026,
+    "role": "Video presentation",
+    "role_en": "Video presentation",
+    "description": "Nuevo proyecto con video personalizado.",
+    "description_en": "New project with custom video.",
+    "tools": [],
+    "cover": "/media/nuevo-proyecto/cover.svg",
+    "coverVideo": "/media/nuevo-proyecto/Grabación de pantalla 2026-10-16 a las 4.57.54 a.m..mov",
+    "media": [],
+    "links": [],
+    "order": 5,
+    "accent": "#ff0000"
   }
 ]
