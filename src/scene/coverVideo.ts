@@ -1,7 +1,7 @@
-import { SRGBColorSpace, VideoTexture } from 'three';
+import { CanvasTexture, LinearFilter, SRGBColorSpace } from 'three';
 
 export interface CoverVideoHandle {
-  texture: VideoTexture;
+  texture: CanvasTexture;
   ready: Promise<void>;
   isReady: () => boolean;
   /** Reproduce o pausa el video (solo debe sonar/verse cuando su marco está activo). */
@@ -10,10 +10,10 @@ export interface CoverVideoHandle {
 }
 
 /**
- * Textura de video para los covers del corredor. Se reproduce en silencio y
- * en bucle; cuando el frame decodificado cambia, marca la textura para
- * actualizar y despierta el loop bajo demanda mediante `onFrame`. Se pausa
- * cuando la pestaña queda oculta.
+ * Vista previa ligera del video para el corredor 3D. El video se decodifica en
+ * un elemento <video> oculto y se pinta a baja resolución en un canvas, cuya
+ * textura (<200×150 px) se sube a la GPU solo al hacer hover. La calidad
+ * completa se reproduce en el detalle al abrir el proyecto.
  */
 export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHandle {
   const video = document.createElement('video');
@@ -26,8 +26,19 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
   video.src = url;
   video.load();
 
-  const texture = new VideoTexture(video);
+  const PREVIEW_W = 320;
+  const ASPECT = 1400 / 962;
+  const PREVIEW_H = Math.round(PREVIEW_W / ASPECT);
+  const canvas = document.createElement('canvas');
+  canvas.width = PREVIEW_W;
+  canvas.height = PREVIEW_H;
+  const ctx = canvas.getContext('2d')!;
+
+  const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
+  texture.minFilter = LinearFilter;
+  texture.magFilter = LinearFilter;
+  texture.generateMipmaps = false;
   texture.flipY = true;
 
   let ready = false;
@@ -36,6 +47,8 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
       'loadeddata',
       () => {
         ready = true;
+        ctx.drawImage(video, 0, 0, PREVIEW_W, PREVIEW_H);
+        texture.needsUpdate = true;
         resolve();
       },
       { once: true },
@@ -50,7 +63,7 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
   let rafId = 0;
   let lastTime = -1;
   let lastUpdate = 0;
-  const FRAME_INTERVAL = 66; // ~15 fps: baja la carga de decodificación/actualización
+  const FRAME_INTERVAL = 120; // ~8 fps: vista previa ligera
 
   const pump = (): void => {
     rafId = 0;
@@ -59,6 +72,7 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
     if (video.currentTime !== lastTime && now - lastUpdate >= FRAME_INTERVAL) {
       lastTime = video.currentTime;
       lastUpdate = now;
+      ctx.drawImage(video, 0, 0, PREVIEW_W, PREVIEW_H);
       texture.needsUpdate = true;
       onFrame();
     }
