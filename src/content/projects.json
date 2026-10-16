@@ -150,13 +150,13 @@
     "description": "Nuevo proyecto con video personalizado.",
     "description_en": "New project with custom video.",
     "tools": [],
-    "cover": "/media/apple/cover.jpg",
+    "cover": "/media/apple/cover.svg",
     "coverVideo": "/media/apple/preview.mp4",
     "media": [
       {
         "kind": "video",
         "src": "/media/apple/preview.mp4",
-        "poster": "/media/apple/cover.jpg",
+        "poster": "/media/apple/cover.svg",
         "alt": "Video preview",
         "alt_en": "Video preview",
         "width": 1260,
@@ -181,13 +181,13 @@
       "Motion Graphics",
       "UI Design"
     ],
-    "cover": "/media/kpexperience/cover.jpg",
+    "cover": "/media/kpexperience/cover.svg",
     "coverVideo": "/media/kpexperience/preview.mp4",
     "media": [
       {
         "kind": "video",
         "src": "/media/kpexperience/preview.mp4",
-        "poster": "/media/kpexperience/cover.jpg",
+        "poster": "/media/kpexperience/cover.svg",
         "alt": "KpExperience Preview",
         "alt_en": "KpExperience Preview",
         "width": 1260,

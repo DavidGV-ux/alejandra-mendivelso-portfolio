@@ -1,4 +1,4 @@
-import { LinearMipmapLinearFilter, LoadingManager, RepeatWrapping, SRGBColorSpace, Texture } from 'three';
+import { LinearMipmapLinearFilter, LoadingManager, SRGBColorSpace, Texture } from 'three';
 import { mediaVariant } from '@/utils/media';
 
 export interface LoaderHandle {
@@ -70,8 +70,7 @@ export function createLoader(): LoaderHandle {
         const texture = new Texture(image);
         texture.colorSpace = SRGBColorSpace;
 
-        // La lógica de flipY se maneja ahora en frame.ts de forma selectiva
-        // para evitar conflictos entre ImageBitmap y HTMLImageElement.
+        // La orientación (flipY) se fija de forma uniforme en frame.ts.
         texture.anisotropy = anisotropy;
         texture.needsUpdate = true;
         texture.generateMipmaps = true;

@@ -26,7 +26,7 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
   video.src = url;
   video.load();
 
-  const PREVIEW_W = 1080;
+  const PREVIEW_W = 1440;
   const ASPECT = 1400 / 962;
   const PREVIEW_H = Math.round(PREVIEW_W / ASPECT);
   const canvas = document.createElement('canvas');
