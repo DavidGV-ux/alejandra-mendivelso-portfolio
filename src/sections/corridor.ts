@@ -166,6 +166,12 @@ export function createCorridorController(deps: Deps): CorridorController {
     const project = projects[index];
     const frame = corridor.frames[index];
     if (!project || !frame) return;
+    if (/\.webp$/i.test(project.cover)) {
+      const anim = webpAnims.get(project.id);
+      if (anim) frame.setImage(anim.texture);
+      deps.invalidate();
+      return;
+    }
     const video = coverVideos.get(videoKey(project.id, currentTheme));
     if (video) video.setPlaying(false);
     const poster = posterTextures.get(project.id);
