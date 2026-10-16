@@ -87,7 +87,7 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
     }
   };
 
-  let playing = true;
+  let playing = false;
 
   video.addEventListener('loadeddata', () => {
     if (playing) tryPlay();
