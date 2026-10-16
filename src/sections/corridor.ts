@@ -119,7 +119,8 @@ export function createCorridorController(deps: Deps): CorridorController {
     for (const [key, handle] of coverVideos) {
       const [id] = key.split(':');
       const frameIdx = projects.findIndex((p) => p.id === id);
-      handle.setPlaying(frameIdx === previewIndex);
+      const always = id !== undefined && id !== null && ['ar-experience','app-movil-consulta','plataforma-domicilios'].includes(id);
+      handle.setPlaying(frameIdx === previewIndex || always);
     }
   }
 
@@ -220,6 +221,10 @@ export function createCorridorController(deps: Deps): CorridorController {
       const p = projects[i];
       const f = corridor.frames[i];
       if (!p || !f) continue;
+
+      if (coverVideoUrl(p, currentTheme)) {
+        requestPreview(i);
+      }
 
       if (/\.webp$/i.test(p.cover)) {
         if (!webpAnims.has(p.id)) {
