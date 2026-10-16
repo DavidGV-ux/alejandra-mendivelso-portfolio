@@ -20,7 +20,8 @@ export function createIntro(spiral: Corridor, reducedMotion: boolean): IntroAnim
   function setFinal(): void {
     wrappers.forEach((w, i) => {
       w.position.copy(finals[i]!);
-      w.rotation.set(0, 0, 0);
+      // Solo se anula el balanceo; la orientación hacia el eje (lookAt) se conserva.
+      w.rotation.z = 0;
       w.scale.setScalar(1);
     });
   }
