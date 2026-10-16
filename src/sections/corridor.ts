@@ -282,6 +282,9 @@ export function createCorridorController(deps: Deps): CorridorController {
   function doSelect(i: number): void {
     const p = projects[i];
     if (!p) return;
+    for (let k = 0; k < projects.length; k++) {
+      if (k !== i) restorePreview(k);
+    }
     if (previewIndex !== null && previewIndex !== i) restorePreview(previewIndex);
     target = clampTarget(i);
     if (reducedMotion) progress = target;
@@ -292,6 +295,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     selectedIndex = i;
     previewIndex = i;
     requestPreview(i);
+    updateVideoPlayback();
     deps.invalidate();
   }
 
@@ -303,6 +307,9 @@ export function createCorridorController(deps: Deps): CorridorController {
   function doOpen(i: number): void {
     const p = projects[i];
     if (!p) return;
+    for (let k = 0; k < projects.length; k++) {
+      if (k !== i) restorePreview(k);
+    }
     const keepFrontal = selectedIndex !== null;
     cameraRig.focusOn(i, total, corridor.layout, {
       duration: reducedMotion ? 0 : 0.62,
@@ -310,6 +317,9 @@ export function createCorridorController(deps: Deps): CorridorController {
     });
     applyFocusOpacity(i);
     selectedIndex = null;
+    previewIndex = i;
+    requestPreview(i);
+    updateVideoPlayback();
     interactive = false;
     deps.invalidate();
     deps.onOpenDetail(p.id);
@@ -328,6 +338,11 @@ export function createCorridorController(deps: Deps): CorridorController {
   }
 
   function closeDetail(immediate = false): void {
+    if (previewIndex !== null) {
+      restorePreview(previewIndex);
+      previewIndex = null;
+      updateVideoPlayback();
+    }
     applyFocusOpacity(null);
     cameraRig.release();
     selectedIndex = null;
