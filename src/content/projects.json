@@ -70,40 +70,36 @@
   },
   {
     "id": "app-movil-consulta",
-    "title": "Aplicación móvil de consulta",
-    "category": "Desarrollo móvil & UX/UI",
-    "category_en": "Mobile development & UX/UI",
-    "year": 2024,
-    "role": "Arquitectura de información y desarrollo",
-    "role_en": "Information architecture & development",
-    "description": "App híbrida construida con Angular e Ionic: arquitectura de información, componentes reutilizables, sistema de favoritos y navegación jerárquica.",
-    "description_en": "Hybrid app built with Angular and Ionic: information architecture, reusable components, favorites system and hierarchical navigation.",
+    "title": "Voxy – Aprende inglés hablando",
+    "category": "EdTech / Idiomas",
+    "category_en": "EdTech / Languages",
+    "year": 2026,
+    "role": "Diseño de producto y UX",
+    "role_en": "Product design & UX",
+    "description": "Aplicación para aprender inglés mediante conversaciones guiadas: práctica de speaking, feedback inmediato y seguimiento de progreso.",
+    "description_en": "App to learn English through guided conversations: speaking practice, instant feedback and progress tracking.",
     "tools": [
-      "Ionic",
-      "Angular"
+      "UX Research",
+      "Prototipado",
+      "Animación"
     ],
-    "cover": "/media/app-movil-consulta/cover.svg",
+    "cover": "/media/voxy/cover.svg",
     "media": [
       {
-        "kind": "image",
-        "src": "/media/app-movil-consulta/01.svg",
-        "alt": "Vista provisional — pendiente de recursos reales",
-        "alt_en": "Provisional view — real assets pending",
-        "width": 1600,
-        "height": 1100
-      },
-      {
-        "kind": "image",
-        "src": "/media/app-movil-consulta/02.svg",
-        "alt": "Vista provisional — pendiente de recursos reales",
-        "alt_en": "Provisional view — real assets pending",
-        "width": 1600,
-        "height": 1100
+        "kind": "video",
+        "src": "/media/voxy/preview.mp4",
+        "poster": "/media/voxy/cover.svg",
+        "alt": "Demo de Voxy aprende inglés hablando",
+        "alt_en": "Voxy learn English by speaking demo",
+        "width": 1080,
+        "height": 1080
       }
     ],
     "links": [],
     "order": 3,
-    "accent": "#8a5b3f"
+    "accent": "#38bdf8",
+    "title_en": "Voxy – Learn English by Speaking",
+    "coverVideo": "/media/voxy/preview.mp4"
   },
   {
     "id": "salvando-patitas",
