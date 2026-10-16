@@ -175,8 +175,16 @@ export function createFrame(project: Project, index: number): FrameHandle {
     index,
     hitMesh,
     setImage(texture: Texture): void {
-      const w = texture.image?.width;
-      const h = texture.image?.height;
+      const source = texture.image as HTMLVideoElement | HTMLImageElement | ImageBitmap | undefined;
+      let w: number | undefined;
+      let h: number | undefined;
+      if (source instanceof HTMLVideoElement) {
+        w = source.videoWidth;
+        h = source.videoHeight;
+      } else if (source) {
+        w = source.width;
+        h = source.height;
+      }
       if (w && h) {
         state.imageAspect = w / h;
         const frameAspect = W / H;

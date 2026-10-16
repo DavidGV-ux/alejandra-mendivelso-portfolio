@@ -23,10 +23,14 @@ function buildSlide(item: MediaItem, dict: UIContext['dict']): HTMLElement {
       attrs: {
         controls: 'true',
         playsinline: 'true',
+        autoplay: 'true',
+        muted: 'true',
+        loop: 'true',
         preload: 'metadata',
         poster: item.poster ?? '',
       },
     });
+    video.muted = true;
     const source = el('source', { attrs: { src: item.src, type: 'video/mp4' } });
     video.append(source);
     if (item.captions) {

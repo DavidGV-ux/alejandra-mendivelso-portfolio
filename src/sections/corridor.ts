@@ -1,5 +1,6 @@
 import type { PerspectiveCamera } from 'three';
 import { createCorridor, type Corridor } from '@/scene/corridor';
+import { createCoverVideo, type CoverVideoHandle } from '@/scene/coverVideo';
 import {
   createCameraFreeLook,
   type CameraFreeLook,
@@ -73,6 +74,7 @@ export function createCorridorController(deps: Deps): CorridorController {
 
   const loaded = new Set<string>();
   const loading = new Set<string>();
+  const coverVideos = new Map<string, CoverVideoHandle>();
 
   function clampTarget(v: number): number {
     if (total <= 0) return 0;
@@ -95,7 +97,35 @@ export function createCorridorController(deps: Deps): CorridorController {
       const p = projects[i];
       const f = corridor.frames[i];
       if (!p || !f) continue;
-      if (loaded.has(p.id) || loading.has(p.id)) continue;
+      if (loaded.has(p.id) || loading.has(p.id) || coverVideos.has(p.id)) continue;
+
+      if (p.coverVideo && !reducedMotion) {
+        // Póster inmediato y video en bucle en cuanto tenga datos.
+        const video = createCoverVideo(p.coverVideo, () => deps.invalidate());
+        coverVideos.set(p.id, video);
+        loading.add(p.id);
+        loader
+          .loadTexture(p.cover, quality.textureMax, quality.anisotropy)
+          .then((t) => {
+            if (!video.isReady()) {
+              f.setImage(t);
+              deps.invalidate();
+            }
+          })
+          .catch(() => {})
+          .finally(() => loading.delete(p.id));
+        video.ready
+          .then(() => {
+            f.setImage(video.texture);
+            loaded.add(p.id);
+            deps.invalidate();
+          })
+          .catch(() => {
+            loaded.add(p.id);
+          });
+        continue;
+      }
+
       loading.add(p.id);
       loader
         .loadTexture(p.cover, quality.textureMax, quality.anisotropy)
@@ -166,9 +196,11 @@ export function createCorridorController(deps: Deps): CorridorController {
       cameraRig.setTravel(travelZFor(progress));
     }
     cameraRig.update(dt);
-    corridor.setActiveIndex(activeIndex());
+    const idx = activeIndex();
+    corridor.setActiveIndex(idx);
     corridor.update(dt);
-    loadAround(activeIndex());
+    loadAround(idx);
+    if (store.get().activeIndex !== idx) store.set({ activeIndex: idx });
   }
 
   function attach(dom: HTMLElement): void {
@@ -263,6 +295,8 @@ export function createCorridorController(deps: Deps): CorridorController {
     dispose: () => {
       picker?.dispose();
       cameraRig.dispose();
+      coverVideos.forEach((v) => v.dispose());
+      coverVideos.clear();
       corridor.dispose();
     },
   };

@@ -10,14 +10,46 @@
     "role_en": "Art direction & design",
     "description": "Sistema de identidad visual para un estudio de cerámica contemporánea. La marca parte de un logotipo tipográfico flexible y un sistema cromático cálido inspirado en esmaltes y arcillas. Se definió una retícula editorial para catálogos y una familia de patrones generativos que dan textura a la papelería.",
     "description_en": "Visual identity system for a contemporary ceramics studio. The brand is built on a flexible typographic logo and a warm color system inspired by glazes and clays. An editorial grid was defined for catalogs, along with a family of generative patterns that give texture to the stationery.",
-    "tools": ["Illustrator", "InDesign", "Figma", "Blender"],
+    "tools": [
+      "Illustrator",
+      "InDesign",
+      "Figma",
+      "Blender"
+    ],
     "cover": "/media/aurora/cover.svg",
     "media": [
-      { "kind": "image", "src": "/media/aurora/01.svg", "alt": "Logotipo y retícula", "alt_en": "Logo and grid", "width": 1600, "height": 1100 },
-      { "kind": "image", "src": "/media/aurora/02.svg", "alt": "Sistema cromático", "alt_en": "Color system", "width": 1600, "height": 1100 },
-      { "kind": "image", "src": "/media/aurora/03.svg", "alt": "Aplicaciones de papelería", "alt_en": "Stationery applications", "width": 1600, "height": 1100 }
+      {
+        "kind": "image",
+        "src": "/media/aurora/01.svg",
+        "alt": "Logotipo y retícula",
+        "alt_en": "Logo and grid",
+        "width": 1600,
+        "height": 1100
+      },
+      {
+        "kind": "image",
+        "src": "/media/aurora/02.svg",
+        "alt": "Sistema cromático",
+        "alt_en": "Color system",
+        "width": 1600,
+        "height": 1100
+      },
+      {
+        "kind": "image",
+        "src": "/media/aurora/03.svg",
+        "alt": "Aplicaciones de papelería",
+        "alt_en": "Stationery applications",
+        "width": 1600,
+        "height": 1100
+      }
     ],
-    "links": [{ "label": "Ver caso completo", "label_en": "View full case", "url": "https://example.com/aurora" }],
+    "links": [
+      {
+        "label": "Ver caso completo",
+        "label_en": "View full case",
+        "url": "https://example.com/aurora"
+      }
+    ],
     "order": 1,
     "accent": "#b4553f"
   },
@@ -32,14 +64,44 @@
     "role_en": "Art direction",
     "description": "Dirección de arte para un festival de música experimental. Construimos un lenguaje gráfico basado en la interferencia y el ruido, con capas de tramas superpuestas que cambian de escala. El sistema se adaptó a cartelería, señalética y contenido digital animado.",
     "description_en": "Art direction for an experimental music festival. We built a graphic language based on interference and noise, with layered patterns that shift in scale. The system was adapted to posters, signage and animated digital content.",
-    "tools": ["Photoshop", "After Effects", "Cinema 4D"],
+    "tools": [
+      "Photoshop",
+      "After Effects",
+      "Cinema 4D"
+    ],
     "cover": "/media/trama/cover.svg",
     "media": [
-      { "kind": "image", "src": "/media/trama/01.svg", "alt": "Cartel principal", "alt_en": "Main poster", "width": 1600, "height": 1100 },
-      { "kind": "image", "src": "/media/trama/02.svg", "alt": "Sistema de tramas", "alt_en": "Pattern system", "width": 1600, "height": 1100 },
-      { "kind": "image", "src": "/media/trama/03.svg", "alt": "Señalética", "alt_en": "Signage", "width": 1600, "height": 1100 }
+      {
+        "kind": "image",
+        "src": "/media/trama/01.svg",
+        "alt": "Cartel principal",
+        "alt_en": "Main poster",
+        "width": 1600,
+        "height": 1100
+      },
+      {
+        "kind": "image",
+        "src": "/media/trama/02.svg",
+        "alt": "Sistema de tramas",
+        "alt_en": "Pattern system",
+        "width": 1600,
+        "height": 1100
+      },
+      {
+        "kind": "image",
+        "src": "/media/trama/03.svg",
+        "alt": "Señalética",
+        "alt_en": "Signage",
+        "width": 1600,
+        "height": 1100
+      }
     ],
-    "links": [{ "label": "Behance", "url": "https://example.com/trama" }],
+    "links": [
+      {
+        "label": "Behance",
+        "url": "https://example.com/trama"
+      }
+    ],
     "order": 2,
     "accent": "#5b6f6a"
   },
@@ -54,38 +116,117 @@
     "role_en": "Editorial design",
     "description": "Diseño de una colección de libros de ensayo. El proyecto explora el contraste entre tipografías serif de alto contraste y grandes espacios en blanco. Se cuidó la mancha tipográfica, la jerarquía de notas y la legibilidad en distintos formatos y acabados.",
     "description_en": "Design of an essay book collection. The project explores the contrast between high-contrast serif typefaces and generous white space. Careful attention was paid to the typographic block, the hierarchy of footnotes and legibility across formats and finishes.",
-    "tools": ["InDesign", "Illustrator"],
+    "tools": [
+      "InDesign",
+      "Illustrator"
+    ],
     "cover": "/media/umbra/cover.svg",
     "media": [
-      { "kind": "image", "src": "/media/umbra/01.svg", "alt": "Cubiertas", "alt_en": "Covers", "width": 1600, "height": 1100 },
-      { "kind": "image", "src": "/media/umbra/02.svg", "alt": "Doble página", "alt_en": "Spread", "width": 1600, "height": 1100 },
-      { "kind": "image", "src": "/media/umbra/03.svg", "alt": "Detalle tipográfico", "alt_en": "Typographic detail", "width": 1600, "height": 1100 }
+      {
+        "kind": "image",
+        "src": "/media/umbra/01.svg",
+        "alt": "Cubiertas",
+        "alt_en": "Covers",
+        "width": 1600,
+        "height": 1100
+      },
+      {
+        "kind": "image",
+        "src": "/media/umbra/02.svg",
+        "alt": "Doble página",
+        "alt_en": "Spread",
+        "width": 1600,
+        "height": 1100
+      },
+      {
+        "kind": "image",
+        "src": "/media/umbra/03.svg",
+        "alt": "Detalle tipográfico",
+        "alt_en": "Typographic detail",
+        "width": 1600,
+        "height": 1100
+      }
     ],
-    "links": [{ "label": "Editorial", "url": "https://example.com/umbra" }],
+    "links": [
+      {
+        "label": "Editorial",
+        "url": "https://example.com/umbra"
+      }
+    ],
     "order": 3,
     "accent": "#3f4a5a"
   },
   {
-    "id": "cauce",
-    "title": "Cauce",
-    "category": "Motion & 3D",
-    "category_en": "Motion & 3D",
-    "year": 2024,
-    "client": "Cauce Labs",
-    "role": "Dirección de arte & motion",
-    "role_en": "Art direction & motion",
-    "description": "Piezas de motion y modelado 3D para el lanzamiento de una plataforma de datos. Se diseñó un sistema de formas fluidas que representan el flujo de información, con materiales translúcidos y una iluminación suave. Animaciones reutilizables para web y redes.",
-    "description_en": "Motion pieces and 3D modeling for the launch of a data platform. We designed a system of fluid shapes representing the flow of information, with translucent materials and soft lighting. Reusable animations for web and social media.",
-    "tools": ["Blender", "After Effects", "TouchDesigner"],
-    "cover": "/media/cauce/cover.svg",
-    "media": [
-      { "kind": "image", "src": "/media/cauce/01.svg", "alt": "Formas 3D", "alt_en": "3D shapes", "width": 1600, "height": 1100 },
-      { "kind": "image", "src": "/media/cauce/02.svg", "alt": "Materiales translúcidos", "alt_en": "Translucent materials", "width": 1600, "height": 1100 },
-      { "kind": "image", "src": "/media/cauce/03.svg", "alt": "Fotograma de animación", "alt_en": "Animation still", "width": 1600, "height": 1100 }
+    "id": "salvando-patitas",
+    "title": "Salvando Patitas",
+    "category": "App & motion",
+    "category_en": "App & motion",
+    "year": 2025,
+    "client": "Salvando Patitas Boyacá",
+    "client_en": "Salvando Patitas Boyacá",
+    "role": "Diseño de producto & motion",
+    "role_en": "Product design & motion",
+    "description": "Animación de producto para la app de adopción y donación de Salvando Patitas Boyacá. Cinco escenas que recorren la experiencia: adopción con confianza, donación segura, apadrinamiento, hogar de paso y transparencia. Piezas pensadas para presentar la app en web y redes.",
+    "description_en": "Product animation for the Salvando Patitas Boyacá adoption and donation app. Five scenes that walk through the experience: trusted adoption, secure donations, sponsoring, foster homes and transparency. Pieces designed to present the app on web and social media.",
+    "tools": [
+      "After Effects",
+      "Figma",
+      "Lottie"
     ],
-    "links": [{ "label": "Ver motion", "label_en": "View motion", "url": "https://example.com/cauce" }],
+    "cover": "/media/salvando-patitas/poster.jpg",
+    "coverVideo": "/media/salvando-patitas/preview.mp4",
+    "media": [
+      {
+        "kind": "video",
+        "src": "/media/salvando-patitas/preview.mp4",
+        "poster": "/media/salvando-patitas/poster.jpg",
+        "alt": "Recorrido animado de la app",
+        "alt_en": "Animated app walkthrough",
+        "width": 1400,
+        "height": 962
+      },
+      {
+        "kind": "image",
+        "src": "/media/salvando-patitas/still-02.jpg",
+        "alt": "Pantallas de exploración de mascotas",
+        "alt_en": "Pet browsing screens",
+        "width": 1400,
+        "height": 962
+      },
+      {
+        "kind": "image",
+        "src": "/media/salvando-patitas/still-03.jpg",
+        "alt": "Historia y proceso de adopción",
+        "alt_en": "Story and adoption process",
+        "width": 1400,
+        "height": 962
+      },
+      {
+        "kind": "image",
+        "src": "/media/salvando-patitas/still-04.jpg",
+        "alt": "Donaciones y certificado",
+        "alt_en": "Donations and certificate",
+        "width": 1400,
+        "height": 962
+      },
+      {
+        "kind": "image",
+        "src": "/media/salvando-patitas/still-05.jpg",
+        "alt": "Las cinco formas de ayudar",
+        "alt_en": "The five ways to help",
+        "width": 1400,
+        "height": 962
+      }
+    ],
+    "links": [
+      {
+        "label": "Ver animación",
+        "label_en": "View animation",
+        "url": "https://example.com/salvando-patitas"
+      }
+    ],
     "order": 4,
-    "accent": "#3f6f86"
+    "accent": "#2F7A5B"
   },
   {
     "id": "vitrina",
@@ -98,14 +239,45 @@
     "role_en": "Branding & packaging",
     "description": "Creación de marca y empaque para una tostadora de café de especialidad. El naming, el logotipo y el sistema de etiquetas por origen construyen una experiencia coherente desde el grano hasta la barra. Papelería, vasos y bolsas con acabados mate.",
     "description_en": "Brand and packaging creation for a specialty coffee roaster. The naming, logo and origin-based label system build a coherent experience from bean to bar. Stationery, cups and bags with matte finishes.",
-    "tools": ["Illustrator", "Photoshop", "Figma"],
+    "tools": [
+      "Illustrator",
+      "Photoshop",
+      "Figma"
+    ],
     "cover": "/media/vitrina/cover.svg",
     "media": [
-      { "kind": "image", "src": "/media/vitrina/01.svg", "alt": "Logotipo", "alt_en": "Logo", "width": 1600, "height": 1100 },
-      { "kind": "image", "src": "/media/vitrina/02.svg", "alt": "Etiquetas por origen", "alt_en": "Origin labels", "width": 1600, "height": 1100 },
-      { "kind": "image", "src": "/media/vitrina/03.svg", "alt": "Empaque", "alt_en": "Packaging", "width": 1600, "height": 1100 }
+      {
+        "kind": "image",
+        "src": "/media/vitrina/01.svg",
+        "alt": "Logotipo",
+        "alt_en": "Logo",
+        "width": 1600,
+        "height": 1100
+      },
+      {
+        "kind": "image",
+        "src": "/media/vitrina/02.svg",
+        "alt": "Etiquetas por origen",
+        "alt_en": "Origin labels",
+        "width": 1600,
+        "height": 1100
+      },
+      {
+        "kind": "image",
+        "src": "/media/vitrina/03.svg",
+        "alt": "Empaque",
+        "alt_en": "Packaging",
+        "width": 1600,
+        "height": 1100
+      }
     ],
-    "links": [{ "label": "Caso de estudio", "label_en": "Case study", "url": "https://example.com/vitrina" }],
+    "links": [
+      {
+        "label": "Caso de estudio",
+        "label_en": "Case study",
+        "url": "https://example.com/vitrina"
+      }
+    ],
     "order": 5,
     "accent": "#8a6a3f"
   },
@@ -121,14 +293,45 @@
     "role_en": "Photography & editing",
     "description": "Serie fotográfica sobre paisajes en la niebla. Un ejercicio de reducción: menos color, menos detalle, más atmósfera. Las imágenes se editaron buscando una escala de grises cálida y una composición que respire, pensada para exposición impresa en gran formato.",
     "description_en": "A photographic series about foggy landscapes. An exercise in reduction: less color, less detail, more atmosphere. The images were edited seeking a warm grayscale and a composition that breathes, intended for large-format print exhibition.",
-    "tools": ["Capture One", "Lightroom", "Photoshop"],
+    "tools": [
+      "Capture One",
+      "Lightroom",
+      "Photoshop"
+    ],
     "cover": "/media/niebla/cover.svg",
     "media": [
-      { "kind": "image", "src": "/media/niebla/01.svg", "alt": "Paisaje en la niebla I", "alt_en": "Landscape in fog I", "width": 1600, "height": 1100 },
-      { "kind": "image", "src": "/media/niebla/02.svg", "alt": "Paisaje en la niebla II", "alt_en": "Landscape in fog II", "width": 1600, "height": 1100 },
-      { "kind": "image", "src": "/media/niebla/03.svg", "alt": "Paisaje en la niebla III", "alt_en": "Landscape in fog III", "width": 1600, "height": 1100 }
+      {
+        "kind": "image",
+        "src": "/media/niebla/01.svg",
+        "alt": "Paisaje en la niebla I",
+        "alt_en": "Landscape in fog I",
+        "width": 1600,
+        "height": 1100
+      },
+      {
+        "kind": "image",
+        "src": "/media/niebla/02.svg",
+        "alt": "Paisaje en la niebla II",
+        "alt_en": "Landscape in fog II",
+        "width": 1600,
+        "height": 1100
+      },
+      {
+        "kind": "image",
+        "src": "/media/niebla/03.svg",
+        "alt": "Paisaje en la niebla III",
+        "alt_en": "Landscape in fog III",
+        "width": 1600,
+        "height": 1100
+      }
     ],
-    "links": [{ "label": "Serie completa", "label_en": "Full series", "url": "https://example.com/niebla" }],
+    "links": [
+      {
+        "label": "Serie completa",
+        "label_en": "Full series",
+        "url": "https://example.com/niebla"
+      }
+    ],
     "order": 6,
     "accent": "#6b6f78"
   }

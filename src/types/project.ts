@@ -27,6 +27,8 @@ export interface Project {
   role: string;
   tools: string[];
   cover: string;
+  /** Video en bucle para el marco 3D; `cover` actúa como póster */
+  coverVideo?: string;
   media: MediaItem[];
   links: ProjectLink[];
   order: number;

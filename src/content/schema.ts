@@ -34,6 +34,8 @@ export const projectSchema = z.object({
   description_en: z.string().min(1).optional(),
   tools: z.array(z.string()).default([]),
   cover: z.string().min(1),
+  /** Video en bucle que reemplaza al cover en el marco 3D (el póster queda en `cover`) */
+  coverVideo: z.string().min(1).optional(),
   media: z.array(mediaItemSchema).default([]),
   links: z
     .array(
