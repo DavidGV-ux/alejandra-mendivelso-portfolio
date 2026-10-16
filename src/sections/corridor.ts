@@ -224,7 +224,7 @@ if (
   function travelZFor(index: number): number {
     const pairCount = Math.ceil(total / 2);
     const center = ((pairCount - 1) / 2) * corridor.layout.spacing;
-    return Math.floor(index / 2) * corridor.layout.spacing - center - corridor.layout.spacing * 2;
+    return Math.floor(index / 2) * corridor.layout.spacing - center - corridor.layout.spacing * 1.5;
   }
   function loadAround(index: number): void {
     // Si hay pocos proyectos, los cargamos todos de golpe para evitar marcos negros al fondo.
