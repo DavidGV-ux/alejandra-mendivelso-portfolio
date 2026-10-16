@@ -4,6 +4,8 @@ export interface CoverVideoHandle {
   texture: VideoTexture;
   ready: Promise<void>;
   isReady: () => boolean;
+  /** Reproduce o pausa el video (solo debe sonar/verse cuando su marco está activo). */
+  setPlaying: (playing: boolean) => void;
   dispose: () => void;
 }
 
@@ -45,12 +47,16 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
 
   let rafId = 0;
   let lastTime = -1;
+  let lastUpdate = 0;
+  const FRAME_INTERVAL = 66; // ~15 fps: baja la carga de decodificación/actualización
 
   const pump = (): void => {
     rafId = 0;
     if (document.hidden || video.paused || video.ended) return;
-    if (video.currentTime !== lastTime) {
+    const now = performance.now();
+    if (video.currentTime !== lastTime && now - lastUpdate >= FRAME_INTERVAL) {
       lastTime = video.currentTime;
+      lastUpdate = now;
       texture.needsUpdate = true;
       onFrame();
     }
@@ -61,6 +67,11 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
     if (!rafId) rafId = requestAnimationFrame(pump);
   };
 
+  const stopPump = (): void => {
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = 0;
+  };
+
   const tryPlay = (): void => {
     void video.play().then(startPump).catch(() => {});
   };
@@ -68,23 +79,37 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
   const onVisibility = (): void => {
     if (document.hidden) {
       video.pause();
-      cancelAnimationFrame(rafId);
-      rafId = 0;
-    } else if (ready) {
+      stopPump();
+    } else if (ready && playing) {
       tryPlay();
     }
   };
 
-  video.addEventListener('loadeddata', tryPlay, { once: true });
+  let playing = true;
+
+  video.addEventListener('loadeddata', () => {
+    if (playing) tryPlay();
+  });
   document.addEventListener('visibilitychange', onVisibility);
 
   return {
     texture,
     ready: readyPromise,
     isReady: () => ready,
+    setPlaying(next: boolean): void {
+      playing = next;
+      if (!ready) return;
+      if (next) {
+        if (document.hidden) return;
+        void video.play().then(startPump).catch(() => {});
+      } else {
+        video.pause();
+        stopPump();
+      }
+    },
     dispose(): void {
       document.removeEventListener('visibilitychange', onVisibility);
-      cancelAnimationFrame(rafId);
+      stopPump();
       video.pause();
       video.removeAttribute('src');
       video.load();

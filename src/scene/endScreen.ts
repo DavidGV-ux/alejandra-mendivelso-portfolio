@@ -7,17 +7,20 @@ import {
   MeshStandardMaterial,
   PlaneGeometry,
   SRGBColorSpace,
-  Texture,
 } from 'three';
-import { getPalette } from '@/config/theme';
-import { theme } from '@/config/theme';
+import { getPalette, theme } from '@/config/theme';
 
 export interface EndScreenHandle {
   group: Group;
   /** Hitbox invisible: al pulsarla se abre la sección Acerca de mí. */
   hitMesh: Mesh;
   /** Dibuja la tarjeta de cierre (foto + texto) y la muestra en el plano. */
-  renderCard: (photo: Texture | null, title: string, subtitle: string, mode: 'light' | 'dark') => void;
+  renderCard: (
+    photo: HTMLImageElement | null,
+    title: string,
+    subtitle: string,
+    mode: 'light' | 'dark',
+  ) => void;
   dispose: () => void;
 }
 
@@ -78,7 +81,7 @@ export function createEndScreen(): EndScreenHandle {
 
   group.add(border, mat, image, hitMesh);
 
-  function drawCard(photo: Texture | null, title: string, subtitle: string, mode: 'light' | 'dark'): void {
+  function drawCard(photo: HTMLImageElement | null, title: string, subtitle: string, mode: 'light' | 'dark'): void {
     const CW = 1536;
     const CH = 819; // aspecto 6 : 3.2
     const canvas = document.createElement('canvas');
@@ -100,9 +103,8 @@ export function createEndScreen(): EndScreenHandle {
     const photoY = (CH - photoSize) / 2;
     const radius = 34;
 
-    if (photo?.image) {
-      const src = photo.image as HTMLImageElement | ImageBitmap;
-      const sAspect = src.width / src.height;
+    if (photo) {
+      const sAspect = photo.width / photo.height;
       ctx.save();
       roundRect(ctx, photoX, photoY, photoSize, photoSize, radius);
       ctx.clip();
@@ -117,7 +119,7 @@ export function createEndScreen(): EndScreenHandle {
         dh = photoSize / sAspect;
         dy = photoY - (dh - photoSize) / 2;
       }
-      ctx.drawImage(src, dx, dy, dw, dh);
+      ctx.drawImage(photo, dx, dy, dw, dh);
       ctx.restore();
     } else {
       ctx.save();

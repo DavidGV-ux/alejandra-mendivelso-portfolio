@@ -100,6 +100,7 @@ export function createCorridorController(deps: Deps): CorridorController {
   let selected = false;
   let lastDragEndAt = 0;
   let attached = false;
+  let lastActiveIdx = -1;
   let hovered: FrameHandle | null = null;
   let dragStartLook = { yaw: 0, pitch: 0 };
   let dragStartFov = 0;
@@ -110,10 +111,19 @@ export function createCorridorController(deps: Deps): CorridorController {
   /** Videos de cover por proyecto y tema (`${id}:${mode}`). */
   const coverVideos = new Map<string, CoverVideoHandle>();
   const videoLoading = new Set<string>();
-  let endCardPhoto: import('three').Texture | null = null;
+  let endCardPhoto: HTMLImageElement | null = null;
 
   function videoKey(id: string, mode: 'light' | 'dark'): string {
     return `${id}:${mode}`;
+  }
+
+  /** Solo el video del marco centrado se reproduce; el resto se pausa. */
+  function updateVideoPlayback(activeIdx: number): void {
+    for (const [key, handle] of coverVideos) {
+      const [id] = key.split(':');
+      const frameIdx = projects.findIndex((p) => p.id === id);
+      handle.setPlaying(frameIdx === activeIdx);
+    }
   }
 
   function clampTarget(v: number): number {
@@ -278,6 +288,10 @@ export function createCorridorController(deps: Deps): CorridorController {
     }
     cameraRig.update(dt);
     const idx = activeIndex();
+    if (idx !== lastActiveIdx) {
+      lastActiveIdx = idx;
+      updateVideoPlayback(idx);
+    }
     corridor.setActiveIndex(idx);
     corridor.update(dt);
     loadAround(idx);
@@ -384,25 +398,33 @@ export function createCorridorController(deps: Deps): CorridorController {
     cleanups.push(() => dom.removeEventListener('dblclick', onDoubleClick));
   }
 
+  function loadPhoto(url: string): Promise<HTMLImageElement | null> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = url;
+    });
+  }
+
   function loadEndScreen(): void {
-    const render = (photo: import('three').Texture | null) => {
+    const render = (photo: HTMLImageElement | null) => {
       endScreen.renderCard(photo, deps.endCard.title, deps.endCard.subtitle, currentTheme);
       deps.invalidate();
     };
-    if (!endCardPhoto) {
-      const url = deps.endCard.photo;
-      if (url) {
-        loader
-          .loadTexture(url, 1024, quality.anisotropy)
-          .then((t) => {
-            endCardPhoto = t;
-            render(t);
-          })
-          .catch(() => render(null));
-        return;
-      }
+    if (endCardPhoto) {
+      render(endCardPhoto);
+      return;
     }
-    render(endCardPhoto);
+    const url = deps.endCard.photo;
+    if (!url) {
+      render(null);
+      return;
+    }
+    void loadPhoto(url).then((img) => {
+      endCardPhoto = img;
+      render(img);
+    });
   }
 
   return {
@@ -448,6 +470,7 @@ export function createCorridorController(deps: Deps): CorridorController {
       corridor.frames.every((frame) => frame.isSettled()),
     preload: () => {
       loadAround(activeIndex());
+      updateVideoPlayback(activeIndex());
       loadEndScreen();
     },
     attach,
@@ -459,7 +482,6 @@ export function createCorridorController(deps: Deps): CorridorController {
       cameraRig.dispose();
       coverVideos.forEach((v) => v.dispose());
       coverVideos.clear();
-      endCardPhoto?.dispose();
       endScreen.dispose();
       corridor.dispose();
     },
