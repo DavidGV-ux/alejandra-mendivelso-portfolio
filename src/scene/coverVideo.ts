@@ -39,7 +39,7 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
   texture.minFilter = LinearFilter;
   texture.magFilter = LinearFilter;
   texture.generateMipmaps = false;
-  texture.flipY = true;
+  texture.flipY = false;
 
   let ready = false;
   const readyPromise = new Promise<void>((resolve, reject) => {
