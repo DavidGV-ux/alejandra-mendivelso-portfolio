@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -91,12 +92,14 @@ async function main() {
     count++;
   }
 
-  // Foto de perfil placeholder
+  // Foto de perfil placeholder (se omite si ya existe la foto real)
   const profileDir = resolve(root, 'public/media/profile');
   await mkdir(profileDir, { recursive: true });
-  await writeFile(
-    resolve(profileDir, 'alejandra.svg'),
-    `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="720" viewBox="0 0 720 720" role="img" aria-label="Retrato de Alejandra Mendivelso">
+  const profilePhoto = resolve(profileDir, 'alejandra.jpg');
+  if (!existsSync(profilePhoto)) {
+    await writeFile(
+      resolve(profileDir, 'alejandra.svg'),
+      `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="720" viewBox="0 0 720 720" role="img" aria-label="Retrato de Alejandra Mendivelso">
   <defs>
     <linearGradient id="pg" gradientTransform="rotate(35 0.5 0.5)">
       <stop offset="0" stop-color="#f6f2ec"/>
@@ -109,8 +112,9 @@ async function main() {
   <path d="M170 720c0-120 85-210 190-210s190 90 190 210z" fill="#1a1714" opacity="0.12"/>
   <text x="360" y="690" text-anchor="middle" font-family="Georgia, serif" font-size="34" fill="#6b635b">Alejandra Mendivelso</text>
 </svg>`,
-  );
-  count++;
+    );
+    count++;
+  }
 
   console.log(`Generados ${count} placeholders SVG en public/media/`);
 }

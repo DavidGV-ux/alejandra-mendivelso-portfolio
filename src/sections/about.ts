@@ -18,8 +18,8 @@ function buildProfileCard(profile: Profile): HTMLElement {
         alt: profile.name,
         loading: 'lazy',
         decoding: 'async',
-        width: '720',
-        height: '720',
+        width: '1024',
+        height: '1024',
       },
     }),
     el('div', { class: 'card__identity' }, {
