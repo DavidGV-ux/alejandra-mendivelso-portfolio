@@ -316,7 +316,10 @@ export function createCorridorController(deps: Deps): CorridorController {
         onEnter: (f) => {
           hovered = f;
           f.setHover(true);
-          updateVideoPlayback();
+          // Vista previa solo si el cursor realmente se detiene sobre el video.
+          window.setTimeout(() => {
+            if (hovered === f) updateVideoPlayback();
+          }, 200);
           deps.invalidate();
           deps.onHoverChange(true);
         },
