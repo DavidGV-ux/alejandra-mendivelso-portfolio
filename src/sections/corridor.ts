@@ -34,6 +34,10 @@ export interface CorridorController {
   selectActive: () => void;
   /** True si hay un proyecto centrado esperando apertura. */
   isSelected: () => boolean;
+  /** Índice seleccionado (o null). */
+  selectedIndex: () => number | null;
+  /** Índice en hover (o null). */
+  hoverIndex: () => number | null;
   /** Suelta el enfoque de selección y vuelve a la vista de pasillo. */
   releaseSelection: () => void;
   openActive: () => void;
@@ -96,6 +100,8 @@ export function createCorridorController(deps: Deps): CorridorController {
   /** Conjunto de índices con video reproduciéndose (máx. por tier y distancia). */
   const activeVideoIndices = new Set<number>();
   let lastDragEndAt = 0;
+  let lastKeyboardStepAt = 0;
+  let lastWheelStepAt = 0;
   let attached = false;
   let lastActiveIdx = -1;
   let hovered: FrameHandle | null = null;
@@ -115,6 +121,7 @@ export function createCorridorController(deps: Deps): CorridorController {
   const videoLoading = new Set<string>();
 
   function videoKey(id: string, _mode: 'light' | 'dark'): string {
+    void _mode;
     return id;
   }
 
@@ -306,20 +313,17 @@ if (
     deps.invalidate();
   }
 
-  /** Movimiento continuo del pasillo (rueda): avanza sin fijar ningún marco. */
-  function step(delta: number): void {
-    if (!interactive) return;
-    releaseSelection();
-    target = clampTarget(target + delta);
-    if (reducedMotion) progress = target;
-    deps.invalidate();
-  }
-
   /** Navegación por proyectos (flechas de la barra y del teclado): deja el
    *  proyecto destino justo enfrente de la cámara. */
   function focusStep(delta: number): void {
     if (!interactive) return;
-    doSelect(clampTarget(Math.round(target) + delta));
+    if (selectedIndex === null) {
+      doSelect(activeIndex());
+      return;
+    }
+    const next = selectedIndex + delta;
+    if (next < 0 || next >= total) return;
+    doSelect(next);
   }
 
   function goToIndex(i: number): void {
@@ -339,6 +343,7 @@ if (
     selectedIndex = i;
     previewIndex = i;
     requestPreview(i);
+    store.set({ activeIndex: i });
     computeActiveVideos();
     updateVideoPlayback();
     deps.invalidate();
@@ -494,6 +499,8 @@ cleanups.push(
             doSelect(hit.index);
             return;
           }
+          releaseSelection();
+          deps.invalidate();
         },
       }),
     );
@@ -502,7 +509,13 @@ cleanups.push(
       attachWheel(dom, {
         onWheel: (sign) => {
           if (!interactive) cameraRig.zoom(sign > 0 ? 2 : -2);
-          else step(sign > 0 ? 1 : -1);
+          else {
+            const now = performance.now();
+            if (now - lastWheelStepAt >= sceneConfig.controls.wheelCooldown) {
+              lastWheelStepAt = now;
+              focusStep(sign > 0 ? 1 : -1);
+            }
+          }
           deps.invalidate();
         },
       }),
@@ -529,20 +542,22 @@ cleanups.push(
 
     const onKeyDown = (e: KeyboardEvent): void => {
       if (!interactive || store.get().detailProjectId) return;
+      if (!store.get().introDone || store.get().helpOpen) return;
+      if (store.get().section !== 'works') return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-      switch (e.key) {
-        case 'ArrowDown':
-        case 'ArrowRight':
-          e.preventDefault();
-          step(1);
-          break;
-        case 'ArrowUp':
-        case 'ArrowLeft':
-          e.preventDefault();
-          step(-1);
-          break;
-        default:
-          break;
+      const targetEl = e.target as HTMLElement | null;
+      if (targetEl && (targetEl.tagName === 'INPUT' || targetEl.tagName === 'TEXTAREA' || targetEl.isContentEditable)) return;
+      const now = performance.now();
+      const lower = e.key.toLowerCase();
+      let delta = 0;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || lower === 'd') delta = 1;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || lower === 'a') delta = -1;
+      if (delta !== 0) {
+        if (e.repeat) return;
+        if (now - lastKeyboardStepAt < 160) return;
+        e.preventDefault();
+        lastKeyboardStepAt = now;
+        focusStep(delta);
       }
     };
     window.addEventListener('keydown', onKeyDown);
@@ -564,6 +579,8 @@ cleanups.push(
     goToIndex,
     selectActive,
     isSelected: () => selectedIndex !== null,
+    selectedIndex: () => selectedIndex,
+    hoverIndex: () => (hovered ? hovered.index : null),
     releaseSelection,
     openActive,
     openProject,

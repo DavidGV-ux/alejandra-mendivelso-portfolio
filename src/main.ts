@@ -375,6 +375,7 @@ function boot3D(): void {
         caps,
         projects: content.projects,
         store,
+        dict,
         theme: resolvedTheme(),
         onProgress: (loaded, total) => {
           if (finished) return;

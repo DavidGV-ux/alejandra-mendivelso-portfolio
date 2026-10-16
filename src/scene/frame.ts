@@ -20,6 +20,7 @@ export interface FrameHandle {
   group: Group;
   project: Project;
   index: number;
+  image: Mesh;
   hitMesh: Mesh;
   setImage: (texture: Texture) => void;
   setActive: (active: boolean) => void;
@@ -32,6 +33,12 @@ export interface FrameHandle {
   update: (dt: number) => void;
   /** Posición de la etiqueta en mundo (para proyectar a pantalla si hiciera falta) */
   getWorldPosition: (out: Vector3) => Vector3;
+  getScreenCorners: (
+    camera: any,
+    width: number,
+    height: number,
+    out: Float32Array,
+  ) => boolean;
   dispose: () => void;
 }
 
@@ -96,6 +103,11 @@ export function createFrame(
   const hitMesh = new Mesh(hitGeometry, hitMat);
   group.add(hitMesh);
 
+  const c0 = new Vector3();
+  const c1 = new Vector3();
+  const c2 = new Vector3();
+  const c3 = new Vector3();
+  const corners = [c0, c1, c2, c3];
   const state = {
     active: false,
     hover: false,
@@ -151,6 +163,7 @@ export function createFrame(
     group,
     project,
     index,
+    image,
     hitMesh,
     setImage(texture: Texture): void {
       if (imageMat.map === texture) return;
@@ -182,6 +195,22 @@ export function createFrame(
 
       // Saltamos directamente a la opacidad objetivo para evitar que se vea negro.
       imageMat.opacity = targets().opacity;
+    },
+    getScreenCorners(camera: any, width: number, height: number, out: Float32Array): boolean {
+      if (!group.visible) return false;
+      const locals = [
+        [-W / 2, -H / 2, 0.024],
+        [W / 2, -H / 2, 0.024],
+        [W / 2, H / 2, 0.024],
+        [-W / 2, H / 2, 0.024],
+      ];
+      for (let i = 0; i < 4; i++) {
+        (corners as any)[i].set((locals as any)[i][0], (locals as any)[i][1], (locals as any)[i][2]).applyMatrix4(image.matrixWorld).project(camera);
+        if ((corners as any)[i].z > 1) return false;
+        out[i * 2] = ((corners as any)[i].x * 0.5 + 0.5) * width;
+        out[i * 2 + 1] = (-(corners as any)[i].y * 0.5 + 0.5) * height;
+      }
+      return true;
     },
     setActive: (active) => {
       state.active = active;
