@@ -4,6 +4,17 @@ import { framePositionCorridor } from '@/scene/corridor';
 import { damp } from '@/utils/math';
 import { sceneConfig } from '@/config/scene.config';
 
+export interface FrontalPose {
+  position: Vector3;
+  target: Vector3;
+  /** Internal yaw (radians) in the rig convention. */
+  yaw: number;
+  /** Pitch (radians). */
+  pitch: number;
+  /** Focus FOV to use during the pose. */
+  fov: number;
+}
+
 export interface CameraFreeLook {
   /** Posición de viaje a lo largo del pasillo (eje Z). */
   setTravel: (z: number) => void;
@@ -16,13 +27,8 @@ export interface CameraFreeLook {
   /** Fija el FOV de forma absoluta. */
   setFov: (value: number) => void;
   getFov: () => number;
-  /** Encuadra un marco concreto (selección o detalle). */
-  focusOn: (
-    index: number,
-    total: number,
-    layout: CorridorLayout,
-    options?: { duration?: number; frontal?: boolean },
-  ) => void;
+  /** Encuadra un marco concreto (selección o detalle) con una pose frontal precalculada. */
+  focusOn: (pose: FrontalPose, options?: { duration?: number; fov?: number }) => void;
   /** Vuelve a la vista de pasillo. */
   release: () => void;
   isFocused: () => boolean;

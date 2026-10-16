@@ -1,6 +1,7 @@
 import { Group, Vector3 } from 'three';
 import type { Project } from '@/types/project';
 import { createFrame, type FrameHandle } from './frame';
+import { frameTransform } from './framePose';
 import type { Capabilities } from '@/types/theme';
 
 export interface CorridorLayout {
@@ -77,20 +78,13 @@ export function createCorridor(
   projects.forEach((project, index) => {
     const frame = createFrame(project, index);
     const wrapper = new Group();
-    framePositionCorridor(index, projects.length, layout, tmp);
-    if (index >= projects.length - 2) {
-      // Los dos últimos marcos cierran el pasillo, juntos y de frente.
-      const x = (index % 2 === 0 ? -1 : 1) * layout.wallOffset * 0.55;
-      const z = (Math.ceil(projects.length / 2) - 1) * layout.spacing - ((Math.ceil(projects.length / 2) - 1) / 2) * layout.spacing + layout.spacing * 1.05;
-      tmp.set(x, tmp.y, z);
-      wrapper.position.copy(tmp);
-      wrapper.rotation.y = Math.PI;
-    } else {
-      wrapper.position.copy(tmp);
-      wrapper.lookAt(0, tmp.y, tmp.z);
-    }
+    const transform = frameTransform(index, projects.length, layout, tmp);
+    wrapper.position.copy(transform.position);
+    wrapper.rotation.y = transform.rotationY;
     wrapper.add(frame.group);
     frame.group.userData.wrapper = wrapper;
+    frame.group.userData.rotationY = transform.rotationY;
+    frame.group.userData.normal = transform.normal;
     group.add(wrapper);
     frames.push(frame);
   });
