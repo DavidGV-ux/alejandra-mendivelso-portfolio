@@ -45,6 +45,11 @@ export function framePositionCorridor(
 ): Vector3 {
   const pairCount = Math.ceil(total / 2);
   const center = ((pairCount - 1) / 2) * config.spacing;
+  if (index >= total - 2) {
+    const x = (index % 2 === 0 ? -1 : 1) * config.wallOffset * 0.55;
+    const z = (pairCount - 1) * config.spacing - center + config.spacing * 1.05;
+    return out.set(x, 0, z);
+  }
   const x = (index % 2 === 0 ? -config.wallOffset : config.wallOffset) * (config.compact ? 0.85 : 1);
   const y = 0;
   const z = Math.floor(index / 2) * config.spacing - center;
