@@ -27,6 +27,17 @@ export function createCoverWebp(url: string, onFrame: () => void): CoverWebpHand
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       texture.needsUpdate = true;
       onFrame();
+      if (!('ImageDecoder' in window)) {
+        const pump = () => {
+          if (!running) return;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          texture.needsUpdate = true;
+          onFrame();
+          requestAnimationFrame(pump);
+        };
+        requestAnimationFrame(pump);
+      }
       resolve();
     };
     img.onerror = () => resolve();
