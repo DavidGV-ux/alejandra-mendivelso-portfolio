@@ -198,6 +198,8 @@ export function createFrame(
     },
     getScreenCorners(camera: any, width: number, height: number, out: Float32Array): boolean {
       if (!group.visible) return false;
+      group.updateWorldMatrix(true, false);
+      camera.updateMatrixWorld();
       const locals = [
         [-W / 2, -H / 2, 0.024],
         [W / 2, -H / 2, 0.024],

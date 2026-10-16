@@ -52,6 +52,15 @@ export const sceneConfig = {
     /** Duración total (s) de la animación de ensamblaje */
     duration: 2,
   },
+  focus: {
+    fillV: 0.68,
+    fillH: 0.80,
+    fov: 62,
+    fovCompact: 70,
+    safeTop: 120,
+    safeBottom: 140,
+    margin: 0.6,
+  },
   video: {
     /** Videos activos por tier */
     maxActive: { high: 4, medium: 3, low: 1 } as Record<'high'|'medium'|'low', number>,

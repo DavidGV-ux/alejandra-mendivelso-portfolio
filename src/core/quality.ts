@@ -12,9 +12,9 @@ export interface QualityPreset {
 }
 
 const BASE: Record<QualityTier, QualityPreset> = {
-  high: { tier: 'high', pixelRatio: 1.5, shadows: true, textureMax: 1600, antialias: true, anisotropy: 8 },
-  medium: { tier: 'medium', pixelRatio: Math.min(1.5, 2), shadows: false, textureMax: 1024, antialias: true, anisotropy: 4 },
-  low: { tier: 'low', pixelRatio: 1, shadows: false, textureMax: 720, antialias: false, anisotropy: 1 },
+  high: { tier: 'high', pixelRatio: 2, shadows: false, textureMax: 1600, antialias: true, anisotropy: 8 },
+  medium: { tier: 'medium', pixelRatio: 2, shadows: false, textureMax: 1600, antialias: true, anisotropy: 4 },
+  low: { tier: 'low', pixelRatio: 1.5, shadows: false, textureMax: 720, antialias: false, anisotropy: 1 },
 };
 
 export function getQuality(caps: Capabilities): QualityPreset {
