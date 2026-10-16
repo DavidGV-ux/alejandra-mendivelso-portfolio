@@ -1,7 +1,7 @@
 import { Group, Vector3 } from 'three';
 import type { Project } from '@/types/project';
 import { createFrame, type FrameHandle } from './frame';
-import type { Capabilities } from '@/types/theme';
+import type { Capabilities, ThemeMode } from '@/types/theme';
 
 export interface CorridorLayout {
   spacing: number;
@@ -47,14 +47,18 @@ export interface Corridor {
   dispose: () => void;
 }
 
-export function createCorridor(projects: Project[], caps: Capabilities): Corridor {
+export function createCorridor(
+  projects: Project[],
+  caps: Capabilities,
+  mode: Exclude<ThemeMode, 'auto'> = 'light',
+): Corridor {
   const layout = buildCorridorLayout(caps);
   const group = new Group();
   const frames: FrameHandle[] = [];
   const tmp = new Vector3();
 
   projects.forEach((project, index) => {
-    const frame = createFrame(project, index, caps.prefersReducedMotion);
+    const frame = createFrame(project, index, caps.prefersReducedMotion, mode);
     const wrapper = new Group();
     framePositionCorridor(index, projects.length, layout, tmp);
     wrapper.position.copy(tmp);

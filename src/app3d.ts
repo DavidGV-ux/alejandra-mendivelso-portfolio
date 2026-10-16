@@ -93,6 +93,7 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
     loader,
     projects,
     store,
+    theme: deps.theme,
     onOpenDetail: deps.onOpenDetail,
     onCloseDetail: deps.onCloseDetail,
     onHoverChange: deps.onHoverChange,
@@ -196,6 +197,7 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
       environment.setMode(mode);
       clouds.setMode(mode);
       lights.setMode(mode);
+      works.setTheme(mode);
       loop?.invalidate();
     },
     setInteractive: (enabled) => works.setInteractive(enabled),

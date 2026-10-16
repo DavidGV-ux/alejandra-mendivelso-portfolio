@@ -11,6 +11,7 @@ import { sceneConfig } from '@/config/scene.config';
 import { theme } from '@/config/theme';
 import { damp } from '@/utils/math';
 import type { Project } from '@/types/project';
+import type { ThemeMode } from '@/types/theme';
 import { createLabel, type LabelHandle } from './label';
 import { createLiveFrameFx } from './liveFrame';
 
@@ -27,6 +28,8 @@ export interface FrameHandle {
   setActive: (active: boolean) => void;
   setHover: (hover: boolean) => void;
   setFocused: (focused: boolean) => void;
+  /** Ajusta el marco vivo al modo día/noche (los marcos estáticos lo ignoran). */
+  setTheme: (mode: Exclude<ThemeMode, 'auto'>) => void;
   /** True si escala, elevación y opacidades ya alcanzaron sus objetivos. */
   isSettled: () => boolean;
   update: (dt: number) => void;
@@ -35,13 +38,19 @@ export interface FrameHandle {
   dispose: () => void;
 }
 
-export function createFrame(project: Project, index: number, reducedMotion = false): FrameHandle {
+export function createFrame(
+  project: Project,
+  index: number,
+  reducedMotion = false,
+  mode: Exclude<ThemeMode, 'auto'> = 'light',
+): FrameHandle {
   const accent = project.accent ?? theme.colors.accent;
 
   const group = new Group();
   group.userData.index = index;
 
   const live = project.coverVideo ? createLiveFrameFx(W, H, BORDER, MAT) : null;
+  live?.setMode(mode);
 
   const borderMat = new MeshStandardMaterial({
     color: theme.colors.frameBorder,
@@ -219,6 +228,9 @@ export function createFrame(project: Project, index: number, reducedMotion = fal
     },
     setFocused: (focused) => {
       state.focused = focused;
+    },
+    setTheme: (mode) => {
+      live?.setMode(mode);
     },
     isSettled,
     update,

@@ -15,7 +15,7 @@ import { attachGestures } from '@/interactions/gestures';
 import { sceneConfig } from '@/config/scene.config';
 import type { FrameHandle } from '@/scene/frame';
 import type { Project } from '@/types/project';
-import type { Capabilities } from '@/types/theme';
+import type { Capabilities, ThemeMode } from '@/types/theme';
 import type { LoaderHandle } from '@/core/loader';
 import type { QualityPreset } from '@/core/quality';
 import type { Store } from '@/state/store';
@@ -32,6 +32,8 @@ export interface CorridorController {
   closeDetail: (immediate?: boolean) => void;
   setInteractive: (enabled: boolean) => void;
   setCursor: (interactive: boolean) => void;
+  /** Ajusta los marcos vivos al modo día/noche. */
+  setTheme: (mode: Exclude<ThemeMode, 'auto'>) => void;
   /** True si cámara y marcos ya están en reposo (sin animaciones pendientes). */
   isSettled: () => boolean;
   /** Carga los covers alrededor del índice activo (para la pantalla de carga). */
@@ -48,6 +50,7 @@ interface Deps {
   loader: LoaderHandle;
   projects: Project[];
   store: Store;
+  theme: Exclude<ThemeMode, 'auto'>;
   onOpenDetail: (id: string) => void;
   onCloseDetail: () => void;
   onHoverChange: (hovering: boolean) => void;
@@ -60,7 +63,7 @@ export function createCorridorController(deps: Deps): CorridorController {
   const total = projects.length;
   const reducedMotion = caps.prefersReducedMotion;
 
-  const corridor = createCorridor(projects, caps);
+  const corridor = createCorridor(projects, caps, deps.theme);
   const cameraRig = createCameraFreeLook(camera);
   let picker: ReturnType<typeof createPicker> | null = null;
 
@@ -285,6 +288,10 @@ export function createCorridorController(deps: Deps): CorridorController {
     closeDetail,
     setInteractive: (e) => (interactive = e),
     setCursor: (v) => deps.onHoverChange(v),
+    setTheme: (mode) => {
+      corridor.frames.forEach((frame) => frame.setTheme(mode));
+      deps.invalidate();
+    },
     isSettled: () =>
       Math.abs(target - progress) < 0.001 &&
       cameraRig.isSettled() &&
