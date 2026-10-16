@@ -14,7 +14,7 @@
       "3D Animation",
       "Motion"
     ],
-    "cover": "/media/gigi-y-kiki/cover.svg",
+    "cover": "/media/gigi-y-kiki/preview.webp",
     "media": [
       {
         "kind": "video",
@@ -29,8 +29,7 @@
     "links": [],
     "order": 1,
     "accent": "#c084fc",
-    "title_en": "Gigi and Kiki – 3D Character Showcase",
-    "coverVideo": "/media/gigi-y-kiki/preview.mp4"
+    "title_en": "Gigi and Kiki – 3D Character Showcase"
   },
   {
     "id": "plataforma-domicilios",
@@ -47,7 +46,7 @@
       "UX research",
       "Prototipado"
     ],
-    "cover": "/media/winai-finance/cover.png",
+    "cover": "/media/winai-finance/preview-dia.webp",
     "media": [
       {
         "kind": "video",
@@ -62,11 +61,7 @@
     "links": [],
     "order": 2,
     "accent": "#10B981",
-    "title_en": "WinAI Finance – UX/UI Redesign",
-    "coverVideo": {
-      "light": "/media/winai-finance/preview-dia.mp4",
-      "dark": "/media/winai-finance/preview-noche.mp4"
-    }
+    "title_en": "WinAI Finance – UX/UI Redesign"
   },
   {
     "id": "app-movil-consulta",
@@ -83,7 +78,7 @@
       "Prototipado",
       "Animación"
     ],
-    "cover": "/media/voxy/cover.svg",
+    "cover": "/media/voxy/preview.webp",
     "media": [
       {
         "kind": "video",
@@ -98,8 +93,7 @@
     "links": [],
     "order": 3,
     "accent": "#38bdf8",
-    "title_en": "Voxy – Learn English by Speaking",
-    "coverVideo": "/media/voxy/preview.mp4"
+    "title_en": "Voxy – Learn English by Speaking"
   },
   {
     "id": "salvando-patitas",

@@ -1,6 +1,7 @@
 import type { PerspectiveCamera } from 'three';
 import { createCorridor, type Corridor } from '@/scene/corridor';
 import { createCoverVideo, type CoverVideoHandle } from '@/scene/coverVideo';
+import { createCoverWebp, type CoverWebpHandle } from '@/scene/coverWebp';
 import {
   createCameraFreeLook,
   type CameraFreeLook,
@@ -106,6 +107,7 @@ export function createCorridorController(deps: Deps): CorridorController {
   const posterTextures = new Map<string, Texture>();
   /** Videos de cover por proyecto y tema (`${id}:${mode}`). */
   const coverVideos = new Map<string, CoverVideoHandle>();
+  const webpAnims = new Map<string, CoverWebpHandle>();
   const videoLoading = new Set<string>();
 
   function videoKey(id: string, mode: 'light' | 'dark'): string {
@@ -212,6 +214,20 @@ export function createCorridorController(deps: Deps): CorridorController {
       const p = projects[i];
       const f = corridor.frames[i];
       if (!p || !f) continue;
+
+      if (/\.webp$/i.test(p.cover)) {
+        if (!webpAnims.has(p.id)) {
+          const anim = createCoverWebp(p.cover, deps.invalidate);
+          webpAnims.set(p.id, anim);
+          void anim.ready.then(() => {
+            f.setImage(anim.texture);
+            deps.invalidate();
+          });
+        } else {
+          f.setImage(webpAnims.get(p.id)!.texture);
+        }
+        continue;
+      }
 
       if (loaded.has(p.id) || loading.has(p.id)) continue;
 
@@ -558,6 +574,8 @@ cleanups.push(
       cameraRig.dispose();
       coverVideos.forEach((v) => v.dispose());
       coverVideos.clear();
+      webpAnims.forEach((v) => v.dispose());
+      webpAnims.clear();
       corridor.dispose();
     },
   };
