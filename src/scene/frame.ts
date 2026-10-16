@@ -1,5 +1,6 @@
 import {
   AdditiveBlending,
+  CanvasTexture,
   Group,
   Mesh,
   MeshBasicMaterial,
@@ -34,6 +35,13 @@ export interface FrameHandle {
   dispose: () => void;
 }
 
+
+function hexToRgb(hex: string): string {
+  const h = hex.replace('#', '');
+  const n = parseInt(h.length === 3 ? h.split('').map((c) => c + c).join('') : h, 16);
+  return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`;
+}
+
 export function createFrame(
   project: Project,
   index: number,
@@ -49,10 +57,23 @@ export function createFrame(
     toneMapped: true,
   });
 
+  const glowCanvas = document.createElement('canvas');
+  glowCanvas.width = 256;
+  glowCanvas.height = 256;
+  const gctx = glowCanvas.getContext('2d')!;
+  const grad = gctx.createRadialGradient(128, 128, 10, 128, 128, 128);
+  grad.addColorStop(0, `rgba(${hexToRgb(accent)}, 0.55)`);
+  grad.addColorStop(0.45, `rgba(${hexToRgb(accent)}, 0.22)`);
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+  gctx.fillStyle = grad;
+  gctx.fillRect(0, 0, 256, 256);
+  const glowTexture = new CanvasTexture(glowCanvas);
+  glowTexture.generateMipmaps = false;
+
   const glowMat = new MeshBasicMaterial({
-    color: accent,
+    map: glowTexture,
     transparent: true,
-    opacity: 0.18,
+    opacity: 0.9,
     blending: AdditiveBlending,
     depthWrite: false,
     toneMapped: false,
@@ -62,9 +83,9 @@ export function createFrame(
   const image = new Mesh(imageGeometry, imageMat);
   image.position.z = 0.024;
 
-  const glowGeometry = new PlaneGeometry(W * 1.45, H * 1.45);
+  const glowGeometry = new PlaneGeometry(W * 1.7, H * 1.7);
   const glow = new Mesh(glowGeometry, glowMat);
-  glow.position.z = 0.012;
+  glow.position.z = 0.006;
 
   // Solo la imagen/video flota, con un brillo suave detrás.
   group.add(glow, image);
@@ -173,6 +194,7 @@ export function createFrame(
       hitGeometry.dispose();
       imageMat.dispose();
       glowMat.dispose();
+      glowTexture.dispose();
       hitMat.dispose();
       group.clear();
     },
