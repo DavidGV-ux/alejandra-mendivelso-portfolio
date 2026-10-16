@@ -21,13 +21,14 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
   video.loop = true;
   video.autoplay = false;
   video.playsInline = true;
-  video.preload = 'none';
+  video.preload = 'metadata';
   video.setAttribute('aria-hidden', 'true');
   video.src = url;
+  video.load();
 
   const texture = new VideoTexture(video);
   texture.colorSpace = SRGBColorSpace;
-  texture.flipY = false;
+  texture.flipY = true;
 
   let ready = false;
   const readyPromise = new Promise<void>((resolve, reject) => {
