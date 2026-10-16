@@ -92,6 +92,8 @@ export function createCorridorController(deps: Deps): CorridorController {
   let selectedIndex: number | null = null;
   /** Índice cuyo video de vista previa debe reproducirse (hover o selección). */
   let previewIndex: number | null = null;
+  /** Conjunto de índices con video reproduciéndose (máx. por tier y distancia). */
+  const activeVideoIndices = new Set<number>();
   let lastDragEndAt = 0;
   let attached = false;
   let lastActiveIdx = -1;
@@ -119,7 +121,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     for (const [key, handle] of coverVideos) {
       const [id] = key.split(':');
       const frameIdx = projects.findIndex((p) => p.id === id);
-      handle.setPlaying(frameIdx === previewIndex);
+      handle.setPlaying(frameIdx === previewIndex || activeVideoIndices.has(frameIdx));
     }
   }
 
@@ -158,6 +160,42 @@ export function createCorridorController(deps: Deps): CorridorController {
       })
       .catch(() => {})
       .finally(() => videoLoading.delete(key));
+  }
+
+  function computeActiveVideos(): void {
+    if (store.get().detailProjectId || store.get().section !== 'works') {
+      activeVideoIndices.clear();
+      coverVideos.forEach((h) => h.setPlaying(false));
+      deps.invalidate();
+      return;
+    }
+    const capTier = quality.tier as 'high' | 'medium' | 'low';
+    const maxActive = (sceneConfig.video.maxActive as Record<string, number>)[capTier] ?? 1;
+    const candidates: Array<{ i: number; dist: number }> = [];
+    for (let i = 0; i < total; i++) {
+      const p = projects[i];
+      const f = corridor.frames[i];
+      if (!p || !f) continue;
+      if (!coverVideoUrl(p, currentTheme)) continue;
+      const pos = f.getWorldPosition(new Vector3());
+      const dist = deps.camera.position.distanceTo(pos);
+      if (dist <= sceneConfig.video.maxDistance) candidates.push({ i, dist });
+    }
+    candidates.sort((a, b) => a.dist - b.dist);
+    const chosen = candidates.slice(0, maxActive).map((c) => c.i);
+    if (
+      selectedIndex !== null &&
+      selectedIndex >= 0 &&
+      selectedIndex < total &&
+      coverVideoUrl(projects[selectedIndex], currentTheme)
+    ) {
+      if (!chosen.includes(selectedIndex)) chosen.push(selectedIndex);
+    }
+    activeVideoIndices.clear();
+    chosen.forEach((i) => activeVideoIndices.add(i));
+    for (const i of chosen) requestPreview(i);
+    updateVideoPlayback();
+    deps.invalidate();
   }
 
   /** Devuelve el marco a su portada estática y pausa su video. */
@@ -322,6 +360,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     selectedIndex = i;
     previewIndex = i;
     requestPreview(i);
+    computeActiveVideos();
     updateVideoPlayback();
     deps.invalidate();
   }
@@ -350,6 +389,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     interactive = false;
     deps.invalidate();
     deps.onOpenDetail(p.id);
+    computeActiveVideos();
   }
 
   function openActive(): void {
@@ -377,6 +417,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     interactive = true;
     deps.invalidate();
     deps.onCloseDetail();
+    computeActiveVideos();
   }
 
   function update(dt: number): void {
@@ -392,7 +433,7 @@ export function createCorridorController(deps: Deps): CorridorController {
     const idx = activeIndex();
     if (idx !== lastActiveIdx) {
       lastActiveIdx = idx;
-      updateVideoPlayback();
+      computeActiveVideos();
       loadAround(idx);
     }
     corridor.setActiveIndex(idx);
@@ -530,6 +571,10 @@ cleanups.push(
     cleanups.push(() => {
       window.removeEventListener('keydown', onKeyDown);
     });
+
+    const onVisibility = (): void => computeActiveVideos();
+    document.addEventListener('visibilitychange', onVisibility);
+    cleanups.push(() => document.removeEventListener('visibilitychange', onVisibility));
   }
 
   return {
@@ -566,6 +611,7 @@ cleanups.push(
         }
       }
       loadAround(activeIndex());
+      computeActiveVideos();
       deps.invalidate();
     },
     isSettled: () =>
@@ -575,6 +621,7 @@ cleanups.push(
     preload: () => {
       loadAround(activeIndex());
       updateVideoPlayback();
+      computeActiveVideos();
     },
     attach,
     activeIndex,
