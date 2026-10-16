@@ -215,13 +215,9 @@ function closeHeroUI(): void {
   if (store.get().heroOpen) store.set({ heroOpen: false });
 }
 
+/** Muestra la portada del portafolio (deshabilitada a petición del usuario). */
 function maybeShowHero(): void {
-  const state = store.get();
-  if (!bootComplete || heroDismissed || state.heroOpen) return;
-  if (!state.introDone || state.section !== 'works' || state.detailProjectId || state.helpOpen) {
-    return;
-  }
-  showHeroUI();
+  return;
 }
 
 /** Muestra una sola vez el aviso ligero de controles al empezar a explorar. */

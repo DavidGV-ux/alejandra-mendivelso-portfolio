@@ -134,7 +134,7 @@ export function createCameraFreeLook(camera: PerspectiveCamera): CameraFreeLook 
         // Vista frontal desde el eje del pasillo: el marco queda centrado y de cara.
         focusPos.set(0, CAM_HEIGHT, frame.z);
         focusLook.set(frame.x, 0.42, frame.z);
-        desiredFov = layout.compact ? 68 : 58;
+        desiredFov = layout.compact ? 54 : 44;
       } else {
         const inward = frame.x >= 0 ? -1 : 1;
         focusPos.set(
@@ -143,7 +143,7 @@ export function createCameraFreeLook(camera: PerspectiveCamera): CameraFreeLook 
           frame.z - layout.spacing * 0.15,
         );
         focusLook.copy(frame);
-        desiredFov = 54;
+        desiredFov = 42;
       }
       focusFromPos.copy(position);
       focusFromLook.copy(look);
