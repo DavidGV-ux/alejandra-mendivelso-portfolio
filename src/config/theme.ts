@@ -1,22 +1,22 @@
 import type { ThemeColors, ThemeConfig, ThemeMode } from '@/types/theme';
 
 const lightColors: ThemeColors = {
-  bg: '#f3f1ea',
-  bgElevated: '#faf9f4',
+  bg: '#f5f5f5',
+  bgElevated: '#ffffff',
   surface: '#ffffff',
-  text: '#14141a',
-  textMuted: '#55545e',
-  textFaint: '#6e6c78',
+  text: '#111111',
+  textMuted: '#737373',
+  textFaint: '#9e9e9e',
   accent: '#4f5d00',
   accentContrast: '#ffffff',
-  border: 'rgba(20, 20, 26, 0.12)',
-  borderStrong: 'rgba(20, 20, 26, 0.26)',
-  overlay: 'rgba(20, 20, 26, 0.5)',
+  border: 'rgba(17, 17, 17, 0.12)',
+  borderStrong: 'rgba(17, 17, 17, 0.26)',
+  overlay: 'rgba(17, 17, 17, 0.5)',
   danger: '#a3341f',
   success: '#2f6b3f',
-  fog: '#e7e3d8',
-  frame: '#fbfaf6',
-  frameBorder: '#14141a',
+  fog: '#f5f5f5',
+  frame: '#ffffff',
+  frameBorder: '#111111',
 };
 
 const darkColors: ThemeColors = {

@@ -30,11 +30,11 @@ export function createLights(mode: Exclude<ThemeMode, 'auto'>): LightsHandle {
     ambient.intensity = isDark ? 0.55 : sceneConfig.lights.ambient;
     hemi.intensity = isDark ? 0.35 : 0.5;
     key.intensity = isDark ? 0.9 : sceneConfig.lights.key;
-    key.color.set(isDark ? '#ffe9d6' : '#fff6ec');
+    key.color.set(isDark ? '#ffe9d6' : '#ffffff');
     rim.intensity = sceneConfig.lights.rim;
     rim.color.set(theme.colors.accent);
     hemi.color.set(theme.colors.frame);
-    hemi.groundColor.set(isDark ? '#0f0d0b' : '#cdbfae');
+    hemi.groundColor.set(isDark ? '#0f0d0b' : '#d0d0d0');
   }
   setMode(mode);
 
