@@ -82,7 +82,7 @@ export function createCorridorController(deps: Deps): CorridorController {
   const total = projects.length;
   const reducedMotion = caps.prefersReducedMotion;
 
-  const corridor = createCorridor(projects, caps, deps.theme);
+  const corridor = createCorridor(projects, caps);
   const cameraRig = createCameraFreeLook(camera);
   const endScreen = createEndScreen();
   endScreen.group.position.set(0, 0, endScreenZ(total, corridor.layout));

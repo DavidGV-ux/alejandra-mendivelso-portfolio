@@ -1,7 +1,7 @@
 import { Group, Vector3 } from 'three';
 import type { Project } from '@/types/project';
 import { createFrame, type FrameHandle } from './frame';
-import type { Capabilities, ThemeMode } from '@/types/theme';
+import type { Capabilities } from '@/types/theme';
 
 export interface CorridorLayout {
   spacing: number;
@@ -56,7 +56,6 @@ export interface Corridor {
 export function createCorridor(
   projects: Project[],
   caps: Capabilities,
-  mode: Exclude<ThemeMode, 'auto'> = 'light',
 ): Corridor {
   const layout = buildCorridorLayout(caps);
   const group = new Group();
@@ -64,7 +63,7 @@ export function createCorridor(
   const tmp = new Vector3();
 
   projects.forEach((project, index) => {
-    const frame = createFrame(project, index, caps.prefersReducedMotion, mode);
+    const frame = createFrame(project, index);
     const wrapper = new Group();
     framePositionCorridor(index, projects.length, layout, tmp);
     wrapper.position.copy(tmp);
@@ -72,10 +71,7 @@ export function createCorridor(
     wrapper.add(frame.group);
     frame.group.userData.wrapper = wrapper;
     group.add(wrapper);
-frames.push(frame);
-// Ocultar el borde decorativo para que solo se vea el video
-const firstChild = frame.group.children?.[0];
-if (firstChild) firstChild.visible = false;
+    frames.push(frame);
   });
 
   let activeIndex = 0;

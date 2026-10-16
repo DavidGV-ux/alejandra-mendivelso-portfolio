@@ -2,7 +2,6 @@ import {
   Group,
   Mesh,
   MeshBasicMaterial,
-  MeshStandardMaterial,
   PlaneGeometry,
   Texture,
   Vector3,
@@ -13,10 +12,8 @@ import { damp } from '@/utils/math';
 import type { Project } from '@/types/project';
 import type { ThemeMode } from '@/types/theme';
 import { createLabel, type LabelHandle } from './label';
-import { createLiveFrameFx } from './liveFrame';
 
 const { width: W, height: H } = sceneConfig.frame;
-const BORDER = 0.03;
 const MAT = 0.14;
 
 export interface FrameHandle {
@@ -28,7 +25,7 @@ export interface FrameHandle {
   setActive: (active: boolean) => void;
   setHover: (hover: boolean) => void;
   setFocused: (focused: boolean) => void;
-  /** Ajusta el marco vivo al modo día/noche (los marcos estáticos lo ignoran). */
+  /** Compatibilidad: sin marco, no hay tema que actualizar. */
   setTheme: (mode: Exclude<ThemeMode, 'auto'>) => void;
   /** True si escala, elevación y opacidades ya alcanzaron sus objetivos. */
   isSettled: () => boolean;
@@ -41,50 +38,21 @@ export interface FrameHandle {
 export function createFrame(
   project: Project,
   index: number,
-  reducedMotion = false,
-  mode: Exclude<ThemeMode, 'auto'> = 'light',
 ): FrameHandle {
   const accent = project.accent ?? theme.colors.accent;
 
   const group = new Group();
   group.userData.index = index;
 
-  const live = project.coverVideo ? createLiveFrameFx(W, H, BORDER, MAT) : null;
-  live?.setMode(mode);
-
-  const borderMat = new MeshStandardMaterial({
-    color: theme.colors.frameBorder,
-    roughness: 0.9,
-    metalness: 0,
-    transparent: true,
-  });
-  const matMat = live
-    ? null
-    : new MeshStandardMaterial({
-        color: theme.colors.frame,
-        roughness: 0.95,
-        metalness: 0,
-        transparent: true,
-      });
   const imageMat = new MeshBasicMaterial({
     color: theme.colors.textFaint,
     transparent: true,
     toneMapped: true,
   });
-  const lineMat = new MeshBasicMaterial({ color: accent, transparent: true });
-
-  const border = new Mesh(new PlaneGeometry(W + 2 * MAT + 2 * BORDER, H + 2 * MAT + 2 * BORDER), borderMat);
-  border.position.z = 0;
-
-  const mat = new Mesh(new PlaneGeometry(W + 2 * MAT, H + 2 * MAT), live ? live.matMaterial : matMat!);
-  mat.position.z = 0.012;
 
   const imageGeometry = new PlaneGeometry(W, H);
   const image = new Mesh(imageGeometry, imageMat);
   image.position.z = 0.024;
-
-  const line = new Mesh(new PlaneGeometry(0.016, 0.22), lineMat);
-  line.position.set(0, H / 2 + MAT + 0.11, 0.02);
 
   const metaLabel: LabelHandle = createLabel({
     text: `${project.category} / ${project.year}`.toUpperCase(),
@@ -111,8 +79,7 @@ export function createFrame(
   });
   titleLabel.sprite.position.set(0, H / 2 + MAT + 0.68, 0.03);
 
-  group.add(border, mat, image, line, metaLabel.sprite, titleLabel.sprite);
-  if (live) group.add(live.group);
+  group.add(image, metaLabel.sprite, titleLabel.sprite);
 
   // La hitbox coincide con el marco completo para facilitar el clic.
   const hitGeometry = new PlaneGeometry(W + 2 * MAT, H + 2 * MAT + 0.9);
@@ -149,8 +116,6 @@ export function createFrame(
     };
   }
 
-  let time = 0;
-
   function update(dt: number): void {
     const { scale: targetScale, lift: targetLift, opacity: targetOpacity, title: titleTarget } =
       targets();
@@ -162,21 +127,12 @@ export function createFrame(
 
     const opacity = imageMat.opacity;
     const next = damp(opacity, targetOpacity, 10, dt);
-    borderMat.opacity = next;
     imageMat.opacity = next;
-    lineMat.opacity = next;
-    if (live) {
-      if (!reducedMotion) time += dt;
-      live.update(time, next);
-    } else {
-      matMat!.opacity = next;
-    }
 
     const metaTarget = state.focused ? 0 : next;
     const titleOpacity = damp(titleLabel.sprite.material.opacity, titleTarget, 10, dt);
     titleLabel.setOpacity(titleOpacity * (state.focused ? 0 : 1));
     metaLabel.setOpacity(metaTarget);
-    lineMat.opacity = next * 0.9;
 
     group.visible = next > 0.01;
   }
@@ -229,23 +185,14 @@ export function createFrame(
     setFocused: (focused) => {
       state.focused = focused;
     },
-    setTheme: (mode) => {
-      live?.setMode(mode);
-    },
+    setTheme: () => {},
     isSettled,
     update,
     getWorldPosition: (out) => group.getWorldPosition(out),
     dispose(): void {
-      border.geometry.dispose();
-      mat.geometry.dispose();
       imageGeometry.dispose();
-      line.geometry.dispose();
       hitGeometry.dispose();
-      borderMat.dispose();
-      matMat?.dispose();
-      live?.dispose();
       imageMat.dispose();
-      lineMat.dispose();
       hitMat.dispose();
       metaLabel.dispose();
       titleLabel.dispose();
