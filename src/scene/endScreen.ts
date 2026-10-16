@@ -25,6 +25,8 @@ export interface EndScreenHandle {
   setHover: (nx: number, ny: number, active: boolean) => void;
   /** Avanza la animación; devuelve true mientras haya que repintar. */
   update: (dt: number) => boolean;
+  /** Indica si la animación ha terminado. */
+  isSettled: () => boolean;
   dispose: () => void;
 }
 
@@ -33,8 +35,8 @@ const H = 3.2;
 const MAT = 0.2;
 const BORDER = 0.04;
 
-const CW = 1536;
-const CH = 819; // aspecto 6 : 3.2
+const CW = 1280;
+const CH = 682; // aspecto 6 : 3.2
 
 function roundRect(
   ctx: CanvasRenderingContext2D,
@@ -275,6 +277,11 @@ export function createEndScreen(): EndScreenHandle {
       paint();
       return true;
     },
+    isSettled: () =>
+      !hasCard ||
+      (Math.abs(targetX - curX) < 0.001 &&
+        Math.abs(targetY - curY) < 0.001 &&
+        Math.abs(targetI - curI) < 0.001),
     dispose: () => {
       border.geometry.dispose();
       mat.geometry.dispose();

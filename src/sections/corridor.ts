@@ -369,11 +369,13 @@ onLeave: (f) => {
       endRaycaster.setFromCamera(endPointer, deps.camera);
       const hit = endRaycaster.intersectObject(endScreen.hitMesh)[0];
       if (hit?.uv) {
+        const nx = hit.uv.x * 2 - 1;
+        const ny = hit.uv.y * 2 - 1;
         if (!endHovering) {
           endHovering = true;
           deps.onHoverChange(true);
         }
-        endScreen.setHover(hit.uv.x * 2 - 1, hit.uv.y * 2 - 1, true);
+        endScreen.setHover(nx, ny, true);
         deps.invalidate();
       } else if (endHovering) {
         endHovering = false;
@@ -530,6 +532,7 @@ onLeave: (f) => {
     isSettled: () =>
       Math.abs(target - progress) < 0.001 &&
       cameraRig.isSettled() &&
+      endScreen.isSettled() &&
       corridor.frames.every((frame) => frame.isSettled()),
     preload: () => {
       loadAround(activeIndex());

@@ -166,5 +166,36 @@
     "links": [],
     "order": 5,
     "accent": "#ff0000"
+  },
+  {
+    "id": "kpexperience",
+    "title": "KpExperience",
+    "category": "Experiencia Digital",
+    "category_en": "Digital Experience",
+    "year": 2026,
+    "role": "Diseño y Video",
+    "role_en": "Design & Video",
+    "description": "Presentación de experiencia digital inmersiva.",
+    "description_en": "Immersive digital experience presentation.",
+    "tools": [
+      "Motion Graphics",
+      "UI Design"
+    ],
+    "cover": "/media/kpexperience/cover.jpg",
+    "coverVideo": "/media/kpexperience/preview.mp4",
+    "media": [
+      {
+        "kind": "video",
+        "src": "/media/kpexperience/preview.mp4",
+        "poster": "/media/kpexperience/cover.jpg",
+        "alt": "KpExperience Preview",
+        "alt_en": "KpExperience Preview",
+        "width": 1260,
+        "height": 1280
+      }
+    ],
+    "links": [],
+    "order": 6,
+    "accent": "#4f46e5"
   }
 ]

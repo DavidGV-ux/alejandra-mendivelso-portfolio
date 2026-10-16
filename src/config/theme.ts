@@ -67,9 +67,9 @@ export const theme: ThemeConfig = {
     easeInOut: 'power2.inOut',
   },
   cameraTransition: 0.8,
-  fogDensity: 0.012,
+  fogDensity: 0.008,
   spiralTurns: 1.4,
-  frameSpacing: 2.6,
+  frameSpacing: 3.2,
   spiralRadius: 10,
 };
 
