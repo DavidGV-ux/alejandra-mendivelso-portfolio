@@ -4,8 +4,8 @@
   "description": "Portafolio de Alejandra Mendivelso: desarrollo de software, UX/UI y realidad aumentada en una galería 3D explorable.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f5f5f5",
-  "theme_color": "#f5f5f5",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "lang": "es",
   "icons": [
     {

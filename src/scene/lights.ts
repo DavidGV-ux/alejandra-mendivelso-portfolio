@@ -34,7 +34,7 @@ export function createLights(mode: Exclude<ThemeMode, 'auto'>): LightsHandle {
     rim.intensity = sceneConfig.lights.rim;
     rim.color.set(theme.colors.accent);
     hemi.color.set(theme.colors.frame);
-    hemi.groundColor.set(isDark ? '#0f0d0b' : '#d0d0d0');
+    hemi.groundColor.set(isDark ? '#0f0d0b' : '#ffffff');
   }
   setMode(mode);
 

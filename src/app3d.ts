@@ -103,7 +103,7 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
     invalidate: () => loop?.invalidate(),
   });
 
-  const guide = createGuideLine(projects.length, works.corridor.layout);
+  const guide = createGuideLine(projects.length, works.corridor.layout, deps.theme);
   scene.add(works.corridor.group, guide.line);
 
   works.attach(canvas);
@@ -201,6 +201,7 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
       clouds.setMode(mode);
       lights.setMode(mode);
       works.setTheme(mode);
+      guide.setMode(mode);
       loop?.invalidate();
     },
     setInteractive: (enabled) => works.setInteractive(enabled),

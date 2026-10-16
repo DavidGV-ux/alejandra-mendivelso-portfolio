@@ -25,7 +25,7 @@
    Tokens (sobrescritos por JS desde theme.ts)
    ------------------------------------------------------------------ */
 :root {
-  --color-bg: #f5f5f5;
+  --color-bg: #ffffff;
   --color-bg-elevated: #ffffff;
   --color-surface: #ffffff;
   --color-surface-2: #f0f0f0;
@@ -39,7 +39,7 @@
   --color-overlay: rgba(17, 17, 17, 0.5);
   --color-danger: #a3341f;
   --color-success: #2f6b3f;
-  --color-fog: #f5f5f5;
+  --color-fog: #ffffff;
   --color-frame: #ffffff;
   --color-frame-border: #111111;
 

@@ -42,26 +42,9 @@ const MAT_FRAGMENT = /* glsl */ `
     vec3 color;
     float pulse;
     if (uMode > 0.5) {
-      // Modo día: blanco con líneas y curvas azules que fluyen por el paspartú.
-      float corner = 0.34;
-      vec2 p = (vUv - 0.5) * 2.0 * uMatHalf;
-      float d = sdRoundBox(p, uMatHalf - vec2(corner), corner) - corner;
+      // Modo día: paspartú blanco puro, sin líneas ni ondas.
       color = uWhite;
-      // lavado azul suave que se intensifica hacia el video
-      color = mix(color, uBlueSoft, smoothstep(-0.02, -uMatWidth, d) * 0.4);
-      // ondas concéntricas que recorren el marco hacia afuera
-      float phase = (d - uTime * 0.05) / 0.075;
-      float wave = 1.0 - smoothstep(0.03, 0.12, abs(fract(phase) - 0.5));
-      float fade = smoothstep(0.0, -0.06, d) * (0.5 + 0.3 * sin(phase * 2.0));
-      vec3 waveColor = mix(uBlueSoft, uBlueDeep, smoothstep(-0.05, -uMatWidth * 0.9, d));
-      color = mix(color, waveColor, wave * fade * 0.75);
-      // línea fina junto al borde del marco
-      float edge = 1.0 - smoothstep(0.0, 0.012, abs(d + 0.014));
-      color = mix(color, uBlueDeep, edge * 0.85);
-      // línea fina que enmarca el video
-      float inner = 1.0 - smoothstep(0.0, 0.012, abs(d + uMatWidth - 0.008));
-      color = mix(color, uBlueDeep, inner * 0.7);
-      pulse = 0.97 + 0.03 * sin(uTime * 0.9);
+      pulse = 1.0;
     } else {
       // Modo noche: la paleta del video fluye alrededor del marco.
       float angle = atan(vUv.y - 0.5, vUv.x - 0.5);
@@ -100,7 +83,7 @@ const HALO_FRAGMENT = /* glsl */ `
     float strength;
     if (uMode > 0.5) {
       color = mix(uBlueGlow, uBlueSoft, wave * 0.5);
-      strength = 0.34 + 0.2 * (0.5 + 0.5 * sin(uTime * 0.9 + 1.2));
+      strength = 0.0;
     } else {
       color = mix(uGreen, uOrange, wave * 0.6);
       strength = 0.2 + 0.18 * (0.5 + 0.5 * sin(uTime * 1.1 + 1.2));

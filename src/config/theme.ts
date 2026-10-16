@@ -1,7 +1,7 @@
 import type { ThemeColors, ThemeConfig, ThemeMode } from '@/types/theme';
 
 const lightColors: ThemeColors = {
-  bg: '#f5f5f5',
+  bg: '#ffffff',
   bgElevated: '#ffffff',
   surface: '#ffffff',
   surface2: '#f0f0f0',
@@ -15,7 +15,7 @@ const lightColors: ThemeColors = {
   overlay: 'rgba(17, 17, 17, 0.5)',
   danger: '#a3341f',
   success: '#2f6b3f',
-  fog: '#f5f5f5',
+  fog: '#ffffff',
   frame: '#ffffff',
   frameBorder: '#111111',
 };

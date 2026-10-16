@@ -1,15 +1,21 @@
 import { BufferGeometry, Group, Line, LineBasicMaterial, Vector3 } from 'three';
 import { theme } from '@/config/theme';
+import type { ThemeMode } from '@/types/theme';
 import { endScreenZ, type CorridorLayout } from './corridor';
 
 export interface GuideHandle {
   line: Group;
+  setMode: (mode: Exclude<ThemeMode, 'auto'>) => void;
 }
 
 /**
  * Dibuja los rieles del suelo y techo del pasillo para reforzar la perspectiva.
  */
-export function createGuideLine(total: number, layout: CorridorLayout): GuideHandle {
+export function createGuideLine(
+  total: number,
+  layout: CorridorLayout,
+  mode: Exclude<ThemeMode, 'auto'> = 'light',
+): GuideHandle {
   const spacing = layout.spacing;
   const center = ((total - 1) / 2) * spacing;
   const startZ = -center - spacing;
@@ -52,5 +58,13 @@ export function createGuideLine(total: number, layout: CorridorLayout): GuideHan
     group.add(new Line(geom, matSoft));
   }
 
-  return { line: group };
+  function setMode(mode: Exclude<ThemeMode, 'auto'>): void {
+    // De día los rieles desaparecen: entorno blanco puro sin líneas.
+    group.visible = mode === 'dark';
+  }
+  setMode('light');
+
+  setMode(mode);
+
+  return { line: group, setMode };
 }
