@@ -1,28 +1,24 @@
-import { Vector3 } from 'three';
+import { Vector3, type PerspectiveCamera } from 'three';
 import type { CorridorLayout } from '@/scene/corridor';
 import { framePositionCorridor } from '@/scene/corridor';
+import { sceneConfig } from '@/config/scene.config';
 
 export interface FrameTransform {
   /** Position of the frame wrapper in world space (before rotation). */
   position: Vector3;
   /** Y-axis rotation (radians) of the frame wrapper. */
   rotationY: number;
-  /** World-space normal of the frame (derived from rotationY). */
+  /** World-space normal of the visible face (+Z of PlaneGeometry). */
   normal: Vector3;
 }
 
 /**
- * Compute the wrapper transform (position + y-rotation) for a frame.
+ * Wrapper transform for a frame.
  *
- * This is the single source of truth for frame placement. It mirrors the
- * logic that was previously inline in `createCorridor`:
- *  - The first `total-2` frames are placed along the corridor walls and
- *    "look at" the corridor centre-line (z-axis).
- *  - The last 2 frames close the corridor and face the camera (rotationY = π).
+ * PlaneGeometry faces +Z. After `rotation.y`:
+ *   local +Z → (sin(rY), 0, cos(rY)).
  *
- * Note: `framePositionCorridor` returns the wrapper position for the
- * non-closing frames. For the closing pair, the position is recomputed
- * here to match `createCorridor`'s inline logic (slightly different z).
+ * Side frames face the aisle (inward). Closing frames face the incoming viewer (−Z).
  */
 export function frameTransform(
   index: number,
@@ -32,41 +28,28 @@ export function frameTransform(
 ): FrameTransform {
   const pairCount = Math.ceil(total / 2);
   const center = ((pairCount - 1) / 2) * layout.spacing;
-
   const isClosing = index >= total - 2;
 
-  let pos: Vector3;
   let rotationY: number;
-
   if (isClosing) {
-    // The last two frames close the corridor, together and facing forward.
-    // Positioned at endBackdropZ distance, slightly inset on the wall.
     const x = (index % 2 === 0 ? -1 : 1) * layout.wallOffset * 0.55;
     const z = (pairCount - 1) * layout.spacing - center + layout.spacing * 1.05;
-    pos = out.set(x, 0, z);
+    out.set(x, 0, z);
     rotationY = Math.PI;
   } else {
-    // Place along walls, looking toward the corridor centre (z-axis).
-    pos = framePositionCorridor(index, total, layout, out);
-    // lookAt(0, y, z) → wrapper faces toward z-axis.
-    // For left wall (x < 0): faces +x → rotationY = 0.
-    // For right wall (x > 0): faces -x → rotationY = π.
-    if (pos.x >= 0) {
-      rotationY = Math.PI;
-    } else {
-      rotationY = 0;
-    }
+    framePositionCorridor(index, total, layout, out);
+    // Left wall (x < 0) faces +X; right wall faces −X.
+    rotationY = out.x < 0 ? Math.PI / 2 : -Math.PI / 2;
   }
 
-  // Normal: (sin(rY), 0, cos(rY)) — Three.js plane at z=0 has normal +Z.
-  const normal = new Vector3(Math.sin(rotationY), 0, Math.cos(rotationY));
-
-  return { position: pos, rotationY, normal };
+  return {
+    position: out.clone(),
+    rotationY,
+    normal: frameNormal(rotationY),
+  };
 }
 
-/**
- * World-space normal from a wrapper's Y-rotation.
- */
+/** World-space visible-face normal from a wrapper's Y-rotation. */
 export function frameNormal(rotationY: number): Vector3 {
   return new Vector3(Math.sin(rotationY), 0, Math.cos(rotationY));
 }
@@ -76,58 +59,65 @@ export interface FrontalPose {
   position: Vector3;
   /** Camera look-at target in world space. */
   target: Vector3;
-  /** Internal yaw (radians) for the camera rig convention. */
+  /**
+   * Yaw for the free-look rig: `lookDir = (sin(yaw), 0, cos(yaw))`.
+   * Frontal view looks along −normal, so `yaw = atan2(−n.x, −n.z)`.
+   */
   yaw: number;
   /** Pitch (always 0 for frontal view). */
   pitch: number;
+  /** Focus FOV. */
+  fov: number;
 }
 
 /**
- * Compute a frontal camera pose that looks straight at a frame's centre
- * from along its world normal.
+ * Camera on the visible side of the frame, looking straight at its centre.
  *
- * Convention note:
- *   The camera rig in `cameraFreeLook` uses `lookDir = (sin(yaw), 0, cos(yaw))`,
- *   i.e. `yaw = atan2(lookDir.x, lookDir.z)`. For a frontal view we want the
- *   camera to look TOWARD the frame, i.e. `lookDir = normal`. Hence:
- *     yaw = atan2(normal.x, normal.z)
+ *   position = center + normal * distance + (0, verticalShift, 0)
+ *   target   = center + (0, verticalShift, 0)
  *
- *   Three.js `camera.getWorldDirection()` returns the negated local -Z, which
- *   equals `lookDir` above. So `dot(getWorldDirection(), normal) = 1` (camera
- *   faces the frame), which means `dot(-normal, normal) = -1` → the camera
- *   backs away along `-normal` from the frame. That's correct: position is on
- *   the opposite side of the frame from its normal.
+ * Then `getWorldDirection()` ≈ −normal and `(P − C) · n > 0`.
  */
 export function computeFrontalPose(opts: {
-  /** World-space centre of the frame image mesh. */
   center: Vector3;
-  /** World-space normal of the frame (unit vector). */
   normal: Vector3;
-  /** Distance to place the camera from the frame centre along its normal. */
   distance: number;
-  /** Vertical offset applied to both position and target (to clear HUD/bar). */
   verticalShift?: number;
+  fov?: number;
 }): FrontalPose {
   const verticalShift = opts.verticalShift ?? 0;
   const n = opts.normal;
+  const fov = opts.fov ?? sceneConfig.focus.fov;
 
-  // Camera backs away from the frame along its normal (toward viewer).
   const position = new Vector3(
     opts.center.x + n.x * opts.distance,
-    opts.center.y + opts.distance * 0 + verticalShift,
+    opts.center.y + verticalShift,
     opts.center.z + n.z * opts.distance,
   );
 
-  // Look target is the frame centre (plus vertical shift).
   const target = new Vector3(
     opts.center.x,
     opts.center.y + verticalShift,
     opts.center.z,
   );
 
-  // yaw such that lookDir = normal.
-  const yaw = Math.atan2(n.x, n.z);
+  const yaw = Math.atan2(-n.x, -n.z);
   const pitch = 0;
 
-  return { position, target, yaw, pitch };
+  return { position, target, yaw, pitch, fov };
+}
+
+/** Distance so the frame fills ~68% of the unused vertical FOV, clamped to the aisle. */
+export function computeFocusDistance(camera: PerspectiveCamera, layout: CorridorLayout): number {
+  const scale = layout.compact ? 0.82 : 1;
+  const H = sceneConfig.frame.height * scale;
+  const W = sceneConfig.frame.width * scale;
+  const verticalFov =
+    ((layout.compact ? sceneConfig.focus.fovCompact : sceneConfig.focus.fov) * Math.PI) / 180;
+  const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
+  const dVertical = H / (2 * Math.tan(verticalFov / 2) * sceneConfig.focus.fillV);
+  const dHorizontal = W / (2 * Math.tan(horizontalFov / 2) * sceneConfig.focus.fillH);
+  const d = Math.max(dVertical, dHorizontal);
+  const maxD = Math.max(1.2 * H, layout.wallOffset * 2 - sceneConfig.focus.margin);
+  return Math.min(maxD, Math.max(1.2 * H, d));
 }

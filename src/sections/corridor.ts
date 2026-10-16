@@ -1,6 +1,7 @@
 import type { PerspectiveCamera } from 'three';
 import { Vector3 } from 'three';
 import { createCorridor, type Corridor } from '@/scene/corridor';
+import { computeFocusDistance, computeFrontalPose } from '@/scene/framePose';
 import { createCoverVideo, type CoverVideoHandle } from '@/scene/coverVideo';
 import { createCoverWebp, type CoverWebpHandle } from '@/scene/coverWebp';
 import {
@@ -158,7 +159,11 @@ export function createCorridorController(deps: Deps): CorridorController {
     if (videoLoading.has(key)) return;
 
     videoLoading.add(key);
-    const video = createCoverVideo(videoUrl, () => deps.invalidate());
+    const tier = quality.tier as 'high' | 'medium' | 'low';
+    const video = createCoverVideo(videoUrl, () => deps.invalidate(), {
+      maxWidth: sceneConfig.video.previewMaxWidth[tier],
+      fps: sceneConfig.video.previewFps[tier],
+    });
     coverVideos.set(key, video);
     void video.ready
       .then(() => {
@@ -192,24 +197,24 @@ export function createCorridorController(deps: Deps): CorridorController {
     }
     candidates.sort((a, b) => a.dist - b.dist);
     const chosen = candidates.slice(0, maxActive).map((c) => c.i);
-if (
+    const selectedProject = selectedIndex !== null ? projects[selectedIndex] : undefined;
+    if (
       selectedIndex !== null &&
-      selectedIndex >= 0 &&
-      selectedIndex < total &&
-      projects[selectedIndex] !== undefined &&
-      coverVideoUrl(projects[selectedIndex] as any, currentTheme)
+      selectedProject !== undefined &&
+      coverVideoUrl(selectedProject, currentTheme) &&
+      !chosen.includes(selectedIndex)
     ) {
-      if (!chosen.includes(selectedIndex)) chosen.push(selectedIndex);
+      chosen.push(selectedIndex);
     }
 
+    const hoveredProject = hoveredIndex !== null ? projects[hoveredIndex] : undefined;
     if (
       hoveredIndex !== null &&
-      hoveredIndex >= 0 &&
-      hoveredIndex < total &&
-      projects[hoveredIndex] !== undefined &&
-      coverVideoUrl(projects[hoveredIndex] as any, currentTheme)
+      hoveredProject !== undefined &&
+      coverVideoUrl(hoveredProject, currentTheme) &&
+      !chosen.includes(hoveredIndex)
     ) {
-      if (!chosen.includes(hoveredIndex)) chosen.push(hoveredIndex);
+      chosen.push(hoveredIndex);
     }
     activeVideoIndices.clear();
     chosen.forEach((i) => activeVideoIndices.add(i));
@@ -282,7 +287,7 @@ if (
         .finally(() => loading.delete(p.id));
     }
 
-// Limpieza de videos lejanos para ahorrar memoria y CPU.
+    // Limpieza de videos lejanos para ahorrar memoria y CPU.
     if (total >= 10) {
       const videoRange = 2;
       for (const [key, handle] of coverVideos) {
@@ -331,54 +336,52 @@ if (
     doSelect(clampTarget(i));
   }
 
+  function poseForFrame(frame: FrameHandle) {
+    frame.image.updateMatrixWorld(true);
+    const center = new Vector3();
+    frame.image.getWorldPosition(center);
+    const normal = new Vector3(0, 0, 1).transformDirection(frame.image.matrixWorld).normalize();
+    const compact = corridor.layout.compact;
+    return computeFrontalPose({
+      center,
+      normal,
+      distance: computeFocusDistance(camera, corridor.layout),
+      fov: compact ? sceneConfig.focus.fovCompact : sceneConfig.focus.fov,
+    });
+  }
+
+  function logFocusDebug(i: number): void {
+    if (!new URLSearchParams(location.search).has('debug')) return;
+    const selectedFrame = corridor.frames[i];
+    if (!selectedFrame) return;
+    selectedFrame.image.updateMatrixWorld(true);
+    const C = new Vector3();
+    selectedFrame.image.getWorldPosition(C);
+    const n = new Vector3(0, 0, 1).transformDirection(selectedFrame.image.matrixWorld).normalize();
+    const P = camera.position.clone();
+    const F = camera.getWorldDirection(new Vector3());
+    const look = cameraRig.getLook();
+    // eslint-disable-next-line no-console -- diagnóstico con ?debug
+    console.log(
+      `[DEBUG FRAME ${i}] C:(${C.x.toFixed(3)},${C.y.toFixed(3)},${C.z.toFixed(3)}) ` +
+        `n:(${n.x.toFixed(3)},${n.y.toFixed(3)},${n.z.toFixed(3)}) ` +
+        `P:(${P.x.toFixed(3)},${P.y.toFixed(3)},${P.z.toFixed(3)}) ` +
+        `F:(${F.x.toFixed(3)},${F.y.toFixed(3)},${F.z.toFixed(3)}) ` +
+        `dot(F,n):${F.dot(n).toFixed(3)} dot(P-C,n):${P.sub(C).dot(n).toFixed(3)} ` +
+        `yaw:${look.yaw.toFixed(3)} pitch:${look.pitch.toFixed(3)}`,
+    );
+  }
+
   function doSelect(i: number): void {
     const p = projects[i];
-    if (!p) return;
+    const frame = corridor.frames[i];
+    if (!p || !frame) return;
     target = clampTarget(i);
     if (reducedMotion) progress = target;
-    cameraRig.focusOn(i, total, corridor.layout, {
+    cameraRig.focusOn(poseForFrame(frame), {
       duration: reducedMotion ? 0 : 0.62,
-      frontal: true,
     });
-    // DEBUG LOGGING - START
-    const debug = new URLSearchParams(location.search).has('debug');
-    if (debug) {
-      // Get the selected frame
-      const selectedFrame = corridor.frames[i];
-      if (selectedFrame) {
-        // Update matrixWorld for accurate position/normal
-        selectedFrame.image.updateMatrixWorld(true);
-
-        // Get world position of image center (C)
-        const C = new Vector3();
-        selectedFrame.image.getWorldPosition(C);
-
-        // Get world normal of image plane (n)
-        // Local normal is (0,0,1) for PlaneGeometry
-        const n = new Vector3(0, 0, 1).applyMatrix4(selectedFrame.image.matrixWorld).normalize();
-
-        // Get camera position (P)
-        const P = camera.position.clone();
-
-        // Get camera forward direction (F)
-        const F = camera.getWorldDirection(new Vector3());
-
-        // Calculate dot products
-        const dotFn = F.dot(n);
-        const dotPCn = P.clone().sub(C).dot(n);
-
-        // Get internal yaw/pitch from rig
-        const look = cameraRig.getLook();
-
-        console.log(`[DEBUG FRAME ${i}] C:(${C.x.toFixed(3)},${C.y.toFixed(3)},${C.z.toFixed(3)}) ` +
-                   `n:(${n.x.toFixed(3)},${n.y.toFixed(3)},${n.z.toFixed(3)}) ` +
-                   `P:(${P.x.toFixed(3)},${P.y.toFixed(3)},${P.z.toFixed(3)}) ` +
-                   `F:(${F.x.toFixed(3)},${F.y.toFixed(3)},${F.z.toFixed(3)}) ` +
-                   `dot(F,n):${dotFn.toFixed(3)} dot(P-C,n):${dotPCn.toFixed(3)} ` +
-                   `yaw:${look.yaw.toFixed(3)} pitch:${look.pitch.toFixed(3)}`);
-      }
-    }
-    // DEBUG LOGGING - END
+    logFocusDebug(i);
     selectedIndex = i;
     previewIndex = i;
     requestPreview(i);
@@ -395,11 +398,10 @@ if (
 
   function doOpen(i: number): void {
     const p = projects[i];
-    if (!p) return;
-    const keepFrontal = selectedIndex !== null;
-    cameraRig.focusOn(i, total, corridor.layout, {
+    const frame = corridor.frames[i];
+    if (!p || !frame) return;
+    cameraRig.focusOn(poseForFrame(frame), {
       duration: reducedMotion ? 0 : 0.62,
-      frontal: keepFrontal,
     });
     applyFocusOpacity(i);
     selectedIndex = null;
@@ -504,7 +506,7 @@ if (
       }),
     );
 
-cleanups.push(
+    cleanups.push(
       attachDrag(dom, {
         threshold: sceneConfig.controls.dragThreshold,
         onDragStart: () => {

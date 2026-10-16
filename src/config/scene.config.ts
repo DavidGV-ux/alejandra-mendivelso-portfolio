@@ -66,6 +66,10 @@ export const sceneConfig = {
     maxActive: { high: 4, medium: 3, low: 1 } as Record<'high'|'medium'|'low', number>,
     /** Distancia máxima de la cámara al marco para activar video */
     maxDistance: 26,
+    /** Ancho máximo del canvas de preview (la altura sigue el aspecto nativo). */
+    previewMaxWidth: { high: 1024, medium: 768, low: 512 } as Record<'high'|'medium'|'low', number>,
+    /** Tope de subidas a GPU por segundo; no se decodifica más de esto. */
+    previewFps: { high: 24, medium: 18, low: 10 } as Record<'high'|'medium'|'low', number>,
   },
   lights: {
     ambient: 0.85,

@@ -7,6 +7,7 @@ import {
   PlaneGeometry,
   Texture,
   Vector3,
+  type Camera,
 } from 'three';
 import { sceneConfig } from '@/config/scene.config';
 import { theme } from '@/config/theme';
@@ -34,7 +35,7 @@ export interface FrameHandle {
   /** Posición de la etiqueta en mundo (para proyectar a pantalla si hiciera falta) */
   getWorldPosition: (out: Vector3) => Vector3;
   getScreenCorners: (
-    camera: any,
+    camera: Camera,
     width: number,
     height: number,
     out: Float32Array,
@@ -108,6 +109,11 @@ export function createFrame(
   const c2 = new Vector3();
   const c3 = new Vector3();
   const corners = [c0, c1, c2, c3];
+  const worldCenter = new Vector3();
+  const worldNormal = new Vector3();
+  const viewCorner = new Vector3();
+  const toCamera = new Vector3();
+  const viewDir = new Vector3();
   const state = {
     active: false,
     hover: false,
@@ -196,22 +202,37 @@ export function createFrame(
       // Saltamos directamente a la opacidad objetivo para evitar que se vea negro.
       imageMat.opacity = targets().opacity;
     },
-    getScreenCorners(camera: any, width: number, height: number, out: Float32Array): boolean {
+    getScreenCorners(camera: Camera, width: number, height: number, out: Float32Array): boolean {
       if (!group.visible) return false;
-      group.updateWorldMatrix(true, false);
+      group.updateWorldMatrix(true, true);
       camera.updateMatrixWorld();
-      const locals = [
+      camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+
+      image.getWorldPosition(worldCenter);
+      worldNormal.set(0, 0, 1).transformDirection(image.matrixWorld).normalize();
+      toCamera.subVectors(camera.position, worldCenter);
+      if (toCamera.dot(worldNormal) <= 0) return false;
+      viewDir.subVectors(worldCenter, camera.position).normalize();
+      if (Math.abs(viewDir.dot(worldNormal)) < 0.2) return false;
+
+      const locals: Array<[number, number, number]> = [
         [-W / 2, -H / 2, 0.024],
         [W / 2, -H / 2, 0.024],
         [W / 2, H / 2, 0.024],
         [-W / 2, H / 2, 0.024],
       ];
+      const near = 'near' in camera ? (camera.near as number) : 0.1;
       for (let i = 0; i < 4; i++) {
-        (corners as any)[i].set((locals as any)[i][0], (locals as any)[i][1], (locals as any)[i][2]).applyMatrix4(image.matrixWorld).project(camera);
-        if ((corners as any)[i].z > 1) return false;
-        out[i * 2] = ((corners as any)[i].x * 0.5 + 0.5) * width;
-        out[i * 2 + 1] = (-(corners as any)[i].y * 0.5 + 0.5) * height;
+        const local = locals[i]!;
+        viewCorner.set(local[0], local[1], local[2]).applyMatrix4(image.matrixWorld);
+        viewCorner.applyMatrix4(camera.matrixWorldInverse);
+        if (viewCorner.z >= -near) return false;
+        corners[i]!.set(local[0], local[1], local[2]).applyMatrix4(image.matrixWorld).project(camera);
+        out[i * 2] = (corners[i]!.x * 0.5 + 0.5) * width;
+        out[i * 2 + 1] = (-corners[i]!.y * 0.5 + 0.5) * height;
       }
+      const projectedWidth = Math.hypot(out[4]! - out[6]!, out[5]! - out[7]!);
+      if (projectedWidth < 8) return false;
       return true;
     },
     setActive: (active) => {

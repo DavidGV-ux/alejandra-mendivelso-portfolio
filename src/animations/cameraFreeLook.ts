@@ -1,8 +1,6 @@
 import { MathUtils, Vector3, type PerspectiveCamera } from 'three';
-import type { FrontalPose } from '@/scene/corridor';
-import { framePositionCorridor } from '@/scene/corridor';
+import type { FrontalPose } from '@/scene/framePose';
 import { damp } from '@/utils/math';
-import { sceneConfig } from '@/config/scene.config';
 
 export interface CameraFreeLook {
   /** Posición de viaje a lo largo del pasillo (eje Z). */
@@ -123,12 +121,13 @@ export function createCameraFreeLook(camera: PerspectiveCamera): CameraFreeLook 
       desiredFov = MathUtils.clamp(value, MIN_FOV, MAX_FOV);
     },
     getFov: () => desiredFov,
-    focusOn: (pose: FrontalPose, options?: { duration?: number; fov?: number }) => {
+    focusOn: (pose, options) => {
       focused = true;
-      const { position, target, yaw, pitch, fov: focusFov } = pose;
-      focusPos.copy(position);
-      focusLook.copy(target);
-      desiredFov = focusFov ?? baseFov;
+      yaw = pose.yaw;
+      pitch = pose.pitch;
+      focusPos.copy(pose.position);
+      focusLook.copy(pose.target);
+      desiredFov = options?.fov ?? pose.fov ?? baseFov;
       focusFromPos.copy(position);
       focusFromLook.copy(look);
       focusDuration = options?.duration ?? FOCUS_DURATION;

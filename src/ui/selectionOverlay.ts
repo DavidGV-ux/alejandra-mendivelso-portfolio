@@ -86,10 +86,15 @@ export function createSelectionOverlay(ctx: UIContext, _canvas: HTMLElement): Se
     let boxPoints = '';
     let hoverPoints = '';
 
+    const debug = new URLSearchParams(location.search).has('debug');
     const selCorners = new Float32Array(8);
     if (selectedIdx != null && frames[selectedIdx]) {
       const selectedFrame = frames[selectedIdx]!;
       const ok = selectedFrame.getScreenCorners(camera, window.innerWidth, window.innerHeight, selCorners);
+      if (!ok && debug) {
+        // eslint-disable-next-line no-console -- diagnóstico con ?debug
+        console.warn(`[DEBUG OVERLAY] discarded frame ${selectedIdx}`);
+      }
       if (ok) {
         const pts = `${(selCorners as any)[0]},${(selCorners as any)[1]} ${(selCorners as any)[2]},${(selCorners as any)[3]} ${(selCorners as any)[4]},${(selCorners as any)[5]} ${(selCorners as any)[6]},${(selCorners as any)[7]}`;
         boxPoints = pts;
