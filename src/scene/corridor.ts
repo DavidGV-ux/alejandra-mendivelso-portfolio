@@ -74,12 +74,12 @@ export function createCorridor(
     const wrapper = new Group();
     framePositionCorridor(index, projects.length, layout, tmp);
     if (index >= projects.length - 2) {
-      // Los dos últimos marcos actúan como cierre del pasillo, juntos al fondo.
-      const x = (index % 2 === 0 ? -1 : 1) * layout.wallOffset * 0.72;
-      const z = (Math.ceil(projects.length / 2) - 1) * layout.spacing - ((Math.ceil(projects.length / 2) - 1) / 2) * layout.spacing + layout.spacing * 1.1;
+      // Los dos últimos marcos cierran el pasillo, juntos y de frente.
+      const x = (index % 2 === 0 ? -1 : 1) * layout.wallOffset * 0.55;
+      const z = (Math.ceil(projects.length / 2) - 1) * layout.spacing - ((Math.ceil(projects.length / 2) - 1) / 2) * layout.spacing + layout.spacing * 1.05;
       tmp.set(x, tmp.y, z);
       wrapper.position.copy(tmp);
-      wrapper.lookAt(0, tmp.y, tmp.z - layout.spacing * 0.2);
+      wrapper.rotation.y = Math.PI;
     } else {
       wrapper.position.copy(tmp);
       wrapper.lookAt(0, tmp.y, tmp.z);
