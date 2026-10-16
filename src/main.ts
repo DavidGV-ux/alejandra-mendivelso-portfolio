@@ -36,11 +36,7 @@ const caps = detectCapabilities();
 /* ------------------------------------------------------------------ */
 /* Tema                                                               */
 /* ------------------------------------------------------------------ */
-function storedTheme(): ThemeMode {
-  const value = localStorage.getItem(siteConfig.storageKeys.themeMode);
-  return value === 'light' || value === 'dark' || value === 'auto' ? value : 'auto';
-}
-let themeMode: ThemeMode = storedTheme();
+let themeMode: ThemeMode = 'dark';
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 const resolvedTheme = (): 'light' | 'dark' => resolveMode(themeMode, prefersDark.matches);
 applyThemeVariables(resolvedTheme());

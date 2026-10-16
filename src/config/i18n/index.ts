@@ -12,10 +12,8 @@ export function getDictionary(locale: Locale): Dictionary {
 const STORAGE_KEY = siteConfig.storageKeys.locale;
 
 export function detectLocale(): Locale {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored === 'es' || stored === 'en') return stored;
-  const nav = navigator.language.toLowerCase();
-  return nav.startsWith('en') ? 'en' : 'es';
+  // Cada carga nueva inicia en inglés, ignorando preferencias/bastidores previos.
+  return 'en';
 }
 
 export function persistLocale(locale: Locale): void {
