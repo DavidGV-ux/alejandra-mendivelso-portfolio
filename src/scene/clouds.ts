@@ -76,13 +76,13 @@ export function createClouds(
   scene.add(group);
 
   function setMode(next: Exclude<ThemeMode, 'auto'>): void {
-    // De día no hay nubes: el fondo queda blanco puro y limpio.
-    group.visible = next === 'dark';
-    color.set(next === 'dark' ? '#4a4a5c' : '#ffffff');
+    // En modo nocturno no hay nubes: el fondo queda totalmente negro.
+    group.visible = next === 'light';
+    color.set(next === 'dark' ? '#000000' : '#ffffff');
     clouds.forEach(({ mesh, baseOpacity }) => {
       const mat = mesh.material as MeshBasicMaterial;
       mat.color.copy(color);
-      mat.opacity = next === 'dark' ? baseOpacity * 0.9 : baseOpacity;
+      mat.opacity = next === 'dark' ? 0 : baseOpacity;
       mat.needsUpdate = true;
     });
   }
