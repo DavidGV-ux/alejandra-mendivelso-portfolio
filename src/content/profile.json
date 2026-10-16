@@ -8,7 +8,6 @@
   "tagline": "Código, diseño y experiencias que conectan.",
   "tagline_en": "Code, design and experiences that connect.",
   "bio": "I'm a Multimedia Engineering student at Universidad de Boyacá. I've always liked everything related to design and creativity, especially graphic design, branding, and visual identity. I enjoy creating things from scratch, redesigning brands, and finding ways to give them a fresh look that reflects who they are.\n\nI'm also into photography, video and audio editing, UX/UI design, and software development. I like trying out different styles, learning new tools, and working on projects where I can mix design with technology.\n\nThroughout my studies, I've worked with tools like JavaScript, C#, Angular, Ionic, Unity, and Vuforia. In 2025, I had the chance to study at Universidad Autónoma de Tlaxcala in Mexico, where I got to experience a different culture, meet new people, and see design and technology from another perspective.\n\nI'm still learning, experimenting, and figuring out my own style, and that's one of the things I enjoy most about what I do.",
-  "bio": "I'm a multimedia engineering student interested in software development, UX/UI design, augmented reality and audiovisual production. I enjoy turning ideas into clear, functional and well-crafted digital products.\n\nI'm currently studying Multimedia Engineering at Universidad de Boyacá, where I have explored tools such as JavaScript, C#, Angular, Ionic, Unity and Vuforia. In 2025 I did an academic exchange at Universidad Autónoma de Tlaxcala (Mexico), an experience that broadened the way I understand design and technology.",
   "photo": "/media/profile/about.jpg",
   "email": "alejandramendivelso33@gmail.com",
   "phone": "+57 302 744 9084",
@@ -39,17 +38,36 @@
     {
       "title": "Desarrollo web y móvil",
       "title_en": "Web & mobile development",
-      "items": ["HTML5", "CSS3", "JavaScript", "Node.js", "Angular", "Vue.js", "React", "Ionic"]
+      "items": [
+        "HTML5",
+        "CSS3",
+        "JavaScript",
+        "Node.js",
+        "Angular",
+        "Vue.js",
+        "React",
+        "Ionic"
+      ]
     },
     {
       "title": "Programación y datos",
       "title_en": "Programming & data",
-      "items": ["C#", "Python", "SQL", "Git y GitHub"]
+      "items": [
+        "C#",
+        "Python",
+        "SQL",
+        "Git y GitHub"
+      ]
     },
     {
       "title": "Experiencias interactivas",
       "title_en": "Interactive experiences",
-      "items": ["Unity", "Vuforia", "Realidad aumentada", "Blender y rigging"]
+      "items": [
+        "Unity",
+        "Vuforia",
+        "Realidad aumentada",
+        "Blender y rigging"
+      ]
     },
     {
       "title": "Diseño UX/UI",
@@ -64,17 +82,34 @@
     {
       "title": "Producción visual",
       "title_en": "Visual production",
-      "items": ["Photoshop", "Premiere Pro", "Lightroom", "CapCut", "Canva"]
+      "items": [
+        "Photoshop",
+        "Premiere Pro",
+        "Lightroom",
+        "CapCut",
+        "Canva"
+      ]
     },
     {
       "title": "Complementarias",
       "title_en": "Complementary skills",
-      "items": ["Excel", "Power BI", "IA generativa", "Prompt engineering", "Claude", "GitHub Copilot"]
+      "items": [
+        "Excel",
+        "Power BI",
+        "IA generativa",
+        "Prompt engineering",
+        "Claude",
+        "GitHub Copilot"
+      ]
     },
     {
       "title": "Metodologías",
       "title_en": "Methodologies",
-      "items": ["Scrum", "Ciclo de vida del software", "Gestión de proyectos"]
+      "items": [
+        "Scrum",
+        "Ciclo de vida del software",
+        "Gestión de proyectos"
+      ]
     }
   ],
   "cv": [
@@ -101,9 +136,18 @@
     }
   ],
   "aboutCards": [
-    { "type": "profile", "span": 1 },
-    { "type": "bio", "span": 2 },
-    { "type": "stats", "span": 3 },
+    {
+      "type": "profile",
+      "span": 1
+    },
+    {
+      "type": "bio",
+      "span": 2
+    },
+    {
+      "type": "stats",
+      "span": 3
+    },
     {
       "type": "experience",
       "title": "Experiencia y formación",
@@ -126,5 +170,6 @@
       "body": "Combino herramientas de desarrollo y diseño según las necesidades de cada proyecto.",
       "body_en": "I combine development and design tools according to the needs of each project."
     }
-  ]
+  ],
+  "bio_en": "I'm a Multimedia Engineering student at Universidad de Boyacá. I've always liked everything related to design and creativity, especially graphic design, branding, and visual identity. I enjoy creating things from scratch, redesigning brands, and finding ways to give them a fresh look that reflects who they are.\n\nI'm also into photography, video and audio editing, UX/UI design, and software development. I like trying out different styles, learning new tools, and working on projects where I can mix design with technology.\n\nThroughout my studies, I've worked with tools like JavaScript, C#, Angular, Ionic, Unity, and Vuforia. In 2025, I had the chance to study at Universidad Autónoma de Tlaxcala in Mexico, where I got to experience a different culture, meet new people, and see design and technology from another perspective.\n\nI'm still learning, experimenting, and figuring out my own style, and that's one of the things I enjoy most about what I do."
 }
