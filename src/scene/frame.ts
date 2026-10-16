@@ -174,7 +174,10 @@ export function createFrame(
       imageMat.map = texture;
       imageMat.color.setRGB(1, 1, 1);
       imageMat.needsUpdate = true;
-      imageMat.opacity = 0;
+      texture.needsUpdate = true;
+
+      // Saltamos directamente a la opacidad objetivo para evitar que se vea negro.
+      imageMat.opacity = targets().opacity;
     },
     setActive: (active) => {
       state.active = active;

@@ -15,7 +15,11 @@ async function decodeImage(url: string, maxSize: number): Promise<TexImageSource
   if (!response.ok) throw new Error(`No se pudo cargar ${url} (${response.status})`);
   const blob = await response.blob();
 
-  if (typeof createImageBitmap === 'function' && !url.endsWith('.svg')) {
+  // Para los covers JPG, preferimos el cargador tradicional de Image para evitar
+  // problemas de inversión (flipY) y asegurar la carga inmediata.
+  const isJpg = url.toLowerCase().includes('cover.jpg');
+  
+  if (typeof createImageBitmap === 'function' && !url.endsWith('.svg') && !isJpg) {
     try {
       const bitmap = await createImageBitmap(blob);
       if (bitmap.width <= maxSize) return bitmap;
@@ -65,8 +69,16 @@ export function createLoader(): LoaderHandle {
         const image = await decodeImage(resolved, maxSize);
         const texture = new Texture(image);
         texture.colorSpace = SRGBColorSpace;
-        // Siempre usamos flipY=true porque decodeImage devuelve una imagen Y-down (estándar DOM).
-        texture.flipY = true;
+
+        // Forzamos flipY=false para los covers JPG que están saliendo invertidos.
+        // El estándar suele ser true, pero en este caso parece que el origen o la
+        // decodificación los entrega ya orientados para WebGL.
+        if (resolved.toLowerCase().includes('cover.jpg')) {
+          texture.flipY = false;
+        } else {
+          texture.flipY = !(image instanceof ImageBitmap);
+        }
+
         texture.anisotropy = anisotropy;
         texture.needsUpdate = true;
         texture.generateMipmaps = true;

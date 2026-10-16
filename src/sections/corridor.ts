@@ -153,7 +153,15 @@ export function createCorridorController(deps: Deps): CorridorController {
     return Math.floor(index / 2) * corridor.layout.spacing - center;
   }
   function loadAround(index: number): void {
-    const indices = new Set([index - 3, index - 2, index - 1, index, index + 1, index + 2, index + 3]);
+    // Si hay pocos proyectos, los cargamos todos de golpe para evitar marcos negros al fondo.
+    const range = total < 10 ? total : 4;
+    const indices = new Set<number>();
+    if (total < 10) {
+      for (let i = 0; i < total; i++) indices.add(i);
+    } else {
+      for (let i = index - range; i <= index + range; i++) indices.add(i);
+    }
+
     for (const i of indices) {
       if (i < 0 || i >= total) continue;
       const p = projects[i];
@@ -274,10 +282,11 @@ export function createCorridorController(deps: Deps): CorridorController {
     corridor.setActiveIndex(idx);
     corridor.update(dt);
 
-    // Solo actualizamos la tarjeta final si estamos cerca del final del pasillo
-    // para ahorrar CPU durante la intro y el recorrido inicial.
+    // Solo actualizamos la tarjeta final si estamos muy cerca o está siendo interactuada.
+    // Esto previene el lag al inicio y durante la navegación por los primeros proyectos.
     const distToEnd = Math.abs(camera.position.z - endScreen.group.position.z);
-    if (distToEnd < 20 && endScreen.update(dt)) {
+    const isVisible = distToEnd < 15;
+    if (isVisible && endScreen.update(dt)) {
       deps.invalidate();
     }
 
