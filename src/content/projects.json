@@ -1,41 +1,36 @@
 [
   {
     "id": "ar-experience",
-    "title": "AR Experience",
-    "category": "Realidad aumentada",
-    "category_en": "Augmented reality",
-    "year": 2023,
-    "role": "Desarrollo y diseño de la experiencia",
-    "role_en": "Development & experience design",
-    "description": "Aplicación Android de realidad aumentada: tarjetas físicas que activan objetos 3D, botones interactivos y reproducción automática de video. Desarrollada en C# con Unity y Vuforia, aplicando arquitectura orientada a objetos.",
-    "description_en": "Android augmented reality app: physical cards that trigger 3D objects, interactive buttons and automatic video playback. Built in C# with Unity and Vuforia, applying object-oriented architecture.",
+    "title": "Gigi y Kiki – Presentación de personajes 3D",
+    "category": "Animación 3D",
+    "category_en": "3D animation",
+    "year": 2026,
+    "role": "Animación y presentación de personajes",
+    "role_en": "Character animation and showcase",
+    "description": "Presentación animada de los personajes 3D Gigi y Kiki: modelado, rig y showcase de movimientos en 360°.",
+    "description_en": "Animated showcase of 3D characters Gigi and Kiki: modeling, rig and 360° movement demo.",
     "tools": [
-      "Unity",
-      "Vuforia",
-      "C#"
+      "Blender",
+      "3D Animation",
+      "Motion"
     ],
-    "cover": "/media/ar-experience/cover.svg",
+    "cover": "/media/gigi-y-kiki/cover.svg",
     "media": [
       {
-        "kind": "image",
-        "src": "/media/ar-experience/01.svg",
-        "alt": "Vista provisional — pendiente de recursos reales",
-        "alt_en": "Provisional view — real assets pending",
-        "width": 1600,
-        "height": 1100
-      },
-      {
-        "kind": "image",
-        "src": "/media/ar-experience/02.svg",
-        "alt": "Vista provisional — pendiente de recursos reales",
-        "alt_en": "Provisional view — real assets pending",
-        "width": 1600,
-        "height": 1100
+        "kind": "video",
+        "src": "/media/gigi-y-kiki/preview.mp4",
+        "poster": "/media/gigi-y-kiki/cover.svg",
+        "alt": "Presentación 3D de Gigi y Kiki",
+        "alt_en": "Gigi and Kiki 3D showcase",
+        "width": 1080,
+        "height": 1080
       }
     ],
     "links": [],
     "order": 1,
-    "accent": "#5b4a8a"
+    "accent": "#c084fc",
+    "title_en": "Gigi and Kiki – 3D Character Showcase",
+    "coverVideo": "/media/gigi-y-kiki/preview.mp4"
   },
   {
     "id": "plataforma-domicilios",

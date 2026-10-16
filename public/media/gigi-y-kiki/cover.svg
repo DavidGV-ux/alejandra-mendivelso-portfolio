@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <rect width="1080" height="1080" fill="#15101f"/>
+  <rect x="80" y="80" width="920" height="920" rx="48" fill="#241833" stroke="#3b2755" stroke-width="2"/>
+  <text x="120" y="220" font-family="Space Grotesk,system-ui,sans-serif" font-weight="800" font-size="96" fill="#f8f6f2">Gigi y Kiki</text>
+  <text x="120" y="300" font-family="Space Grotesk,system-ui,sans-serif" font-weight="500" font-size="42" fill="#c084fc">Presentación de personajes 3D</text>
+  <circle cx="540" cy="560" r="180" fill="#c084fc" opacity="0.18"/>
+  <text x="540" y="610" text-anchor="middle" font-family="Space Grotesk,system-ui,sans-serif" font-weight="800" font-size="96" fill="#f8f6f2">3D</text>
+  <text x="120" y="820" font-family="Space Grotesk,system-ui,sans-serif" font-weight="500" font-size="30" fill="#a7a5ae">Showcase de personajes animados</text>
+  <rect x="120" y="900" width="200" height="8" rx="4" fill="#c084fc"/>
+</svg>
