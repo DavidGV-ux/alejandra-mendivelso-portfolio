@@ -73,8 +73,17 @@ export function createCorridor(
     const frame = createFrame(project, index);
     const wrapper = new Group();
     framePositionCorridor(index, projects.length, layout, tmp);
-    wrapper.position.copy(tmp);
-    wrapper.lookAt(0, tmp.y, tmp.z);
+    if (index >= projects.length - 2) {
+      // Los dos últimos marcos actúan como cierre del pasillo, juntos al fondo.
+      const x = (index % 2 === 0 ? -1 : 1) * layout.wallOffset * 0.72;
+      const z = (Math.ceil(projects.length / 2) - 1) * layout.spacing - ((Math.ceil(projects.length / 2) - 1) / 2) * layout.spacing + layout.spacing * 1.1;
+      tmp.set(x, tmp.y, z);
+      wrapper.position.copy(tmp);
+      wrapper.lookAt(0, tmp.y, tmp.z - layout.spacing * 0.2);
+    } else {
+      wrapper.position.copy(tmp);
+      wrapper.lookAt(0, tmp.y, tmp.z);
+    }
     wrapper.add(frame.group);
     frame.group.userData.wrapper = wrapper;
     group.add(wrapper);
