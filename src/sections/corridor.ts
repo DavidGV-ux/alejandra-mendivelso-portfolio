@@ -222,9 +222,6 @@ export function createCorridorController(deps: Deps): CorridorController {
       const f = corridor.frames[i];
       if (!p || !f) continue;
 
-      if (coverVideoUrl(p, currentTheme)) {
-        requestPreview(i);
-      }
 
       if (/\.webp$/i.test(p.cover)) {
         if (!webpAnims.has(p.id)) {
