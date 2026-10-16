@@ -40,14 +40,11 @@ export function createCoverWebp(url: string, onFrame: () => void): CoverWebpHand
         const res = await fetch(url);
         const blob = await res.blob();
         const decoder = new (window as any).ImageDecoder({ data: blob, type: 'image/webp' });
-        const track = decoder.tracks.selectedTrack;
-        const frameCount = Math.max(1, track?.frameCount || 1);
-        const frameDuration = Math.max(16, (track?.frameDuration || 20000) / 1000);
-        let i = 0;
+        const frameDuration = 100;
         const step = async () => {
           if (!running) return;
           try {
-            const result = await decoder.decode({ frameIndex: i });
+            const result = await decoder.decode();
             const image = result.image;
             if (canvas.width !== image.width || canvas.height !== image.height) {
               canvas.width = image.width;
@@ -58,11 +55,10 @@ export function createCoverWebp(url: string, onFrame: () => void): CoverWebpHand
             if (typeof image.close === 'function') image.close();
             texture.needsUpdate = true;
             onFrame();
-            i = (i + 1) % frameCount;
-            window.setTimeout(step, frameDuration);
           } catch {
-            window.setTimeout(step, frameDuration);
+            try { decoder.reset(); } catch {}
           }
+          window.setTimeout(step, frameDuration);
         };
         await step();
       } catch (e) {
