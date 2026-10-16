@@ -27,6 +27,7 @@ export function createCoverVideo(url: string, onFrame: () => void): CoverVideoHa
 
   const texture = new VideoTexture(video);
   texture.colorSpace = SRGBColorSpace;
+  texture.flipY = false;
 
   let ready = false;
   const readyPromise = new Promise<void>((resolve, reject) => {

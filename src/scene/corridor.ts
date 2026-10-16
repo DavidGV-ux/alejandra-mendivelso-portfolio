@@ -72,7 +72,10 @@ export function createCorridor(
     wrapper.add(frame.group);
     frame.group.userData.wrapper = wrapper;
     group.add(wrapper);
-    frames.push(frame);
+frames.push(frame);
+// Ocultar el borde decorativo para que solo se vea el video
+const firstChild = frame.group.children?.[0];
+if (firstChild) firstChild.visible = false;
   });
 
   let activeIndex = 0;

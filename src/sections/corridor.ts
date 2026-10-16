@@ -117,19 +117,15 @@ export function createCorridorController(deps: Deps): CorridorController {
     return `${id}:${mode}`;
   }
 
-  /** Solo el video del Marco centrado se reproduce; el resto se pausa. */
+  /** Solo el video del Marco centrado se reproduce; si hay hover, ese frame pasa a primer plano. */
   function updateVideoPlayback(): void {
-    if (hovered) {
-      const hoveredIdx = (hovered as { index: number }).index;
-      for (const [key, handle] of coverVideos) {
-        const [id] = key.split(':');
-        const frameIdx = projects.findIndex((p) => p.id === id);
-        handle.setPlaying(frameIdx === hoveredIdx);
-      }
-    } else {
-      for (const handle of coverVideos.values()) {
-        handle.setPlaying(false);
-      }
+    const idx = activeIndex();
+    const hoveredIdx = hovered ? (hovered as { index: number }).index : -1;
+    const targetIdx = hoveredIdx >= 0 ? hoveredIdx : idx;
+    for (const [key, handle] of coverVideos) {
+      const [id] = key.split(':');
+      const frameIdx = projects.findIndex((p) => p.id === id);
+      handle.setPlaying(frameIdx === targetIdx);
     }
   }
 
@@ -316,17 +312,13 @@ export function createCorridorController(deps: Deps): CorridorController {
         onEnter: (f) => {
           hovered = f;
           f.setHover(true);
-          setTimeout(() => {
-            updateVideoPlayback();
-          }, 300);
+          updateVideoPlayback();
           deps.invalidate();
           deps.onHoverChange(true);
         },
 onLeave: (f) => {
           f.setHover(false);
-          if (hovered === f) {
-            hovered = null;
-          }
+          if (hovered === f) hovered = null;
           updateVideoPlayback();
           deps.invalidate();
           deps.onHoverChange(false);
