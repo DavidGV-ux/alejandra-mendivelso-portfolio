@@ -98,7 +98,10 @@ export function createCorridorController(deps: Deps): CorridorController {
   let target = 0;
   let interactive = true;
   let draggingLook = false;
-  let selected = false;
+  /** Índice del proyecto centrado (seleccionado) o null si la vista es libre. */
+  let selectedIndex: number | null = null;
+  /** Índice cuyo video de vista previa debe reproducirse (hover o selección). */
+  let previewIndex: number | null = null;
   let lastDragEndAt = 0;
   let attached = false;
   let lastActiveIdx = -1;
@@ -107,7 +110,6 @@ export function createCorridorController(deps: Deps): CorridorController {
   let endHovering = false;
   let dragStartLook = { yaw: 0, pitch: 0 };
   let dragStartFov = 0;
-  const keys = { up: false, down: false, left: false, right: false };
   const cleanups: Array<() => void> = [];
 
   const loaded = new Set<string>();
@@ -123,20 +125,75 @@ export function createCorridorController(deps: Deps): CorridorController {
     return `${id}:${mode}`;
   }
 
-  /** Vista previa ligera: el video solo se reproduce al hacer hover; al cerrar, se pausa. */
+  /** Vista previa ligera: solo el proyecto activo (hover o selección) reproduce su video. */
   function updateVideoPlayback(): void {
-    if (hovered) {
-      const hoveredIdx = (hovered as { index: number }).index;
-      for (const [key, handle] of coverVideos) {
-        const [id] = key.split(':');
-        const frameIdx = projects.findIndex((p) => p.id === id);
-        handle.setPlaying(frameIdx === hoveredIdx);
-      }
-    } else {
-      for (const handle of coverVideos.values()) {
-        handle.setPlaying(false);
-      }
+    for (const [key, handle] of coverVideos) {
+      const [id] = key.split(':');
+      const frameIdx = projects.findIndex((p) => p.id === id);
+      handle.setPlaying(frameIdx === previewIndex);
     }
+  }
+
+  /**
+   * Carga (si hace falta) la vista previa del proyecto y la muestra en su marco
+   * cuando sigue siendo el activo. Sirve tanto para el hover del ratón como
+   * para la selección por toque, de modo que en móvil también se ve la animación.
+   */
+  function requestPreview(index: number): void {
+    const project = projects[index];
+    const frame = corridor.frames[index];
+    if (!project || !frame) return;
+    const videoUrl = coverVideoUrl(project, currentTheme);
+    if (!videoUrl) return;
+
+    const key = videoKey(project.id, currentTheme);
+    const existing = coverVideos.get(key);
+    if (existing) {
+      if (existing.isReady()) {
+        frame.setImage(existing.texture);
+        updateVideoPlayback();
+        deps.invalidate();
+      }
+      return;
+    }
+    if (videoLoading.has(key)) return;
+
+    videoLoading.add(key);
+    const video = createCoverVideo(videoUrl, () => deps.invalidate());
+    coverVideos.set(key, video);
+    void video.ready
+      .then(() => {
+        if (previewIndex !== index) return;
+        frame.setImage(video.texture);
+        updateVideoPlayback();
+        deps.invalidate();
+      })
+      .catch(() => {})
+      .finally(() => videoLoading.delete(key));
+  }
+
+  /** Devuelve el marco a su portada estática y pausa su video. */
+  function restorePreview(index: number): void {
+    const project = projects[index];
+    const frame = corridor.frames[index];
+    if (!project || !frame) return;
+    const video = coverVideos.get(videoKey(project.id, currentTheme));
+    if (video) video.setPlaying(false);
+    const poster = posterTextures.get(project.id);
+    if (poster) {
+      frame.setImage(poster);
+      deps.invalidate();
+      return;
+    }
+    // La portada aún no se había terminado de cargar: se recupera.
+    loader
+      .loadTexture(project.cover, quality.textureMax, quality.anisotropy)
+      .then((t) => {
+        posterTextures.set(project.id, t);
+        frame.setImage(t);
+        deps.invalidate();
+      })
+      .catch(() => {});
   }
 
   function clampTarget(v: number): number {
@@ -190,12 +247,20 @@ export function createCorridorController(deps: Deps): CorridorController {
   }
 
   function releaseSelection(): void {
-    if (!selected) return;
-    selected = false;
+    if (selectedIndex === null) return;
+    const idx = selectedIndex;
+    selectedIndex = null;
+    const stillHovered = hovered !== null && (hovered as { index: number }).index === idx;
+    if (!stillHovered) {
+      if (previewIndex === idx) previewIndex = null;
+      restorePreview(idx);
+      updateVideoPlayback();
+    }
     cameraRig.release();
     deps.invalidate();
   }
 
+  /** Movimiento continuo del pasillo (rueda): avanza sin fijar ningún marco. */
   function step(delta: number): void {
     if (!interactive) return;
     releaseSelection();
@@ -204,23 +269,31 @@ export function createCorridorController(deps: Deps): CorridorController {
     deps.invalidate();
   }
 
+  /** Navegación por proyectos (flechas de la barra y del teclado): deja el
+   *  proyecto destino justo enfrente de la cámara. */
+  function focusStep(delta: number): void {
+    if (!interactive) return;
+    doSelect(clampTarget(Math.round(target) + delta));
+  }
+
   function goToIndex(i: number): void {
-    releaseSelection();
-    target = clampTarget(i);
-    if (reducedMotion) progress = target;
-    deps.invalidate();
+    if (!interactive) return;
+    doSelect(clampTarget(i));
   }
 
   function doSelect(i: number): void {
     const p = projects[i];
     if (!p) return;
+    if (previewIndex !== null && previewIndex !== i) restorePreview(previewIndex);
     target = clampTarget(i);
     if (reducedMotion) progress = target;
     cameraRig.focusOn(i, total, corridor.layout, {
       duration: reducedMotion ? 0 : 0.62,
       frontal: true,
     });
-    selected = true;
+    selectedIndex = i;
+    previewIndex = i;
+    requestPreview(i);
     deps.invalidate();
   }
 
@@ -232,13 +305,13 @@ export function createCorridorController(deps: Deps): CorridorController {
   function doOpen(i: number): void {
     const p = projects[i];
     if (!p) return;
-    const keepFrontal = selected;
+    const keepFrontal = selectedIndex !== null;
     cameraRig.focusOn(i, total, corridor.layout, {
       duration: reducedMotion ? 0 : 0.62,
       frontal: keepFrontal,
     });
     applyFocusOpacity(i);
-    selected = false;
+    selectedIndex = null;
     interactive = false;
     deps.invalidate();
     deps.onOpenDetail(p.id);
@@ -259,7 +332,7 @@ export function createCorridorController(deps: Deps): CorridorController {
   function closeDetail(immediate = false): void {
     applyFocusOpacity(null);
     cameraRig.release();
-    selected = false;
+    selectedIndex = null;
     void immediate;
     interactive = true;
     deps.invalidate();
@@ -268,19 +341,6 @@ export function createCorridorController(deps: Deps): CorridorController {
 
   function update(dt: number): void {
     const lambda = reducedMotion ? 1000 : 6;
-
-    // Movimiento continuo por teclado (flechas).
-    if (interactive && !store.get().detailProjectId) {
-      const speed = 3.0 * dt; // velocidad de desplazamiento en unidades de "índice"
-      if (keys.up || keys.left) {
-        releaseSelection();
-        target = clampTarget(target - speed);
-      }
-      if (keys.down || keys.right) {
-        releaseSelection();
-        target = clampTarget(target + speed);
-      }
-    }
 
     progress += (target - progress) * (1 - Math.exp(-lambda * dt));
     if (Math.abs(target - progress) < 0.001) progress = target;
@@ -326,55 +386,20 @@ export function createCorridorController(deps: Deps): CorridorController {
           // Dwell de 200 ms antes de cargar/reproducir el video (evita trabajo al pasar de lado).
           window.setTimeout(() => {
             if (!videoUrl || serial !== hoverSerial || hovered !== f || !project) return;
-            const key = videoKey(project.id, currentTheme);
-            let video = coverVideos.get(key);
-            if (!video) {
-              if (videoLoading.has(key)) return;
-              videoLoading.add(key);
-              video = createCoverVideo(videoUrl, () => deps.invalidate());
-              coverVideos.set(key, video);
-              void video.ready
-                .then(() => {
-                  if (hovered !== f) return; // Si salió antes, no cambiamos a video.
-                  f.setImage(video!.texture);
-                  video!.setPlaying(true);
-                  deps.invalidate();
-                })
-                .catch(() => {})
-                .finally(() => videoLoading.delete(key));
-            } else if (video.isReady()) {
-              f.setImage(video.texture);
-              updateVideoPlayback();
-              deps.invalidate();
-            }
+            previewIndex = f.index;
+            requestPreview(f.index);
           }, 200);
           deps.invalidate();
           deps.onHoverChange(true);
         },
-onLeave: (f) => {
+        onLeave: (f) => {
           if (hovered === f) hovered = null;
           hoverSerial++; // cancela cualquier carga pendiente por dwell
           f.setHover(false);
-          const project = projects[f.index];
-          if (project) {
-            const key = videoKey(project.id, currentTheme);
-            const video = coverVideos.get(key);
-            if (video) video.setPlaying(false);
-            const poster = posterTextures.get(project.id);
-            if (poster) {
-              f.setImage(poster);
-            } else {
-              // fallback si la portada no se había terminado de cargar
-              loader
-                .loadTexture(project.cover, quality.textureMax, quality.anisotropy)
-                .then((t) => {
-                  if (hovered === f) return;
-                  posterTextures.set(project.id, t);
-                  f.setImage(t);
-                  deps.invalidate();
-                })
-                .catch(() => {});
-            }
+          // Si el marco quedó fijado por selección (toque), conserva su vista previa.
+          if (selectedIndex !== f.index) {
+            if (previewIndex === f.index) previewIndex = null;
+            restorePreview(f.index);
           }
           updateVideoPlayback();
           deps.invalidate();
@@ -423,7 +448,7 @@ onLeave: (f) => {
         threshold: sceneConfig.controls.dragThreshold,
         onDragStart: () => {
           draggingLook = true;
-          if (selected && !store.get().detailProjectId) releaseSelection();
+          if (selectedIndex !== null && !store.get().detailProjectId) releaseSelection();
           dragStartLook = cameraRig.getLook();
           dragStartFov = cameraRig.getFov();
           if (hovered) hovered.setHover(false);
@@ -495,25 +520,25 @@ onLeave: (f) => {
 
     const onKeyDown = (e: KeyboardEvent): void => {
       if (!interactive || store.get().detailProjectId) return;
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-        e.preventDefault();
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      switch (e.key) {
+        case 'ArrowDown':
+        case 'ArrowRight':
+          e.preventDefault();
+          focusStep(1);
+          break;
+        case 'ArrowUp':
+        case 'ArrowLeft':
+          e.preventDefault();
+          focusStep(-1);
+          break;
+        default:
+          break;
       }
-      if (e.key === 'ArrowUp') keys.up = true;
-      if (e.key === 'ArrowDown') keys.down = true;
-      if (e.key === 'ArrowLeft') keys.left = true;
-      if (e.key === 'ArrowRight') keys.right = true;
-    };
-    const onKeyUp = (e: KeyboardEvent): void => {
-      if (e.key === 'ArrowUp') keys.up = false;
-      if (e.key === 'ArrowDown') keys.down = false;
-      if (e.key === 'ArrowLeft') keys.left = false;
-      if (e.key === 'ArrowRight') keys.right = false;
     };
     window.addEventListener('keydown', onKeyDown);
-    window.addEventListener('keyup', onKeyUp);
     cleanups.push(() => {
       window.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('keyup', onKeyUp);
     });
   }
 
@@ -550,11 +575,11 @@ onLeave: (f) => {
     corridor,
     cameraRig,
     update,
-    next: () => step(1),
-    prev: () => step(-1),
+    next: () => focusStep(1),
+    prev: () => focusStep(-1),
     goToIndex,
     selectActive,
-    isSelected: () => selected,
+    isSelected: () => selectedIndex !== null,
     releaseSelection,
     openActive,
     openProject,

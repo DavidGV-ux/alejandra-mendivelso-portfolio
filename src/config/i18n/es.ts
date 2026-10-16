@@ -52,6 +52,11 @@ export const es = {
       'Rueda del ratón para moverte entre proyectos',
       'Doble clic en un proyecto para abrirlo',
     ],
+    itemsTouch: [
+      'Desliza el dedo para mirar y avanzar por el pasillo',
+      'Pellizca con dos dedos para acercar o alejar',
+      'Toca un proyecto para centrarlo y pulsa «Ver proyectos»',
+    ],
   },
   help: {
     title: 'Cómo navegar',

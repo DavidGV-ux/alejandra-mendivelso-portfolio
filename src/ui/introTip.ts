@@ -13,15 +13,17 @@ const LEAVE_MS = 380;
 
 /**
  * Aviso ligero que se abre al empezar a explorar el pasillo: recuerda cómo
- * moverse y que cada proyecto se abre con doble clic. No bloquea la
- * interacción con la escena y se cierra solo.
+ * moverse y cómo abrir cada proyecto. En dispositivos táctiles muestra las
+ * instrucciones de gestos. No bloquea la interacción con la escena y se
+ * cierra solo.
  */
-export function createIntroTip(ctx: UIContext): IntroTip {
+export function createIntroTip(ctx: UIContext, isTouch: boolean): IntroTip {
   const { dict } = ctx;
   const t = dict.tip;
+  const items = isTouch ? t.itemsTouch : t.items;
 
-  const items = el('ul', { class: 'tip__list' });
-  t.items.forEach((item) => items.append(el('li', { class: 'tip__item', text: item })));
+  const list = el('ul', { class: 'tip__list' });
+  items.forEach((item) => list.append(el('li', { class: 'tip__item', text: item })));
 
   const closeBtn = el('button', {
     class: 'tip__close',
@@ -33,7 +35,7 @@ export function createIntroTip(ctx: UIContext): IntroTip {
     class: 'tip',
     attrs: { role: 'status', 'aria-live': 'polite' },
   });
-  root.append(el('p', { class: 'tip__title', text: t.title }), items, closeBtn);
+  root.append(el('p', { class: 'tip__title', text: t.title }), list, closeBtn);
   root.hidden = true;
 
   let autoHide = 0;

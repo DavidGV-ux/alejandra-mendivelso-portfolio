@@ -54,6 +54,11 @@ export const en: Dictionary = {
       'Use the mouse wheel to move between projects',
       'Double-click a project to open it',
     ],
+    itemsTouch: [
+      'Swipe to look and move along the hallway',
+      'Pinch with two fingers to zoom in or out',
+      'Tap a project to center it, then tap “View project”',
+    ],
   },
   help: {
     title: 'How to move',
