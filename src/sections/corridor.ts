@@ -488,12 +488,12 @@ cleanups.push(
         case 'ArrowDown':
         case 'ArrowRight':
           e.preventDefault();
-          focusStep(1);
+          step(1);
           break;
         case 'ArrowUp':
         case 'ArrowLeft':
           e.preventDefault();
-          focusStep(-1);
+          step(-1);
           break;
         default:
           break;
