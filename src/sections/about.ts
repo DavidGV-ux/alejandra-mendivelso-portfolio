@@ -169,6 +169,14 @@ export function createAboutPanel(ctx: UIContext): AboutPanel {
   return {
     el: panel,
     show: () => {
+      // Clear residual content from previous renders
+      grid.innerHTML = '';
+      profile.aboutCards.forEach((card, i) => {
+        const node = buildCard(card, profile, dict.about.title);
+        node.classList.add('card--span-' + (card.span ?? 1));
+        node.style.setProperty('--stagger', `${i * 70}ms`);
+        grid.append(node);
+      });
       panel.hidden = false;
       requestAnimationFrame(() => panel.classList.add('is-visible'));
     },
