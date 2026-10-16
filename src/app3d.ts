@@ -71,6 +71,14 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
   await ensureLabelFonts();
 
   const { canvas, caps, projects, store } = deps;
+
+  const debug = new URLSearchParams(location.search).has('debug');
+  let debugEl: HTMLDivElement | null = null;
+  if (debug) {
+    debugEl = document.createElement('div');
+    debugEl.style.cssText = 'position:fixed;left:8px;top:8px;z-index:9999;padding:6px 8px;background:rgba(0,0,0,.65);color:#fff;font:12px monospace;border-radius:6px;pointer-events:none;';
+    document.body.append(debugEl);
+  }
   const quality = getQuality(caps);
   const layout = buildCorridorLayout(caps);
   const hires = new URLSearchParams(location.search).has('hires');
@@ -126,6 +134,7 @@ export async function createScene3D(deps: Scene3DDeps): Promise<Scene3D> {
     clouds.update(camera);
     const start = performance.now();
     rendererHandle.renderer.render(scene, camera);
+    if (debugEl) debugEl.textContent = `FPS ~${dt > 0 ? (1 / dt).toFixed(0) : '–'} | calls ${rendererHandle.renderer.info.render.calls}`;
     if (hires || !intro.done()) return;
 
     renderSamples.push(performance.now() - start);
