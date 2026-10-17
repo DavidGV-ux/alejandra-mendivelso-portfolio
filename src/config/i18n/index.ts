@@ -14,8 +14,12 @@ const STORAGE_KEY = siteConfig.storageKeys.locale;
 export function detectLocale(): Locale {
   // Intenta recuperar el idioma guardado en localStorage
   if (typeof window !== 'undefined') {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored && (stored === 'es' || stored === 'en')) return stored as Locale;
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored && (stored === 'es' || stored === 'en')) return stored;
+    } catch {
+      /* almacenamiento no disponible */
+    }
   }
   // Fallback: inglés por defecto
   return 'en';
