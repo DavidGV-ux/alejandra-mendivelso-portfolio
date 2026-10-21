@@ -191,5 +191,39 @@
     "links": [],
     "order": 6,
     "accent": "#4f46e5"
+  },
+  {
+    "id": "click-studio",
+    "title": "Click Studio – Packaging que cuenta historias",
+    "title_en": "Click Studio – Packaging that tells a story",
+    "category": "Packaging & unboxing",
+    "category_en": "Packaging & unboxing",
+    "year": 2026,
+    "role": "Diseño de packaging y dirección de arte",
+    "role_en": "Packaging design & art direction",
+    "description": "Sistema de packaging y experiencia de unboxing para Click Studio: caja de envío, tarjeta de agradecimiento, fotos impresas, USB personalizado, bolsa de tela y papelería de marca. Una entrega pensada para que cada cliente recuerde el primer vistazo, el contenido y cada detalle.",
+    "description_en": "Packaging and unboxing system for Click Studio: shipping box, thank-you card, printed photos, custom USB drive, cotton bag and branded stationery. An unboxing designed to make every detail memorable.",
+    "tools": [
+      "Packaging",
+      "Branding",
+      "Dirección de arte",
+      "Motion graphics"
+    ],
+    "cover": "/media/click-studio/cover.jpg",
+    "coverVideo": "/media/click-studio/preview-loop.mp4",
+    "media": [
+      {
+        "kind": "video",
+        "src": "/media/click-studio/preview.mp4",
+        "poster": "/media/click-studio/cover.jpg",
+        "alt": "Unboxing de Click Studio: caja, kit de fotografía, USB, bolsa y papelería",
+        "alt_en": "Click Studio unboxing: box, photo kit, USB drive, bag and stationery",
+        "width": 1080,
+        "height": 1080
+      }
+    ],
+    "links": [],
+    "order": 7,
+    "accent": "#b08968"
   }
 ]

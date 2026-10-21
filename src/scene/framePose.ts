@@ -1,6 +1,9 @@
 import { Vector3, type PerspectiveCamera } from 'three';
-import type { CorridorLayout } from '@/scene/corridor';
-import { framePositionCorridor } from '@/scene/corridor';
+import {
+  framePositionCorridor,
+  isClosingFrame,
+  type CorridorLayout,
+} from '@/scene/corridorLayout';
 import { sceneConfig } from '@/config/scene.config';
 
 export interface FrameTransform {
@@ -26,21 +29,11 @@ export function frameTransform(
   layout: CorridorLayout,
   out: Vector3 = new Vector3(),
 ): FrameTransform {
-  const pairCount = Math.ceil(total / 2);
-  const center = ((pairCount - 1) / 2) * layout.spacing;
-  const isClosing = index >= total - 2;
+  const isClosing = isClosingFrame(index, total);
+  framePositionCorridor(index, total, layout, out);
 
-  let rotationY: number;
-  if (isClosing) {
-    const x = (index % 2 === 0 ? -1 : 1) * layout.wallOffset * 0.55;
-    const z = (pairCount - 1) * layout.spacing - center + layout.spacing * 1.05;
-    out.set(x, 0, z);
-    rotationY = Math.PI;
-  } else {
-    framePositionCorridor(index, total, layout, out);
-    // Left wall (x < 0) faces +X; right wall faces −X.
-    rotationY = out.x < 0 ? Math.PI / 2 : -Math.PI / 2;
-  }
+  // Closing frames face the incoming viewer (−Z); side frames face the aisle.
+  const rotationY = isClosing ? Math.PI : out.x < 0 ? Math.PI / 2 : -Math.PI / 2;
 
   return {
     position: out.clone(),

@@ -98,4 +98,32 @@ describe('pose frontal de marcos', () => {
     applyPose(camera, pose);
     expect(camera.getWorldDirection(new Vector3()).z).toBeCloseTo(-1, 5);
   });
+
+  it('con total impar el fondo queda formado por tres marcos de frente', () => {
+    const total = 7;
+    const closing = [4, 5, 6].map((i) => frameTransform(i, total, layout));
+    const xs = closing.map((t) => t.position.x);
+    expect(xs[0]).toBeLessThan(0);
+    expect(xs[1]).toBeCloseTo(0, 5);
+    expect(xs[2]).toBeGreaterThan(0);
+    expect(Math.abs(xs[1]! - xs[0]!)).toBeGreaterThan(4);
+    expect(Math.abs(xs[2]! - xs[1]!)).toBeGreaterThan(4);
+    for (const t of closing) {
+      expect(t.position.z).toBeCloseTo(closing[0]!.position.z, 5);
+      expect(t.rotationY).toBeCloseTo(Math.PI, 5);
+      expect(t.normal.z).toBeCloseTo(-1, 5);
+    }
+    // El marco nuevo no desplaza a los laterales ni deja uno suelto.
+    expect(frameTransform(3, total, layout).rotationY).not.toBeCloseTo(Math.PI, 5);
+  });
+
+  it('con total par el fondo conserva dos marcos', () => {
+    const total = 6;
+    const closing = [4, 5].map((i) => frameTransform(i, total, layout));
+    for (const t of closing) {
+      expect(t.rotationY).toBeCloseTo(Math.PI, 5);
+      expect(t.normal.z).toBeCloseTo(-1, 5);
+    }
+    expect(frameTransform(3, total, layout).rotationY).not.toBeCloseTo(Math.PI, 5);
+  });
 });

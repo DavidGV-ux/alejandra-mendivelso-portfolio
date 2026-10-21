@@ -1,6 +1,7 @@
 import type { PerspectiveCamera } from 'three';
 import { Vector3 } from 'three';
 import { createCorridor, type Corridor } from '@/scene/corridor';
+import { framePositionCorridor } from '@/scene/corridorLayout';
 import { computeFocusDistance, computeFrontalPose } from '@/scene/framePose';
 import { createCoverVideo, type CoverVideoHandle } from '@/scene/coverVideo';
 import { createCoverWebp, type CoverWebpHandle } from '@/scene/coverWebp';
@@ -110,6 +111,7 @@ export function createCorridorController(deps: Deps): CorridorController {
   let hoverSerial = 0;
   let dragStartLook = { yaw: 0, pitch: 0 };
   let dragStartFov = 0;
+  const travelTmp = new Vector3();
   const cleanups: Array<() => void> = [];
 
   const loaded = new Set<string>();
@@ -234,9 +236,8 @@ export function createCorridorController(deps: Deps): CorridorController {
   }
 
   function travelZFor(index: number): number {
-    const pairCount = Math.ceil(total / 2);
-    const center = ((pairCount - 1) / 2) * corridor.layout.spacing;
-    return Math.floor(index / 2) * corridor.layout.spacing - center - corridor.layout.spacing * 1.5;
+    framePositionCorridor(index, total, corridor.layout, travelTmp);
+    return travelTmp.z - corridor.layout.spacing * 1.5;
   }
   function loadAround(index: number): void {
     // Si hay pocos proyectos, los cargamos todos de golpe para evitar marcos negros al fondo.

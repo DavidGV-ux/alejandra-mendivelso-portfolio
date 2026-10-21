@@ -2,60 +2,13 @@ import { Group, Vector3 } from 'three';
 import type { Project } from '@/types/project';
 import { createFrame, type FrameHandle } from './frame';
 import { frameTransform } from './framePose';
+import {
+  buildCorridorLayout,
+  type CorridorLayout,
+} from './corridorLayout';
 import type { Capabilities } from '@/types/theme';
 
-export interface CorridorLayout {
-  spacing: number;
-  width: number;
-  height: number;
-  depth: number;
-  wallOffset: number;
-  compact: boolean;
-}
-
-export function buildCorridorLayout(caps: Capabilities): CorridorLayout {
-  const compact = Math.min(window.innerWidth, window.innerHeight) < 560 || caps.tier === 'low';
-  const scale = compact ? 0.82 : 1;
-  return {
-    spacing: 4.0 * scale,
-    width: 24 * scale,
-    height: 4.5 * scale,
-    depth: 60 * scale,
-    wallOffset: 4.8 * scale,
-    compact,
-  };
-}
-
-/** Profundidad de la pantalla que cierra el pasillo, más allá del último marco. */
-export function endScreenZ(total: number, layout: CorridorLayout): number {
-  const pairCount = Math.ceil(total / 2);
-  const center = ((pairCount - 1) / 2) * layout.spacing;
-  return Math.floor((total - 1) / 2) * layout.spacing - center + layout.spacing * 2.2;
-}
-
-/** Profundidad para el proyecto centrado al fondo del pasillo. */
-export function endBackdropZ(layout: CorridorLayout): number {
-  return layout.spacing * 2;
-}
-
-export function framePositionCorridor(
-  index: number,
-  total: number,
-  config: CorridorLayout,
-  out: Vector3 = new Vector3(),
-): Vector3 {
-  const pairCount = Math.ceil(total / 2);
-  const center = ((pairCount - 1) / 2) * config.spacing;
-  if (index >= total - 2) {
-    const x = (index % 2 === 0 ? -1 : 1) * config.wallOffset * 0.55;
-    const z = (pairCount - 1) * config.spacing - center + config.spacing * 1.05;
-    return out.set(x, 0, z);
-  }
-  const x = (index % 2 === 0 ? -config.wallOffset : config.wallOffset) * (config.compact ? 0.85 : 1);
-  const y = 0;
-  const z = Math.floor(index / 2) * config.spacing - center;
-  return out.set(x, y, z);
-}
+export * from './corridorLayout';
 
 export interface Corridor {
   group: Group;

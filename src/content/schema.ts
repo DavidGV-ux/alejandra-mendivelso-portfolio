@@ -23,6 +23,7 @@ export const projectSchema = z.object({
     .min(1)
     .regex(/^[a-z0-9-]+$/, 'El id debe ser minúsculas, números y guiones (slug).'),
   title: z.string().min(1),
+  title_en: z.string().min(1).optional(),
   category: z.string().min(1),
   category_en: z.string().min(1).optional(),
   year: z.number().int().min(1900).max(2100),
