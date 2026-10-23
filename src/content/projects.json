@@ -40,8 +40,8 @@
     "year": 2026,
     "role": "Diseño de producto y UX/UI",
     "role_en": "Product design & UX/UI",
-    "description": "Rediseño UX/UI de una app de finanzas personales con IA: jerarquía clara, un único acento esmeralda y componentes reutilizables. Flujo de registro, metas y asistente Win con respuestas basadas en datos.",
-    "description_en": "UX/UI redesign of a personal finance app with AI: clear hierarchy, a single emerald accent and reusable components. Logging flow, goals and a Win assistant with data-driven answers.",
+    "description": "Rediseño UX/UI de una app de finanzas personales con IA: jerarquía clara, un único acento esmeralda y componentes reutilizables. Flujo de registro, metas y asistente Win con respuestas basadas en datos. Proceso: auditoría de flujos, wireframes, sistema de componentes en Figma y prototipo interactivo; el asistente Win corre en AWS Lambda con Groq y persistencia en Supabase.",
+    "description_en": "UX/UI redesign of a personal finance app with AI: clear hierarchy, a single emerald accent and reusable components. Logging flow, goals and a Win assistant with data-driven answers. Process: flow audit, wireframes, a component system in Figma and an interactive prototype; the Win assistant runs on AWS Lambda with Groq and Supabase persistence.",
     "tools": [
       "Figma",
       "UX research",
@@ -73,8 +73,8 @@
     "year": 2026,
     "role": "Diseño de producto y UX",
     "role_en": "Product design & UX",
-    "description": "Aplicación para aprender inglés mediante conversaciones guiadas: práctica de speaking, feedback inmediato y seguimiento de progreso.",
-    "description_en": "App to learn English through guided conversations: speaking practice, instant feedback and progress tracking.",
+    "description": "Aplicación para aprender inglés mediante conversaciones guiadas: práctica de speaking, feedback inmediato y seguimiento de progreso. Tecnología: Angular en S3 + CloudFront, API serverless en AWS Lambda, IA de Groq para texto y voz, integración con WhatsApp y persistencia en Supabase.",
+    "description_en": "App to learn English through guided conversations: speaking practice, instant feedback and progress tracking. Technology: Angular on S3 + CloudFront, serverless API on AWS Lambda, Groq AI for text and voice, WhatsApp integration and Supabase persistence.",
     "tools": [
       "UX Research",
       "Prototipado",
