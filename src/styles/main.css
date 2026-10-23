@@ -891,6 +891,11 @@ body.has-modal .bar {
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     animation: slide-in-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
+
+  /* Deja que el contenido defina el alto para que el visor no se superponga al texto. */
+  .detail__body {
+    flex: 0 0 auto;
+  }
   @keyframes slide-in-up {
     from {
       opacity: 0;
