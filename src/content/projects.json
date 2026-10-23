@@ -40,8 +40,8 @@
     "year": 2026,
     "role": "Diseño de producto y UX/UI",
     "role_en": "Product design & UX/UI",
-    "description": "Rediseño UX/UI de una app de finanzas personales con IA: jerarquía clara, un único acento esmeralda y componentes reutilizables. Flujo de registro, metas y asistente Win con respuestas basadas en datos. Proceso: auditoría de flujos, wireframes, sistema de componentes en Figma y prototipo interactivo; el asistente Win corre en AWS Lambda con Groq y persistencia en Supabase.",
-    "description_en": "UX/UI redesign of a personal finance app with AI: clear hierarchy, a single emerald accent and reusable components. Logging flow, goals and a Win assistant with data-driven answers. Process: flow audit, wireframes, a component system in Figma and an interactive prototype; the Win assistant runs on AWS Lambda with Groq and Supabase persistence.",
+    "description": "Rediseño UX/UI de una app de finanzas personales con IA: jerarquía clara, un único acento esmeralda y componentes reutilizables. Flujo de registro, metas y asistente Win con respuestas basadas en datos. Proceso: auditoría de flujos, wireframes, sistema de componentes en Figma y prototipo interactivo; el asistente Win corre en AWS Lambda con Groq y persistencia en Supabase. El problema: revisar las finanzas generaba ansiedad y hacía que muchas personas abandonaran la app; el rediseño y Win convierten esa experiencia en conversaciones claras que devuelven control. Proyecto grupal: me encargué de UX/UI, investigación, sistema de componentes, diseño visual y accesibilidad.",
+    "description_en": "UX/UI redesign of a personal finance app with AI: clear hierarchy, a single emerald accent and reusable components. Logging flow, goals and a Win assistant with data-driven answers. Process: flow audit, wireframes, a component system in Figma and an interactive prototype; the Win assistant runs on AWS Lambda with Groq and Supabase persistence. The problem: checking finances caused anxiety and made many people abandon the app; the redesign and Win turn that experience into clear conversations that restore control. Team project: I was responsible for UX/UI, research, the component system, visual design and accessibility.",
     "tools": [
       "Figma",
       "UX research",
@@ -73,8 +73,8 @@
     "year": 2026,
     "role": "Diseño de producto y UX",
     "role_en": "Product design & UX",
-    "description": "Aplicación para aprender inglés mediante conversaciones guiadas: práctica de speaking, feedback inmediato y seguimiento de progreso. Tecnología: Angular en S3 + CloudFront, API serverless en AWS Lambda, IA de Groq para texto y voz, integración con WhatsApp y persistencia en Supabase.",
-    "description_en": "App to learn English through guided conversations: speaking practice, instant feedback and progress tracking. Technology: Angular on S3 + CloudFront, serverless API on AWS Lambda, Groq AI for text and voice, WhatsApp integration and Supabase persistence.",
+    "description": "Aplicación para aprender inglés mediante conversaciones guiadas: práctica de speaking, feedback inmediato y seguimiento de progreso. Tecnología: Angular en S3 + CloudFront, API serverless en AWS Lambda, IA de Groq para texto y voz, integración con WhatsApp y persistencia en Supabase. El problema: muchas personas estudian inglés durante años pero se bloquean al hablar por miedo a equivocarse; Voxy les da un espacio seguro para practicar y ganar confianza. Proyecto grupal: me encargué de UX/UI, investigación, prototipado, diseño visual y accesibilidad.",
+    "description_en": "App to learn English through guided conversations: speaking practice, instant feedback and progress tracking. Technology: Angular on S3 + CloudFront, serverless API on AWS Lambda, Groq AI for text and voice, WhatsApp integration and Supabase persistence. The problem: many people study English for years but freeze when speaking for fear of making mistakes; Voxy gives them a safe space to practice and build confidence. Team project: I was responsible for UX/UI, research, prototyping, visual design and accessibility.",
     "tools": [
       "UX Research",
       "Prototipado",
